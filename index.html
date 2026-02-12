@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Work - Research Corpus</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="page-header">
+            <h1>My Work</h1>
+            <div class="controls">
+                <input type="text" id="search" placeholder="Search documents..." class="search-input">
+                <div class="filters">
+                    <!-- Filter controls will go here -->
+                    <select id="filter-type" class="filter-select">
+                        <option value="">All Types</option>
+                    </select>
+                    <select id="filter-project" class="filter-select">
+                        <option value="">All Projects</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div id="tiles-container" class="tiles-container">
+                <!-- Tiles will be dynamically inserted here -->
+            </div>
+            
+            <div id="loading" class="loading">
+                <p>Loading documents...</p>
+            </div>
+            
+            <div id="no-results" class="no-results" style="display: none;">
+                <p>No documents found matching your criteria.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
