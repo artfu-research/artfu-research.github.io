@@ -240,13 +240,16 @@ class DocumentTiles {
             button.dataset.viewId = view.id;
             
             button.addEventListener('click', (e) => {
-                // Update active button
-                nav.querySelectorAll('.view-button').forEach(btn => btn.classList.remove('active'));
+                // Find the parent tile content inner
+                const contentInner = button.closest('.tile-content-inner');
+                
+                // Update active button within this tile
+                contentInner.querySelectorAll('.view-button').forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
                 
-                // Update active view content
-                inner.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-                inner.querySelector(`[data-view-id="${view.id}"]`).classList.add('active');
+                // Update active view content within this tile
+                contentInner.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+                contentInner.querySelector(`.view-content[data-view-id="${view.id}"]`).classList.add('active');
             });
             
             nav.appendChild(button);
