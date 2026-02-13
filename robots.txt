@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://artfu-research.github.io/sitemap.xml
