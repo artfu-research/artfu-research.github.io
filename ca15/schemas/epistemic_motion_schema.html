@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epistemic Motion Battery — Schema Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  .overview {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .overview p {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .overview-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+
+  .panel-call {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .pattern-bar {
+    display: grid;
+    grid-template-columns: 120px 1fr 2fr;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .pattern-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .pattern-reasoning {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .def-term {
+    font-family: 'Instrument Serif', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }
+
+  .def-term:first-of-type {
+    margin-top: 0;
+  }
+
+  .def-body {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+  }
+
+  .footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Schema Reference</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0</div>
+      <div>6-call architecture</div>
+      <div>battery: epistemic_motion</div>
+    </div>
+  </div>
+
+  <div class="overview">
+    <div class="overview-label">What this battery does</div>
+    <p>The Epistemic Motion Battery analyzes a question–answer turn-pair from a legal deposition. It measures how knowledge, belief, and responsibility move between the two speakers — what gets transformed, how the turns mechanically constrain each other, what new lines of inquiry open or close, what shape the exchange takes geometrically, and what meaning carries forward into the rest of the deposition. Six sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration.</p>
+  </div>
+
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Pattern Declaration</div>
+    <div class="pattern-reasoning">A two-word label that captures the dominant epistemic movement of the exchange. Derived after all five prior lenses are computed and represents the instrument's single synthesized judgment about what happened in this turn-pair. Not a summary of content, but a label for the kind of transformation that occurred. When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how understanding moved through the entire conversation. Examples: <em>Blame Shift, Frame Capture, Evasion Loop, Anchor Drop</em>.</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- CALL 1 -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">Transformation</div>
+          <div class="def-body">What changed at the level of understanding between Turn 1 and Turn 2. Not what was said, but what shifted in the epistemic state. Captured as a 3-word maximum compressed label.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Object Of Transformation</div>
+          <div class="def-body">The specific concept, framing, or confusion that was operated upon. The raw material before it was redefined, clarified, or reframed. Captured as a 3-word maximum label.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Scaffolding</div>
+          <div class="def-body">The structural support that held the exchange stable enough for transformation to occur. Three components: what scaffolded Turn 1, what scaffolded Turn 2, and what arose from the pair as a unit (emergent support). Each component captured as a 3-word maximum label.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2 -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">T1 To T2 Relationship</div>
+          <div class="def-body">How Turn 1 constrained and enabled Turn 2. What did the question make necessary, possible, or impossible for the answer? Captured as a paragraph-length analysis.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">T2 To T1 Relationship</div>
+          <div class="def-body">How Turn 2 reframed or recontextualized Turn 1. What does the answer reveal about what the question was actually doing? Captured as a paragraph-length analysis.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">Alignment Bidirectional (Q→A)</div>
+          <div class="def-body">How faithfully Turn 2 received the frame established by Turn 1. Score on a -5 to +5 scale. Negative scores indicate misalignment or frame rejection. Positive scores indicate alignment and reception. Zero indicates neutral/even reception.</div>
+        </div>
+        <div>
+          <div class="def-term">Alignment Bidirectional (A→Q)</div>
+          <div class="def-body">How faithfully Turn 1's frame holds after Turn 2's response. Score on a -5 to +5 scale. Measures whether the answer validated or undermined the question's premise.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 3 -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">Constraints Operationalized</div>
+          <div class="def-body">Limits that became active as a result of this exchange. Definitions, boundaries, or framings that now reduce the viable space of what can coherently follow. Each constraint has three parts: constraint_class (1-2 words), constraint_type (1-2 words), and constrained (what got constrained, 2 words max). Listed as many as are present.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Enablements Created</div>
+          <div class="def-body">New directions that became possible that were not possible before this exchange. What has been opened up, unlocked, or made available. Each enablement has three parts: enablement_class (1-2 words), enablement_type (1-2 words), and enabled (what got enabled, 2 words max). Listed as many as are present.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Epistemic Encoding</div>
+          <div class="def-body">How meaning was distributed across explicit and implicit channels in this exchange. For each turn, identifies which semantic objects were carried implicitly (requiring inference) and which were carried explicitly (directly stated). Object names are 2-3 words maximum.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4 -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">Convergence</div>
+          <div class="def-body">Did the two turns move toward shared structure, closing distance between frames? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented, blocking factors are identified (2 words max per item).</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Divergence</div>
+          <div class="def-body">Did the two turns move away from shared structure, increasing distance between frames? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented, blocking factors are identified (2 words max per item).</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Emergence</div>
+          <div class="def-body">Did the two turns produce something neither contained independently, a structure that arose from the interaction itself? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented (partial only), blocking factors are identified. Emergence as false has no prevented_by array — absence of conditions is not a blocked event.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5 -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="def-term">Change In Understanding</div>
+          <div class="def-body">What each speaker now understands as a result of the exchange. Two arrays: turn_1_now_understands (what the attorney learned) and turn_2_now_understands (what the witness learned). Each item is a 2-3 word semantic object representing new knowledge.</div>
+        </div>
+        
+        <div>
+          <div class="def-term">What Matters</div>
+          <div class="def-body">What in this exchange is relevant to the trajectory of the conversation. Semantic objects that carry forward, will shape what comes next, or would be a loss if forgotten. Each object has: object name (2-3 words) and trajectory score (-1 for degrading, 0 for stable, +1 for enhancing).</div>
+        </div>
+        
+        <div>
+          <div class="def-term">Meaning Generated</div>
+          <div class="def-body">The effect of this exchange on the future possibility space. What can now be thought, said, or built that the conversation is pointed toward. Each has: meaning_object (1 word naming the concept) and now_possible (2 words describing what became possible).</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Schema Reference — Epistemic Motion Battery</span>
+      <span>v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div>
+
+</body>
+</html>

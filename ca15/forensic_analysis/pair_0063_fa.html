@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · Forensic Analysis · Pair 063</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* PATTERN BAR */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+  .panel { background: var(--surface); padding: 12px 14px; }
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  /* FIELDS */
+  .field-block { margin-bottom: 8px; }
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .field-answer { font-size: 10px; color: var(--text-bright); line-height: 1.6; margin-bottom: 3px; }
+  .field-reasoning { font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic; opacity: 0.8; }
+  .field-row { display: flex; gap: 6px; margin-bottom: 4px; align-items: flex-start; }
+  .field-key { font-size: 9px; color: var(--text-dim); min-width: 90px; flex-shrink: 0; padding-top: 1px; }
+  .field-val { font-size: 9px; color: var(--text-bright); line-height: 1.5; }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(200,169,110,0.12); color: var(--accent);  border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+  
+  .tab-nav {
+    display: flex;
+    gap: 2px;
+    padding: 12px 20px 0 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .tab-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    padding: 7px 16px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: var(--accent); background: var(--surface2); border-color: var(--border); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('data', this)">Data · Pair 063</button>
+    <button class="tab-btn" onclick="switchTab('schema', this)">Schema Reference</button>
+  </div>
+
+  <div id="tab-data" class="tab-panel active">
+    <div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Forensic Language Analysis Battery</span>
+      <span class="header-title">Pair 063 · gibson_sp063</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.1 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.20 l.5 · 2026-03-25</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"And your opinions in that case were -- were they blaming the plaintiff for the incident? (MR. GRINNAN objection: object to the form, foundation.)"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"I don't think it was necessarily blaming the plaintiff in that case. I think it was noting that Energy Transfer was not involved in that work. They hired that contractor. They -- this guy was the foreman and had chose the means and method, that was more the theme in that case for -- given the nuances of that specific matter."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Deflection Contest</div>
+    <div class="pattern-reasoning">The interaction shows the witness actively deflecting blame away from the plaintiff while the question is contested by an objection, capturing the dual dynamics of blame‑shifting and procedural challenge.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: FORENSIC POSITIONING -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Forensic Positioning</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <!-- Agency Distribution -->
+        <div class="field-block">
+          <div class="field-label">Agency Distribution</div>
+          <div class="field-row">
+            <div class="field-key">Turn 1</div>
+            <div class="field-val"><span class="tag tag-blue">45%</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Turn 2</div>
+            <div class="field-val"><span class="tag tag-green">45%</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">External</div>
+            <div class="field-val"><span class="tag tag-gold">10%</span> · Mr. Grinnan objection</div>
+          </div>
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Flow</div>
+            <div class="field-val" style="color:var(--text-dim);">speaker_1 → speaker_2</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling initiates the question, Gibson responds, and Mr. Grinnan’s objection introduces external agency.</div>
+        </div>
+
+        <!-- Power Alignment -->
+        <div class="field-block">
+          <div class="field-label">Power Alignment</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1:</div>
+          <div class="field-row">
+              <div class="field-key">directive</div>
+              <div class="field-val" style="color:var(--text-dim);">→ Gibson</div>
+            </div><div class="field-row">
+              <div class="field-key">challenging</div>
+              <div class="field-val" style="color:var(--text-dim);">→ Gibson</div>
+            </div><div class="field-row">
+              <div class="field-key">assertive</div>
+              <div class="field-val" style="color:var(--text-dim);">→ Gibson</div>
+            </div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2:</div>
+          <div class="field-row">
+              <div class="field-key">defensive</div>
+              <div class="field-val" style="color:var(--text-dim);">→ Ms. Easterling</div>
+            </div><div class="field-row">
+              <div class="field-key">clarifying</div>
+              <div class="field-val" style="color:var(--text-dim);">→ Ms. Easterling</div>
+            </div><div class="field-row">
+              <div class="field-key">attributing</div>
+              <div class="field-val" style="color:var(--text-dim);">→ foreman/contractor</div>
+            </div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling’s question shows a directive and challenging stance toward Gibson, while Gibson’s reply is defensive, clarifying, and attributing blame to the foreman.</div>
+        </div>
+
+        <!-- Blame Structure -->
+        <div class="field-block">
+          <div class="field-label">Blame Structure</div>
+          <div class="field-answer"><span class="tag tag-gold">deflected</span></div>
+          <div class="field-row" style="margin-top:6px;">
+            <div class="field-key">Target</div>
+            <div class="field-val">foreman/contractor</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Justification</div>
+            <div class="field-val">consequential</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Intensity</div>
+            <div class="field-val"><span class="tag tag-blue">6/10</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">Gibson explicitly states the blame is not on the plaintiff but on the foreman’s choice of means and method.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 2: FORENSIC PRESSURE -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Forensic Pressure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <!-- Pressure Configuration -->
+        <div class="field-block">
+          <div class="field-label">Pressure Configuration</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-purple">epistemic</span></div></div><div class="field-row"><div class="field-key">Source</div><div class="field-val">Ms. Easterling</div></div><div class="field-row"><div class="field-key">Target</div><div class="field-val">Benjamin Gibson</div></div><div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-blue">5/10</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling’s question directly probes Gibson’s opinion, prompting him to clarify his stance and thereby applying epistemic pressure on him to articulate and justify his view.</div>
+        </div>
+
+        <!-- Leverage Pattern -->
+        <div class="field-block">
+          <div class="field-label">Leverage Pattern</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-red">authority</span></div></div><div class="field-row"><div class="field-key">Wielded by</div><div class="field-val">Ms. Easterling</div></div><div class="field-row"><div class="field-key">Applied to</div><div class="field-val">Benjamin Gibson</div></div><div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-blue">5/10</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling, as the examining attorney, wields authority leverage by framing the question and guiding the witness’s response, influencing the direction of the testimony.</div>
+        </div>
+
+        <!-- Accountability State -->
+        <div class="field-block">
+          <div class="field-label">Accountability State</div>
+          <div class="field-answer"><span class="tag tag-blue">distributed</span></div>
+          <div style="margin-top:6px;">
+            <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Ms. Easterling</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">Benjamin Gibson</div>
+          </div>
+          
+          <div class="field-reasoning" style="margin-top:6px;">The accountability is shared: Ms. Easterling is responsible for formulating the question, while Gibson is responsible for answering truthfully, reflecting a distributed pattern.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 3: TRUTH GROUND -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Truth Ground</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <!-- Evidential Basis -->
+        <div class="field-block">
+          <div class="field-label">Evidential Basis</div>
+          <div class="field-answer"><span class="tag tag-blue">testimonial</span></div>
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Strength</div>
+            <div class="field-val"><span class="tag tag-gold">moderate</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Source explicit</div>
+            <div class="field-val"><span class="tag tag-green">true</span></div>
+          </div>
+          
+          <div class="field-reasoning" style="margin-top:6px;">The witness explicitly states his opinion about the case, citing facts he believes are true, which constitutes testimonial evidence. The statement is not backed by external documentation, so the strength is moderate.</div>
+        </div>
+
+        <!-- Source Position -->
+        <div class="field-block">
+          <div class="field-label">Source Position</div>
+          <div class="field-answer"><span class="tag tag-blue">first_person</span></div>
+          <div style="margin-top:6px;">
+            <div class="tag tag-purple" style="display:block;margin-bottom:3px;">expert witness</div><div class="tag tag-purple" style="display:block;margin-bottom:3px;">plaintiff side</div>
+          </div>
+          <div class="field-row" style="margin-top:6px;">
+            <div class="field-key">Distance</div>
+            <div class="field-val"><span class="tag tag-gold">one_remove</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness speaks in the first person and is identified as an expert for the plaintiffs, indicating a first-person source with credibility markers. He is not a direct participant in the incident, placing him one step removed.</div>
+        </div>
+
+        <!-- Inferential Structure -->
+        <div class="field-block">
+          <div class="field-label">Inferential Structure</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-purple">inductive</span></div></div><div class="field-row"><div class="field-key">Steps explicit</div><div class="field-val"><span class="tag tag-red">false</span></div></div><div class="field-row"><div class="field-key">Missing steps</div><div class="field-val" style="font-style:italic;color:var(--text-dim);">logical steps</div></div><div class="field-row"><div class="field-key">Strength</div><div class="field-val"><span class="tag tag-gold">moderate</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness draws a conclusion about blame from specific facts, which is an inductive inference. He does not lay out the reasoning steps, so the inference is not explicit, but the conclusion is moderately supported.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 4: TRUTH STABILITY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Truth Stability</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <!-- Epistemic Reliability -->
+        <div class="field-block">
+          <div class="field-label">Epistemic Reliability</div>
+          <div class="field-answer"><span class="tag tag-gold">conditional</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Support:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:2px;">qualified statement</div><div class="tag tag-green" style="display:block;margin-bottom:2px;">uncertain claim</div><div class="tag tag-green" style="display:block;margin-bottom:2px;">contextual nuance</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Vulnerabilities:</div>
+          <div class="tag tag-red" style="display:block;margin-bottom:2px;">lack of evidence</div><div class="tag tag-red" style="display:block;margin-bottom:2px;">subjective interpretation</div><div class="tag tag-red" style="display:block;margin-bottom:2px;">qualification</div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness expresses uncertainty and qualifiers, indicating the claim is not fully stable but depends on context.</div>
+        </div>
+
+        <!-- Contestability -->
+        <div class="field-block">
+          <div class="field-label">Contestability</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-gold">procedural</span></div></div><div class="field-row"><div class="field-key">Contested by</div><div class="field-val">Mr. Grinnan</div></div><div class="field-row"><div class="field-key">Strength</div><div class="field-val"><span class="tag tag-blue">6/10</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">The objection from Mr. Grinnan signals an external challenge to the admissibility of the question, making the claim contestable.</div>
+        </div>
+
+        <!-- Distortion Pattern -->
+        <div class="field-block">
+          <div class="field-label">Distortion Pattern</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-gold">minimization</span></div></div><div class="field-row"><div class="field-key">What distorted</div><div class="field-val">blaming plaintiff</div></div><div class="field-row"><div class="field-key">Direction</div><div class="field-val"><span class="tag tag-green">favorable</span></div></div><div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-gold">4/10</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness reframes the blame away from the plaintiff, minimizing the accusation, which shifts the narrative favorably for the plaintiff.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 5: STRATEGIC EXPOSURE -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · Strategic Exposure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <!-- Concealment State -->
+        <div class="field-block">
+          <div class="field-label">Concealment State</div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          
+          <div class="field-reasoning" style="margin-top:6px;">The witness’s response does not omit or obscure information; it directly addresses the question.</div>
+        </div>
+
+        <!-- Framing Bias -->
+        <div class="field-block">
+          <div class="field-label">Framing Bias</div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Direction</div><div class="field-val"><span class="tag tag-red">accusatory_framing</span></div></div>
+          <div class="tag tag-gold" style="display:block;margin-bottom:2px;">blaming plaintiff</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">accusatory question</div>
+          <div class="field-row" style="margin-top:4px;"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-blue">5/10</span></div></div>
+          <div class="field-reasoning" style="margin-top:6px;">The question frames the witness’s opinions as potentially blaming the plaintiff, which is an accusatory framing that influences the exchange.</div>
+        </div>
+
+        <!-- Adversarial Posture -->
+        <div class="field-block">
+          <div class="field-label">Adversarial Posture</div>
+          <div class="field-answer"><span class="tag tag-gold">defensive</span></div>
+          <div style="margin-top:6px;">
+            <div class="tag tag-red" style="display:inline-block;margin-bottom:3px;">deflection</div> 
+          </div>
+          <div class="field-row" style="margin-top:6px;"><div class="field-key">Target</div><div class="field-val">plaintiff blame</div></div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness deflects the accusatory framing by denying blame and shifting focus to other parties, indicating a defensive stance.</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: forensic_analysis · v3.1</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+    </div>
+  </div>
+  <div id="tab-schema" class="tab-panel">
+<style>
+:root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }#tab-schema * { margin: 0; padding: 0; box-sizing: border-box; }#tab-schema {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 20px;
+  }#tab-schema .page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+  }#tab-schema .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }#tab-schema .header-left { display: flex; align-items: baseline; gap: 12px; }#tab-schema .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }#tab-schema .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }#tab-schema .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }#tab-schema .overview {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }#tab-schema .overview p {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }#tab-schema .overview-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }#tab-schema .pattern-bar {
+    display: grid;
+    grid-template-columns: 120px 1fr 2fr;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }#tab-schema .pattern-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.4;
+  }#tab-schema .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--accent);
+  }#tab-schema .pattern-reasoning {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }#tab-schema .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }#tab-schema .panel {
+    background: var(--surface);
+    padding: 16px 18px;
+  }#tab-schema .panel-call {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }#tab-schema .def-term {
+    font-family: 'Instrument Serif', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }#tab-schema .def-term:first-of-type { margin-top: 0; }#tab-schema .def-body {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }#tab-schema .enum-list {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.8;
+  }#tab-schema .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+  }#tab-schema .scale-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }#tab-schema .scale-box-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }#tab-schema .footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }#tab-schema .footer-left { display: flex; gap: 16px; }
+
+</style>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Forensic Language Analysis Battery</span>
+      <span class="header-title">Schema Reference</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.1</div>
+      <div>5-call architecture · 15 fields</div>
+      <div>battery: forensic_analysis</div>
+    </div>
+  </div>
+
+  <div class="overview">
+    <div class="overview-label">What this battery does</div>
+    <p>The Forensic Language Analysis Battery analyzes a question–answer turn-pair from a legal deposition for structural properties, force dynamics, and strategic distortion. It examines how agency and power are distributed, how pressure and leverage operate, what evidential ground the claims rest on, how stable that ground is, and what strategic exposure exists. Five sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration — identical in structure to all other CA_15 batteries.</p>
+  </div>
+
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Pattern Declaration</div>
+    <div class="pattern-reasoning">A two-word label capturing the dominant forensic dynamic of the exchange. Derived after all five analytical calls are computed and represents the instrument's single synthesized judgment about what structural and strategic event occurred. Not a summary of content — a label for the kind of force or distortion that defined the exchange. Examples: <em>Deflection Contest, Frame Capture, Blame Shift, Authority Press</em>.</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- CALL 1 -->
+    <div class="panel">
+      <div class="panel-call">Call 1 · Forensic Positioning</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Agency Distribution</div>
+          <div class="def-body">How agency — the capacity to act, decide, and influence — is allocated across the three possible sites in the exchange. Turn 1 and Turn 2 receive integer percentages (0–100); External receives the remainder and is labeled when non-zero. The flow keys identify which site agency moves from and which it moves toward.</div>
+          <div class="enum-list">Keys: turn_1 (0–100) · turn_2 (0–100) · external (0–100, sums to 100) · external_label (text or null) · flow_from ("speaker_1" | "speaker_2" | "external") · flow_to ("speaker_1" | "speaker_2" | "external")</div>
+        </div>
+
+        <div>
+          <div class="def-term">Power Alignment</div>
+          <div class="def-body">The power posture each speaker adopts and what that posture is directed toward. For each turn, 3–5 adjective–target pairs are identified. The adjective describes the quality of the power stance; the target names what or who it is aimed at — participants, institutions, groups, or entities discussed in the exchange.</div>
+          <div class="enum-list">Keys: turn_1_power_posture [ {adjective, target} × 3–5 ] · turn_2_power_posture [ {adjective, target} × 3–5 ]</div>
+        </div>
+
+        <div>
+          <div class="def-term">Blame Structure</div>
+          <div class="def-body">Whether blame is present in the exchange and how it is structured. Blame state classifies the form of blame. When blame is present, target names the recipient, justification_type identifies the logic used to support the blame, and intensity scores its strength on the 1–10 scale. All three conditional fields are null when blame_state is "absent".</div>
+          <div class="enum-list">blame_state: "absent" | "accepted" | "deflected" | "distributed" | "implied"<br>justification_type: "evidential" | "normative" | "consequential" | "character" | "comparative" | "none"<br>intensity: 1–10 or null</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 2 -->
+    <div class="panel">
+      <div class="panel-call">Call 2 · Forensic Pressure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Pressure Configuration</div>
+          <div class="def-body">Whether pressure is applied in the exchange, what kind it is, who applies it, who receives it, and how strong it is. When pressure_present is false, all four conditional fields (pressure_type, source, target, intensity) are null. Intensity is scored on the 1–10 scale.</div>
+          <div class="enum-list">pressure_type: "temporal" | "social" | "epistemic" | "material" | "reputational"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Leverage Pattern</div>
+          <div class="def-body">Whether leverage is used in the exchange, what kind, who wields it, who it is applied to, and how strong it is. When leverage_present is false, all four conditional fields are null. Intensity is scored on the 1–10 scale.</div>
+          <div class="enum-list">leverage_type: "authority" | "information" | "relationship" | "resource" | "expertise"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Accountability State</div>
+          <div class="def-body">How accountability is distributed across the exchange. The distribution_pattern classifies the structural form. Holders is an array of entity names when accountability is locatable; null when obscured. Displaced_to names the displacement target when the pattern is "displaced"; null otherwise.</div>
+          <div class="enum-list">distribution_pattern: "concentrated" | "distributed" | "displaced" | "obscured" | "contested"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by pressure_configuration and leverage_pattern)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+    <!-- CALL 3 -->
+    <div class="panel">
+      <div class="panel-call">Call 3 · Truth Ground</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Evidential Basis</div>
+          <div class="def-body">What kind of evidence supports the claims made in the exchange, how strong that evidence is, and whether the source is made explicit. When source_explicit is false, gap_description captures the nature of the evidentiary gap in 2–4 words. Gap_description is null when the source is explicit.</div>
+          <div class="enum-list">basis_type: "empirical" | "testimonial" | "logical" | "authoritative" | "assumed" | "none"<br>strength: "strong" | "moderate" | "weak" | "absent"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Source Position</div>
+          <div class="def-body">The structural position of the claim's source — who is speaking and from what epistemic vantage point. Credibility markers are 0–3 short phrases identifying features that establish or undermine authority. Distance from event captures how many removes the source is from the events being described.</div>
+          <div class="enum-list">source_type: "first_person" | "second_person" | "third_party" | "institutional" | "unattributed"<br>distance_from_event: "direct" | "one_remove" | "multiple_removes" | "unclear"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Inferential Structure</div>
+          <div class="def-body">Whether inference is used to bridge claims to conclusions. When inference_present is false, all four conditional fields (inference_type, steps_explicit, missing_steps, strength) are null. When present, steps_explicit identifies whether the reasoning chain is stated or only implied, and missing_steps names the gap in 2–4 words.</div>
+          <div class="enum-list">inference_type: "deductive" | "inductive" | "abductive" | "analogical" | "speculative"<br>strength: "strong" | "moderate" | "weak"</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 4 -->
+    <div class="panel">
+      <div class="panel-call">Call 4 · Truth Stability</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Epistemic Reliability</div>
+          <div class="def-body">The internal structural durability of the claim — independent of external challenge. Reliability_state classifies the overall condition. Support_structure lists 1–3 short phrases identifying what holds the claim up. Vulnerability_points lists 0–3 phrases identifying where the claim could internally collapse.</div>
+          <div class="enum-list">reliability_state: "stable" | "conditional" | "contested" | "undermined" | "collapsed"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Contestability</div>
+          <div class="def-body">Whether the claim is being externally attacked or challenged within the exchange. When contest_present is false, all three conditional fields (contest_type, contested_by, contest_strength) are null. Contest_strength scores the challenge's force on the 1–10 scale.</div>
+          <div class="enum-list">contest_type: "factual" | "interpretive" | "normative" | "procedural"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Distortion Pattern</div>
+          <div class="def-body">Whether the truth is being bent, suppressed, amplified, or substituted in the exchange. When distortion_present is false, all four conditional fields are null. Direction classifies whether the distortion benefits the speaker ("favorable"), harms them ("unfavorable"), or is directionally neutral. Intensity scored 1–10.</div>
+          <div class="enum-list">distortion_type: "amplification" | "minimization" | "reframing" | "omission" | "substitution"<br>direction: "favorable" | "unfavorable" | "neutral_shift"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by contestability and distortion_pattern)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+    <!-- CALL 5 -->
+    <div class="panel">
+      <div class="panel-call">Call 5 · Strategic Exposure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Concealment State</div>
+          <div class="def-body">Whether information is being strategically withheld or obscured. When concealment_present is false, all three conditional fields (concealment_mechanism, what_is_concealed, intensity) are null. What_is_concealed names the suppressed content in 2–4 words. Intensity scored 1–10.</div>
+          <div class="enum-list">concealment_mechanism: "omission" | "vagueness" | "misdirection" | "technical_obscurity" | "temporal_displacement"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Framing Bias</div>
+          <div class="def-body">Whether the exchange is structured around a directionally biased frame. When bias_present is false, all three conditional fields (bias_direction, framing_elements, intensity) are null. Framing_elements lists 2–4 short phrases identifying the constitutive components of the bias. Intensity scored 1–10.</div>
+          <div class="enum-list">bias_direction: "self_advantaging" | "blame_shifting" | "protective_framing" | "accusatory_framing"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Adversarial Posture</div>
+          <div class="def-body">The adversarial stance taken in the exchange. Posture_type classifies the overall orientation. Tactical_moves is an array of 0–3 specific maneuvers used within that posture. Target_of_posture names what the posture is directed at in 2–4 words; null when posture_type is "cooperative" or "neutral".</div>
+          <div class="enum-list">posture_type: "cooperative" | "neutral" | "defensive" | "aggressive" | "evasive"<br>tactical_moves: "preemption" | "deflection" | "counter_accusation" | "boundary_setting" | "challenge" | "none"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by concealment_state and framing_bias)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Schema Reference — Forensic Language Analysis Battery</span>
+      <span>v3.1</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div>
+  </div>
+<script>
+
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

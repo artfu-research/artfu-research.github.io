@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forensic Language Analysis Battery — Schema Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .page {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  .overview {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .overview p {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .overview-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .pattern-bar {
+    display: grid;
+    grid-template-columns: 120px 1fr 2fr;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .pattern-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .pattern-reasoning {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 16px 18px;
+  }
+
+  .panel-call {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .def-term {
+    font-family: 'Instrument Serif', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }
+
+  .def-term:first-of-type { margin-top: 0; }
+
+  .def-body {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .enum-list {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+  }
+
+  .scale-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  .scale-box-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Forensic Language Analysis Battery</span>
+      <span class="header-title">Schema Reference</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.1</div>
+      <div>5-call architecture · 15 fields</div>
+      <div>battery: forensic_analysis</div>
+    </div>
+  </div>
+
+  <div class="overview">
+    <div class="overview-label">What this battery does</div>
+    <p>The Forensic Language Analysis Battery analyzes a question–answer turn-pair from a legal deposition for structural properties, force dynamics, and strategic distortion. It examines how agency and power are distributed, how pressure and leverage operate, what evidential ground the claims rest on, how stable that ground is, and what strategic exposure exists. Five sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration — identical in structure to all other CA_15 batteries.</p>
+  </div>
+
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Pattern Declaration</div>
+    <div class="pattern-reasoning">A two-word label capturing the dominant forensic dynamic of the exchange. Derived after all five analytical calls are computed and represents the instrument's single synthesized judgment about what structural and strategic event occurred. Not a summary of content — a label for the kind of force or distortion that defined the exchange. Examples: <em>Deflection Contest, Frame Capture, Blame Shift, Authority Press</em>.</div>
+  </div>
+
+  <div class="panels">
+
+    <!-- CALL 1 -->
+    <div class="panel">
+      <div class="panel-call">Call 1 · Forensic Positioning</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Agency Distribution</div>
+          <div class="def-body">How agency — the capacity to act, decide, and influence — is allocated across the three possible sites in the exchange. Turn 1 and Turn 2 receive integer percentages (0–100); External receives the remainder and is labeled when non-zero. The flow keys identify which site agency moves from and which it moves toward.</div>
+          <div class="enum-list">Keys: turn_1 (0–100) · turn_2 (0–100) · external (0–100, sums to 100) · external_label (text or null) · flow_from ("speaker_1" | "speaker_2" | "external") · flow_to ("speaker_1" | "speaker_2" | "external")</div>
+        </div>
+
+        <div>
+          <div class="def-term">Power Alignment</div>
+          <div class="def-body">The power posture each speaker adopts and what that posture is directed toward. For each turn, 3–5 adjective–target pairs are identified. The adjective describes the quality of the power stance; the target names what or who it is aimed at — participants, institutions, groups, or entities discussed in the exchange.</div>
+          <div class="enum-list">Keys: turn_1_power_posture [ {adjective, target} × 3–5 ] · turn_2_power_posture [ {adjective, target} × 3–5 ]</div>
+        </div>
+
+        <div>
+          <div class="def-term">Blame Structure</div>
+          <div class="def-body">Whether blame is present in the exchange and how it is structured. Blame state classifies the form of blame. When blame is present, target names the recipient, justification_type identifies the logic used to support the blame, and intensity scores its strength on the 1–10 scale. All three conditional fields are null when blame_state is "absent".</div>
+          <div class="enum-list">blame_state: "absent" | "accepted" | "deflected" | "distributed" | "implied"<br>justification_type: "evidential" | "normative" | "consequential" | "character" | "comparative" | "none"<br>intensity: 1–10 or null</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 2 -->
+    <div class="panel">
+      <div class="panel-call">Call 2 · Forensic Pressure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Pressure Configuration</div>
+          <div class="def-body">Whether pressure is applied in the exchange, what kind it is, who applies it, who receives it, and how strong it is. When pressure_present is false, all four conditional fields (pressure_type, source, target, intensity) are null. Intensity is scored on the 1–10 scale.</div>
+          <div class="enum-list">pressure_type: "temporal" | "social" | "epistemic" | "material" | "reputational"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Leverage Pattern</div>
+          <div class="def-body">Whether leverage is used in the exchange, what kind, who wields it, who it is applied to, and how strong it is. When leverage_present is false, all four conditional fields are null. Intensity is scored on the 1–10 scale.</div>
+          <div class="enum-list">leverage_type: "authority" | "information" | "relationship" | "resource" | "expertise"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Accountability State</div>
+          <div class="def-body">How accountability is distributed across the exchange. The distribution_pattern classifies the structural form. Holders is an array of entity names when accountability is locatable; null when obscured. Displaced_to names the displacement target when the pattern is "displaced"; null otherwise.</div>
+          <div class="enum-list">distribution_pattern: "concentrated" | "distributed" | "displaced" | "obscured" | "contested"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by pressure_configuration and leverage_pattern)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+    <!-- CALL 3 -->
+    <div class="panel">
+      <div class="panel-call">Call 3 · Truth Ground</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Evidential Basis</div>
+          <div class="def-body">What kind of evidence supports the claims made in the exchange, how strong that evidence is, and whether the source is made explicit. When source_explicit is false, gap_description captures the nature of the evidentiary gap in 2–4 words. Gap_description is null when the source is explicit.</div>
+          <div class="enum-list">basis_type: "empirical" | "testimonial" | "logical" | "authoritative" | "assumed" | "none"<br>strength: "strong" | "moderate" | "weak" | "absent"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Source Position</div>
+          <div class="def-body">The structural position of the claim's source — who is speaking and from what epistemic vantage point. Credibility markers are 0–3 short phrases identifying features that establish or undermine authority. Distance from event captures how many removes the source is from the events being described.</div>
+          <div class="enum-list">source_type: "first_person" | "second_person" | "third_party" | "institutional" | "unattributed"<br>distance_from_event: "direct" | "one_remove" | "multiple_removes" | "unclear"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Inferential Structure</div>
+          <div class="def-body">Whether inference is used to bridge claims to conclusions. When inference_present is false, all four conditional fields (inference_type, steps_explicit, missing_steps, strength) are null. When present, steps_explicit identifies whether the reasoning chain is stated or only implied, and missing_steps names the gap in 2–4 words.</div>
+          <div class="enum-list">inference_type: "deductive" | "inductive" | "abductive" | "analogical" | "speculative"<br>strength: "strong" | "moderate" | "weak"</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALL 4 -->
+    <div class="panel">
+      <div class="panel-call">Call 4 · Truth Stability</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Epistemic Reliability</div>
+          <div class="def-body">The internal structural durability of the claim — independent of external challenge. Reliability_state classifies the overall condition. Support_structure lists 1–3 short phrases identifying what holds the claim up. Vulnerability_points lists 0–3 phrases identifying where the claim could internally collapse.</div>
+          <div class="enum-list">reliability_state: "stable" | "conditional" | "contested" | "undermined" | "collapsed"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Contestability</div>
+          <div class="def-body">Whether the claim is being externally attacked or challenged within the exchange. When contest_present is false, all three conditional fields (contest_type, contested_by, contest_strength) are null. Contest_strength scores the challenge's force on the 1–10 scale.</div>
+          <div class="enum-list">contest_type: "factual" | "interpretive" | "normative" | "procedural"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Distortion Pattern</div>
+          <div class="def-body">Whether the truth is being bent, suppressed, amplified, or substituted in the exchange. When distortion_present is false, all four conditional fields are null. Direction classifies whether the distortion benefits the speaker ("favorable"), harms them ("unfavorable"), or is directionally neutral. Intensity scored 1–10.</div>
+          <div class="enum-list">distortion_type: "amplification" | "minimization" | "reframing" | "omission" | "substitution"<br>direction: "favorable" | "unfavorable" | "neutral_shift"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by contestability and distortion_pattern)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+    <!-- CALL 5 -->
+    <div class="panel">
+      <div class="panel-call">Call 5 · Strategic Exposure</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
+        <div>
+          <div class="def-term">Concealment State</div>
+          <div class="def-body">Whether information is being strategically withheld or obscured. When concealment_present is false, all three conditional fields (concealment_mechanism, what_is_concealed, intensity) are null. What_is_concealed names the suppressed content in 2–4 words. Intensity scored 1–10.</div>
+          <div class="enum-list">concealment_mechanism: "omission" | "vagueness" | "misdirection" | "technical_obscurity" | "temporal_displacement"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Framing Bias</div>
+          <div class="def-body">Whether the exchange is structured around a directionally biased frame. When bias_present is false, all three conditional fields (bias_direction, framing_elements, intensity) are null. Framing_elements lists 2–4 short phrases identifying the constitutive components of the bias. Intensity scored 1–10.</div>
+          <div class="enum-list">bias_direction: "self_advantaging" | "blame_shifting" | "protective_framing" | "accusatory_framing"</div>
+        </div>
+
+        <div>
+          <div class="def-term">Adversarial Posture</div>
+          <div class="def-body">The adversarial stance taken in the exchange. Posture_type classifies the overall orientation. Tactical_moves is an array of 0–3 specific maneuvers used within that posture. Target_of_posture names what the posture is directed at in 2–4 words; null when posture_type is "cooperative" or "neutral".</div>
+          <div class="enum-list">posture_type: "cooperative" | "neutral" | "defensive" | "aggressive" | "evasive"<br>tactical_moves: "preemption" | "deflection" | "counter_accusation" | "boundary_setting" | "challenge" | "none"</div>
+        </div>
+
+      </div>
+
+      <div class="scale-box">
+        <div class="scale-box-label">Intensity Scale (used by concealment_state and framing_bias)</div>
+        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Schema Reference — Forensic Language Analysis Battery</span>
+      <span>v3.1</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div>
+
+</body>
+</html>
