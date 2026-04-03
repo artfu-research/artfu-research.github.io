@@ -259,6 +259,122 @@
   .pair-summaries {
     padding: 16px;
   }
+
+  /* PAIR SUMMARY BLOCKS */
+  .pair-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .pair-block:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+  }
+
+  .pair-block.selected {
+    border-color: var(--accent);
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .pair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pair-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .pair-loc {
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+
+  .pair-content {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .pair-pattern {
+    font-family: 'Instrument Serif', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+  }
+
+  .pair-reasoning,
+  .pair-summary {
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .pair-scores {
+    display: flex;
+    gap: 12px;
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  .pair-score-item {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .pair-score-label {
+    color: var(--text-dim);
+  }
+
+  .pair-score-value {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .jur-section {
+    margin-bottom: 8px;
+  }
+
+  .jur-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .jur-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .entity-summary {
+    font-size: 9px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .entity-count {
+    font-weight: 500;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
 </style>
 </head>
 <body>
@@ -351,11 +467,9 @@
         </div>
       </div>
       
-      <div class="pair-summaries">
+      <div class="pair-summaries" id="pair-summaries-container">
         <div class="placeholder">
-          Pair summaries will appear here based on selected filter
-          <br><br>
-          (Phase 9)
+          Loading pair summaries...
         </div>
       </div>
     </div>
@@ -474,7 +588,361 @@ function updateStrategicButtons() {
 // Load EM battery on page load
 window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
+  updatePairSummaries(); // Load pair summaries
 });
+
+// Pair summary data extraction and rendering
+let currentPair = 63; // Currently selected pair
+
+async function updatePairSummaries() {
+  const container = document.getElementById('pair-summaries-container');
+  
+  // Check if JUR is selected without CL/OP
+  if (filterState.evaluative === 'jur' && !filterState.si) {
+    container.innerHTML = `
+      <div class="placeholder">
+        Please select either client or opposition 
+        perspective to view jury selection battery 
+        summaries.
+      </div>
+    `;
+    return;
+  }
+  
+  // For Phase 9: Just render Pair 63
+  try {
+    const summaryHTML = await renderPairSummary(63);
+    container.innerHTML = summaryHTML;
+    
+    // Highlight current pair
+    highlightPair(currentPair);
+  } catch (error) {
+    console.error('Error rendering pair summaries:', error);
+    container.innerHTML = `<div class="placeholder">Error loading summaries</div>`;
+  }
+}
+
+async function renderPairSummary(pairNum) {
+  const pairStr = String(pairNum).padStart(4, '0');
+  
+  // Determine which battery to extract based on filter state
+  let summaryData;
+  
+  if (filterState.evaluative) {
+    // EVALUATIVE battery selected
+    summaryData = await extractEvaluativeSummary(pairNum, filterState.evaluative, filterState.si);
+  } else if (filterState.si) {
+    // STRATEGIC overlay selected
+    summaryData = await extractStrategicSummary(pairNum, filterState.primary, filterState.si);
+  } else if (filterState.primary) {
+    // PRIMARY battery selected
+    summaryData = await extractPrimarySummary(pairNum, filterState.primary);
+  }
+  
+  if (!summaryData) {
+    return ''; // No data
+  }
+  
+  // Render summary block
+  return `
+    <div class="pair-block" data-pair="${pairNum}" onclick="loadPairFromSummary(${pairNum})">
+      <div class="pair-header">
+        <span class="pair-num">PAIR ${pairNum}</span>
+        <span class="pair-loc">Pg ${summaryData.page}, Ln ${summaryData.line}</span>
+      </div>
+      <div class="pair-content">
+        ${summaryData.content}
+      </div>
+    </div>
+  `;
+}
+
+async function extractPrimarySummary(pair, battery) {
+  const pairStr = String(pair).padStart(4, '0');
+  const batteryPaths = {
+    'em': `epistemic_motion/pair_${pairStr}_em.html`,
+    'fa': `forensic_analysis/pair_${pairStr}_fa.html`,
+    'sc': `semantic_content/pair_${pairStr}_sc.html`
+  };
+  
+  try {
+    const response = await fetch(batteryPaths[battery]);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // Extract Call 6 pattern and reasoning
+    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
+    
+    // Extract page/line from header
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="pair-pattern">${pattern || 'Pattern not found'}</div>
+        <div class="pair-reasoning">${reasoning || ''}</div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting primary summary:', error);
+    return null;
+  }
+}
+
+async function extractStrategicSummary(pair, primary, perspective) {
+  const pairStr = String(pair).padStart(4, '0');
+  const suffix = perspective === 'op' ? '_OPPOSITION' : '';
+  const path = `strategic_interpretation/call7_${pairStr}_${primary}_si${suffix}.html`;
+  
+  try {
+    const response = await fetch(path);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // Extract signature
+    const signature = doc.querySelector('.sig-declaration')?.textContent.trim();
+    
+    // Extract summary
+    const summaryLabel = Array.from(doc.querySelectorAll('.summary-label')).find(el => 
+      el.textContent.includes('Strategic Summary')
+    );
+    const summary = summaryLabel?.nextElementSibling?.textContent.trim();
+    
+    // Extract scores (this is tricky - they're in sig-scores div)
+    const scoresDiv = doc.querySelector('.sig-scores');
+    const scoreText = scoresDiv?.textContent || '';
+    
+    // Extract page/line
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="pair-pattern">Signature: ${signature || 'Not found'}</div>
+        <div class="pair-summary">${summary || ''}</div>
+        <div class="pair-scores">
+          <div class="pair-score-item">
+            <span class="pair-score-label">Scores:</span>
+            <span class="pair-score-value">${scoreText}</span>
+          </div>
+        </div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting strategic summary:', error);
+    return null;
+  }
+}
+
+async function extractEvaluativeSummary(pair, battery, perspective) {
+  const pairStr = String(pair).padStart(4, '0');
+  
+  if (battery === 'wit') {
+    return await extractWPBSummary(pair);
+  } else if (battery === 'att') {
+    return await extractAPBSummary(pair);
+  } else if (battery === 'jur') {
+    return await extractJURSummary(pair, perspective);
+  } else if (battery === 'ent') {
+    return await extractENTSummary(pair);
+  }
+  
+  return null;
+}
+
+async function extractWPBSummary(pair) {
+  const pairStr = String(pair).padStart(4, '0');
+  const path = `witness_posture/pair_${pairStr}_wpb.html`;
+  
+  try {
+    const response = await fetch(path);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // Extract Call 7 pattern
+    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    
+    // Extract grand total score
+    const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
+    
+    // Extract page/line
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="pair-pattern">${pattern || 'Pattern not found'}</div>
+        <div class="pair-scores">
+          <div class="pair-score-item">
+            <span class="pair-score-label">Score:</span>
+            <span class="pair-score-value">${grandTotal || 'N/A'}</span>
+          </div>
+        </div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting WPB summary:', error);
+    return null;
+  }
+}
+
+async function extractAPBSummary(pair) {
+  // Attorney Performance Battery - similar structure to WPB
+  const pairStr = String(pair).padStart(4, '0');
+  const path = `attorney_performance/pair_${pairStr}_apb.html`;
+  
+  try {
+    const response = await fetch(path);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
+    
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="pair-pattern">${pattern || 'Pattern not found'}</div>
+        <div class="pair-scores">
+          <div class="pair-score-item">
+            <span class="pair-score-label">Score:</span>
+            <span class="pair-score-value">${grandTotal || 'N/A'}</span>
+          </div>
+        </div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting APB summary:', error);
+    return null;
+  }
+}
+
+async function extractJURSummary(pair, perspective) {
+  const pairStr = String(pair).padStart(4, '0');
+  const suffix = perspective === 'op' ? '_prosecution' : '_defense';
+  const path = `juror_profiles/pair_${pairStr}_jpb${suffix}.html`;
+  
+  try {
+    const response = await fetch(path);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // This will need inspection of actual JUR HTML structure
+    // For now, placeholder
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    const perspLabel = perspective === 'op' ? 'OPPOSITION' : 'CLIENT';
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="jur-section">
+          <div class="jur-label">${perspLabel} PREFERENCES</div>
+          <div class="pair-reasoning">Want: [Extraction pending]<br>Don't Want: [Extraction pending]</div>
+        </div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting JUR summary:', error);
+    return null;
+  }
+}
+
+async function extractENTSummary(pair) {
+  const pairStr = String(pair).padStart(4, '0');
+  const path = `entity_extraction/pair_${pairStr}_eeb.html`;
+  
+  try {
+    const response = await fetch(path);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+    
+    // This will need inspection of actual ENT HTML structure
+    // For now, placeholder with example text
+    const headerMeta = doc.querySelector('.header-meta')?.textContent;
+    const pageMatch = headerMeta?.match(/p\.(\d+)/);
+    const lineMatch = headerMeta?.match(/l\.(\d+)/);
+    
+    return {
+      page: pageMatch ? pageMatch[1] : '?',
+      line: lineMatch ? lineMatch[1] : '?',
+      content: `
+        <div class="entity-summary">
+          <div class="entity-count">19 entities • 15 high • 4 medium • 0 low</div>
+          <div>persons ×4, attributions ×3, thoughts ×2, companies ×2, other#testimony_context ×1, other#incident_reference ×1, other#legal_objection ×1, failures ×1, actions ×1, procedures ×1, characterizations ×1, other#legal_proceeding ×1</div>
+        </div>
+      `
+    };
+  } catch (error) {
+    console.error('Error extracting ENT summary:', error);
+    return null;
+  }
+}
+
+function loadPairFromSummary(pairNum) {
+  currentPair = pairNum;
+  
+  // Determine which battery to load based on current filter state
+  let batteryToLoad;
+  
+  if (filterState.evaluative) {
+    batteryToLoad = filterState.evaluative;
+    currentBattery = batteryToLoad;
+    strategicModifier = null;
+  } else if (filterState.si) {
+    batteryToLoad = filterState.primary;
+    currentBattery = batteryToLoad;
+    strategicModifier = filterState.si === 'cl' ? 'client' : 'opposition';
+  } else {
+    batteryToLoad = filterState.primary;
+    currentBattery = batteryToLoad;
+    strategicModifier = null;
+  }
+  
+  // Update left panel to match
+  updateBatteryButtons();
+  updateStrategicButtons();
+  
+  // Load the view
+  loadCurrentView();
+  
+  // Highlight selected pair
+  highlightPair(pairNum);
+}
+
+function highlightPair(pairNum) {
+  document.querySelectorAll('.pair-block').forEach(block => {
+    block.classList.remove('selected');
+  });
+  const selectedBlock = document.querySelector(`.pair-block[data-pair="${pairNum}"]`);
+  if (selectedBlock) {
+    selectedBlock.classList.add('selected');
+  }
+}
 
 // Filter state management
 let filterState = {
@@ -502,8 +970,8 @@ function selectFilter(group, value) {
     });
     
   } else if (group === 'si') {
-    // SI can only be selected if primary is active
-    if (!filterState.primary) return;
+    // SI can only be selected if primary is active OR if JUR is active
+    if (!filterState.primary && filterState.evaluative !== 'jur') return;
     
     // Toggle SI (can deselect)
     if (filterState.si === value) {
@@ -517,25 +985,36 @@ function selectFilter(group, value) {
     }
     
   } else if (group === 'eval') {
-    // Selecting EVALUATIVE clears primary and SI
+    // Selecting EVALUATIVE clears primary and SI (except for JUR)
     filterState.primary = null;
-    filterState.si = null;
     filterState.evaluative = value;
     
     // Update UI
     document.querySelectorAll('.filter-btn.primary').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.filter-btn.si').forEach(btn => {
-      btn.classList.remove('active');
-      btn.classList.add('disabled');
-      btn.disabled = true;
-    });
-    
     document.querySelectorAll('.filter-btn.eval').forEach(btn => btn.classList.remove('active'));
     document.getElementById('filter-' + value).classList.add('active');
+    
+    // Enable/disable SI buttons based on evaluative selection
+    if (value === 'jur') {
+      // JUR enables SI buttons
+      document.querySelectorAll('.filter-btn.si').forEach(btn => {
+        btn.classList.remove('disabled');
+        btn.disabled = false;
+      });
+      // Don't clear SI selection
+    } else {
+      // Other evaluatives disable SI buttons
+      filterState.si = null;
+      document.querySelectorAll('.filter-btn.si').forEach(btn => {
+        btn.classList.remove('active');
+        btn.classList.add('disabled');
+        btn.disabled = true;
+      });
+    }
   }
   
   console.log('Filter state:', filterState);
-  // TODO: Update pair summaries based on filterState (Phase 9)
+  updatePairSummaries(); // Refresh summaries based on new filter
 }
 </script>
 
