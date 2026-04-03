@@ -236,6 +236,22 @@
           SC (Opposition)
         </button>
       </div>
+
+      <div class="battery-section">
+        <div class="section-label">EVALUATIVE</div>
+        <button class="battery-btn" id="btn-wpb" onclick="loadBattery('wpb')">
+          Witness Posture
+        </button>
+        <button class="battery-btn" id="btn-apb" onclick="loadBattery('apb')">
+          Attorney Performance
+        </button>
+        <button class="battery-btn" id="btn-jsb" onclick="loadBattery('jsb')">
+          Jury Selection
+        </button>
+        <button class="battery-btn" id="btn-eeb" onclick="loadBattery('eeb')">
+          Entity Extraction
+        </button>
+      </div>
     </div>
   </div>
 
@@ -297,7 +313,11 @@ function loadBattery(batteryCode) {
     'fa_client': 'strategic_interpretation/call7_0063_fa_si.html',
     'fa_opp': 'strategic_interpretation/call7_0063_fa_si_OPPOSITION.html',
     'sc_client': 'strategic_interpretation/call7_0063_sc_si.html',
-    'sc_opp': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html'
+    'sc_opp': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html',
+    'wpb': 'witness_posture/pair_0063_wpb.html',
+    'apb': 'attorney_performance/pair_0063_apb.html',
+    'jsb': 'juror_profiles/pair_0063_jpb_defense.html',
+    'eeb': 'entity_extraction/pair_0063_eeb.html'
   };
   
   // Load the battery HTML
