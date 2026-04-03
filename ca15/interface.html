@@ -201,8 +201,8 @@
   .filter-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 8px;
   }
 
   .filter-row:last-child {
@@ -211,25 +211,26 @@
 
   .filter-group-label {
     font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-dim);
-    min-width: 80px;
+    min-width: 70px;
   }
 
   .filter-btn {
-    padding: 6px 12px;
+    padding: 5px 8px;
     background: var(--surface2);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 3px;
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
   }
 
   .filter-btn:hover {
@@ -348,7 +349,7 @@
         </div>
         
         <div class="filter-row">
-          <div class="filter-group-label">SI:</div>
+          <div class="filter-group-label">STRATEGIC:</div>
           <button class="filter-btn si" id="filter-cl" onclick="selectFilter('si', 'cl')">CL</button>
           <button class="filter-btn si" id="filter-op" onclick="selectFilter('si', 'op')">OP</button>
         </div>
