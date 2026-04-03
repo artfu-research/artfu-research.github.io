@@ -115,6 +115,13 @@
     grid-row: 2;
     border-top: 1px solid var(--border);
   }
+  
+  .bottom-panel .panel-content {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
   /* PLACEHOLDER STYLING */
   .placeholder {
@@ -659,11 +666,11 @@ function displaySchemaOverview() {
   }
   
   panel.innerHTML = `
-    <div style="padding: 16px 20px;">
-      <div style="font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">
+    <div style="padding: 10px 16px;">
+      <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px;">
         ${currentSchema.battery_name} · Overview
       </div>
-      <div style="font-size: 10px; color: var(--text-dim); line-height: 1.7;">
+      <div style="font-size: 9px; color: var(--text-dim); line-height: 1.5;">
         ${currentSchema.battery_overview}
       </div>
     </div>
@@ -688,31 +695,29 @@ function displayFieldSchema(fieldId) {
   }
   
   panel.innerHTML = `
-    <div style="padding: 16px 20px;">
-      <div style="font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">
-        ${field.label}
-        <span style="font-size: 8px; font-weight: 400; color: var(--text-dim); margin-left: 8px;">Call ${field.call}</span>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">What it measures:</div>
-        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.definition}</div>
-      </div>
-      <div style="margin-bottom: 10px;">
-        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale/Range:</div>
-        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.scale}</div>
+    <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; height: 100%;">
+      <div>
+        <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">
+          ${field.label}
+          <span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">Call ${field.call}</span>
+        </div>
+        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">What it measures:</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.definition}</div>
       </div>
       <div>
-        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Why it matters:</div>
-        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.why_it_matters}</div>
+        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale/Range:</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.scale}</div>
+        ${field.examples ? `
+        <div>
+          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Examples:</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic;">${field.examples}</div>
+        </div>
+        ` : ''}
       </div>
-      ${field.examples ? `
-      <div style="margin-top: 10px;">
-        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Examples:</div>
-        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6; font-style: italic;">${field.examples}</div>
-      </div>
-      ` : ''}
-      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
-        <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 12px; border-radius: 3px; font-size: 9px; cursor: pointer; font-family: 'DM Mono', monospace;">
+      <div>
+        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Why it matters:</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.why_it_matters}</div>
+        <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
           ← Back to ${currentSchema.battery_name} overview
         </button>
       </div>
