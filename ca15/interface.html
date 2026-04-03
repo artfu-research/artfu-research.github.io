@@ -509,7 +509,8 @@ const batteryPaths = {
   'sc_opposition': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html',
   'wpb': 'witness_posture/pair_0063_wpb.html',
   'apb': 'attorney_performance/pair_0063_apb.html',
-  'jsb': 'juror_profiles/pair_0063_jpb_defense.html',
+  'jsb_client': 'juror_profiles/pair_0063_jpb_prosecution.html',
+  'jsb_opposition': 'juror_profiles/pair_0063_jpb_defense.html',
   'eeb': 'entity_extraction/pair_0063_eeb.html'
 };
 
@@ -612,13 +613,26 @@ function updateBatteryButtons() {
 }
 
 function updateStrategicButtons() {
-  document.getElementById('btn-client').classList.remove('active');
-  document.getElementById('btn-opposition').classList.remove('active');
+  const clientBtn = document.getElementById('btn-client');
+  const oppBtn = document.getElementById('btn-opposition');
+  
+  // Enable strategic buttons if on PRIMARY or JUR
+  if (['em', 'fa', 'sc', 'jsb'].includes(currentBattery)) {
+    clientBtn.classList.remove('disabled');
+    oppBtn.classList.remove('disabled');
+  } else {
+    clientBtn.classList.add('disabled');
+    oppBtn.classList.add('disabled');
+  }
+  
+  // Update active states
+  clientBtn.classList.remove('active');
+  oppBtn.classList.remove('active');
   
   if (strategicModifier === 'client') {
-    document.getElementById('btn-client').classList.add('active');
+    clientBtn.classList.add('active');
   } else if (strategicModifier === 'opposition') {
-    document.getElementById('btn-opposition').classList.add('active');
+    oppBtn.classList.add('active');
   }
 }
 
