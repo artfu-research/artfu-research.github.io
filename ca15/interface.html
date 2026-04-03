@@ -829,22 +829,23 @@ async function updatePairSummaries() {
     return;
   }
   
-  // Generate simple pair list (1-395)
-  let summariesHTML = '';
-  for (let i = 1; i <= 395; i++) {
-    const pairStr = String(i).padStart(4, '0');
-    summariesHTML += `
-      <div class="pair-block" data-pair="${i}" onclick="loadPairFromSummary(${i})">
-        <div class="pair-header">
-          <span class="pair-num">Pair ${pairStr}</span>
-        </div>
-      </div>
-    `;
+  // Load all 395 pairs with actual summary data
+  try {
+    let summariesHTML = '';
+    for (let i = 1; i <= 395; i++) {
+      const summaryHTML = await renderPairSummary(i);
+      if (summaryHTML) {
+        summariesHTML += summaryHTML;
+      }
+    }
+    container.innerHTML = summariesHTML;
+    
+    // Highlight current pair
+    highlightPair(currentPair);
+  } catch (error) {
+    console.error('Error rendering pair summaries:', error);
+    container.innerHTML = `<div class="placeholder">Error loading summaries</div>`;
   }
-  container.innerHTML = summariesHTML;
-  
-  // Highlight current pair
-  highlightPair(currentPair);
 }
 
 async function renderPairSummary(pairNum) {
