@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA15 Analysis Interface · Benjamin Gibson Deposition</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  .interface-container {
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    grid-template-rows: 1fr 200px;
+    gap: 0;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* PANEL BASE STYLES */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .panel-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .panel-content {
+    padding: 20px;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    grid-column: 1;
+    grid-row: 1;
+    border-right: 1px solid var(--border);
+  }
+
+  /* MAIN PANEL */
+  .main-panel {
+    grid-column: 2;
+    grid-row: 1;
+    border-right: 1px solid var(--border);
+  }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* BOTTOM PANEL */
+  .bottom-panel {
+    grid-column: 1 / 4;
+    grid-row: 2;
+    border-top: 1px solid var(--border);
+  }
+
+  /* PLACEHOLDER STYLING */
+  .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-dim);
+    font-style: italic;
+    text-align: center;
+    padding: 40px;
+  }
+
+  /* SCROLLBAR STYLING */
+  .panel::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .panel::-webkit-scrollbar-track {
+    background: var(--surface2);
+  }
+
+  .panel::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  .panel::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="interface-container">
+  
+  <!-- LEFT PANEL: Battery Navigation -->
+  <div class="panel left-panel">
+    <div class="panel-header">
+      <div class="panel-title">Battery Navigation</div>
+    </div>
+    <div class="panel-content">
+      <div class="placeholder">
+        Battery selector will appear here
+        <br><br>
+        (Current Pair input, EM/FA/SC buttons, Strategic overlays, Evaluative batteries)
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN PANEL: Content Display -->
+  <div class="panel main-panel">
+    <div class="panel-header">
+      <div class="panel-title">Analysis Display</div>
+    </div>
+    <div class="panel-content">
+      <div class="placeholder">
+        Select a battery from the left panel to begin
+        <br><br>
+        Battery analysis content will display here
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: Pair Navigator -->
+  <div class="panel right-panel">
+    <div class="panel-header">
+      <div class="panel-title">Pair Navigator</div>
+    </div>
+    <div class="panel-content">
+      <div class="placeholder">
+        Filter buttons and pair summaries will appear here
+        <br><br>
+        (EM/FA/SC, SI: CL/OP, WIT/ATT/JUR/ENT)
+        <br><br>
+        Scrollable list of all 395 pairs
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM PANEL: Schema Context -->
+  <div class="panel bottom-panel">
+    <div class="panel-header">
+      <div class="panel-title">Schema Context</div>
+    </div>
+    <div class="panel-content">
+      <div class="placeholder">
+        Battery overview and field definitions will appear here
+        <br><br>
+        (Default: Battery overview | On ⓘ click: Field-specific schema)
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
