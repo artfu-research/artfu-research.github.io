@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA15 Deposition Analysis · Benjamin Gibson</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  header {
+    padding: 40px 60px;
+    background: linear-gradient(135deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    font-style: italic;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .meta {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+
+  .meta-value {
+    color: var(--text);
+  }
+
+  main {
+    padding: 60px;
+  }
+
+  section {
+    margin-bottom: 50px;
+  }
+
+  section:last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin: 30px 0 15px 0;
+  }
+
+  p {
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  strong {
+    color: var(--text-bright);
+    font-weight: 500;
+  }
+
+  ul, ol {
+    margin-left: 20px;
+    margin-bottom: 16px;
+  }
+
+  li {
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  footer {
+    padding: 40px 60px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .enter-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .enter-btn:hover {
+    background: var(--text-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200,169,110,0.3);
+  }
+
+  .password-note {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .signature {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .signature strong {
+    color: var(--text);
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 20px 10px;
+    }
+
+    header, main, footer {
+      padding: 30px 30px;
+    }
+
+    h1 {
+      font-size: 28px;
+    }
+
+    .meta {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>CA15 Deposition Analysis</h1>
+    <p class="subtitle">Benjamin Gibson · Defense Examination</p>
+    
+    <div class="meta">
+      <div class="meta-item">
+        <div class="meta-label">Subject</div>
+        <div class="meta-value">Benjamin Gibson Deposition Analysis</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Analyst</div>
+        <div class="meta-value">Nathan Cash (Artfu)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Scope</div>
+        <div class="meta-value">395 Q&A Pairs</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="what-this-is">
+      <h2>What This Is</h2>
+      <p>This packet contains a multi-battery semantic analysis of the Benjamin Gibson deposition using the CA15 (Conversation Analysis 15) instrument. CA15 is a general-purpose analytical framework I developed over the past six months, originally designed to analyze conversational corpora—not depositions. It was built to detect emergent semantic structure, track epistemic dynamics, and identify forensic patterns in complex dialogue without domain-specific tuning.</p>
+
+      <p><strong>I did not build new batteries for this deposition.</strong> The three core batteries (Epistemic Movement, Forensic Analysis, Semantic Content) were developed independently: the Epistemic Movement battery emerged from analyzing my own AI conversations; the Forensic Analysis battery was built for the Nixon White House transcript corpus; the Semantic Content battery was added to capture semantic dimensionality across any analytical target. These three batteries form the foundation of the CA15 instrument.</p>
+
+      <p>What <em>is</em> new here:</p>
+      <ul>
+        <li><strong>Strategic Interpretation Overlays</strong> (6 total): Dual-perspective analysis biased for client/opposition across all three batteries</li>
+        <li><strong>Witness Posture Battery</strong>: Scoring system for witness behavior, credibility indicators, and testimony dynamics</li>
+        <li><strong>Attorney Performance Batteries</strong> (2 versions): Separate scorecards for plaintiff and defense attorney effectiveness</li>
+        <li><strong>Jury Selection Battery</strong>: Demographic preference modeling based on pair-level content (12 wanted/12 unwanted per side, with contestation tracking)</li>
+      </ul>
+
+      <p>Two additional batteries were planned (Jury Perception Battery, Judge Assessment Battery) but remain incomplete due to circumstances beyond my control.</p>
+    </section>
+
+    <section id="navigation">
+      <h2>How to Navigate This Analysis</h2>
+      <p>This analysis is accessible via an interactive web interface. The site structure is designed to let you control the depth and breadth of what you review.</p>
+
+      <p>The interface uses a <strong>four-panel layout</strong>:</p>
+
+      <h3>Left Panel: Battery Navigation</h3>
+      <p>Select which analytical lens to apply. Options include three core batteries (Epistemic Movement, Forensic Analysis, Semantic Content), strategic overlays (client/opposition perspectives), and specialized batteries (Witness Posture, Attorney Performance, Jury Selection, Entity Extraction).</p>
+
+      <h3>Main Panel: Analysis Display</h3>
+      <p>Shows the complete analysis for the selected pair through the selected battery. Each battery presents strategic interpretations first (what this pair means for your case) followed by detailed primary analysis (the measurements that support those interpretations).</p>
+
+      <h3>Right Panel: Pair Navigator</h3>
+      <p>Browse all 395 pairs with summaries based on your selected analytical lens. Click any pair to load its full analysis in the main panel.</p>
+
+      <h3>Bottom Panel: Schema Context</h3>
+      <p>Displays battery overviews and field-specific definitions. Click any ⓘ icon in the analysis to see what that metric measures and why it matters.</p>
+    </section>
+
+    <section id="why-this-looks-like-this">
+      <h2>Why It Looks Like This</h2>
+      <p><strong>Equal treatment across all pairs.</strong> The instrument applies the same analytical depth to every Q&A pair, regardless of apparent significance. Pair 1 ("Can you state your name for the record?") receives identical battery coverage as Pair 247 (critical timeline testimony). This is by design—I don't pre-filter, pre-score, or manually curate which pairs "deserve" analysis.</p>
+
+      <p>This approach produces what will look like analytical overkill on low-signal pairs. That's intentional. It demonstrates:</p>
+      <ol>
+        <li><strong>Instrument consistency</strong>: The batteries don't drift or degrade based on content complexity</li>
+        <li><strong>Baseline establishment</strong>: You can see what "nothing interesting" looks like in the data</li>
+        <li><strong>Pattern detection capability</strong>: Significant deviations become visible against a uniform analytical baseline</li>
+        <li><strong>No editorial bias</strong>: I'm not choosing what matters—the instrument is reporting what's measurably present</li>
+      </ol>
+
+      <p><strong>No domain guidance was provided.</strong> I didn't receive specifications about what would be useful, what legal practitioners care about, or what questions this analysis should answer. So I built outward from what the instrument can measure, not inward from domain requirements.</p>
+
+      <p><strong>However, the instrument is fully adaptable.</strong> Once capability is understood and direction is provided regarding what matters most, CA15 can be reconfigured to extract precisely the desired information for any specialized context. The general-purpose batteries demonstrate analytical range—a specialized deployment would target exactly what the client needs.</p>
+    </section>
+
+    <section id="structure">
+      <h2>Structure of the Analysis</h2>
+      <p>The analysis is organized into layers, with interactive schema explanations available on-demand:</p>
+
+      <h3>Core Batteries (3)</h3>
+      <ol>
+        <li><strong>Epistemic Movement (EM)</strong>: Tracks how knowledge states shift, claims are established, uncertainty is managed</li>
+        <li><strong>Forensic Analysis (FA)</strong>: Identifies evasion, contradiction, narrative control, credibility signals</li>
+        <li><strong>Semantic Content (SC)</strong>: Maps the semantic terrain of what's actually being discussed</li>
+      </ol>
+
+      <p>Each battery produces a full analytical profile for each pair. Within each battery, you'll see strategic overlays first (what matters for your case), followed by primary analysis (the measurements supporting those interpretations).</p>
+
+      <h3>Strategic Interpretation Overlays (6)</h3>
+      <p>For each of the three core batteries, I ran two strategically biased analyses:</p>
+      <ul>
+        <li><strong>Client-Biased Perspective</strong>: Scores favorable/unfavorable moments for your side, flags risks</li>
+        <li><strong>Opposition-Biased Perspective</strong>: Same analysis from the opposing viewpoint</li>
+      </ul>
+
+      <p>These overlays answer: <em>If I'm trying to win this case, what does this pair tell me?</em> They rank calls by strategic importance, identify watch-outs, and score each pair's impact.</p>
+
+      <h3>Posture & Performance Batteries (5 completed, 2 in development)</h3>
+      <ul>
+        <li><strong>Witness Posture Battery (WPB)</strong>: Multi-dimensional scoring of witness behavior</li>
+        <li><strong>Attorney Performance Battery — Plaintiff</strong>: Effectiveness metrics for questioning attorney</li>
+        <li><strong>Attorney Performance Battery — Defense</strong>: Effectiveness metrics for defending attorney</li>
+        <li><strong>Jury Selection Battery</strong>: Demographic modeling for voir dire strategy</li>
+        <li><strong>Entity Extraction Battery</strong>: Comprehensive extraction of all semantically meaningful entities, relationships, and unclaimed speech elements</li>
+        <li><em>(In development: Jury Perception Battery, Judge Assessment Battery)</em></li>
+      </ul>
+    </section>
+
+    <section id="what-this-demonstrates">
+      <h2>What This Demonstrates</h2>
+      <p><strong>Depth without domain knowledge.</strong> I built an instrument capable of analyzing complex dialogue, then applied it to a legal deposition without legal training or case-specific guidance. What you're seeing is what the instrument can measure when left to run unfiltered.</p>
+
+      <p><strong>Instrument power, not product refinement.</strong> This is not a polished legal-tech product. It's a research instrument applied to a domain it wasn't designed for, demonstrating analytical range. The value proposition: <em>given direction, this instrument can be tuned to extract what legal practitioners actually need.</em></p>
+
+      <p><strong>Invitation for specification.</strong> You're the domain expert. I don't know what matters in deposition analysis, what scoring thresholds are meaningful, or which batteries would be most useful in practice. This packet shows you what's possible—the next conversation is about what's <em>useful</em>.</p>
+
+      <p>If you tell me what you need, I can build it. Less complexity, more precision, targeted extraction. But I needed to show you the full analytical range first.</p>
+    </section>
+
+    <section id="technical-notes">
+      <h2>Technical Notes</h2>
+      <ul>
+        <li><strong>Analysis Unit</strong>: Q&A pair (question + answer = 1 pair)</li>
+        <li><strong>Pair Count</strong>: 395 pairs analyzed (initial examination only; redirect excluded)</li>
+        <li><strong>Output Format</strong>: HTML documents with embedded data and schema tabs</li>
+        <li><strong>Execution</strong>: Command-line configurable (single pair, all pairs, single battery, all batteries, schema attachment toggles)</li>
+        <li><strong>Bias Declaration</strong>: Strategic overlays use explicit bias (your answers to 5 questions) to generate dual-perspective interpretations</li>
+      </ul>
+    </section>
+
+    <section id="next-steps">
+      <h2>What Happens Next</h2>
+      <p>I'm handing you an analytical engine with no pre-set filters. The breadth demonstrates range—the next conversation is about precision.</p>
+
+      <p>The question isn't "Is this the right analysis?"—it's "What would the right analysis look like, given what this instrument can do?"</p>
+
+      <p>I'm ready to build that when you are.</p>
+
+      <div class="signature">
+        <strong>Nathan Cash (Artfu)</strong><br>
+        Independent Researcher<br>
+        CA15 Development Lead
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <button onclick="checkPassword()" class="enter-btn">Enter Analysis Interface</button>
+    <div class="password-note">Password protected</div>
+  </footer>
+</div>
+
+<script>
+function checkPassword() {
+  const password = prompt("Enter password to access the analysis interface:");
+  if (password === "brutus123") {
+    window.location.href = "interface.html";
+  } else if (password !== null) {
+    alert("Incorrect password. Access denied.");
+  }
+}
+</script>
+
+</body>
+</html>
