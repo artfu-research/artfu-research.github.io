@@ -130,6 +130,51 @@
   .panel::-webkit-scrollbar-thumb:hover {
     background: var(--accent);
   }
+
+  /* BATTERY BUTTONS */
+  .battery-section {
+    margin-bottom: 20px;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .battery-btn {
+    width: 100%;
+    padding: 10px 16px;
+    margin-bottom: 6px;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .battery-btn:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  .battery-btn.active {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
@@ -142,10 +187,11 @@
       <div class="panel-title">Battery Navigation</div>
     </div>
     <div class="panel-content">
-      <div class="placeholder">
-        Battery selector will appear here
-        <br><br>
-        (Current Pair input, EM/FA/SC buttons, Strategic overlays, Evaluative batteries)
+      <div class="battery-section">
+        <div class="section-label">PRIMARY</div>
+        <button class="battery-btn active" id="btn-em" onclick="loadBattery('em')">
+          EM Battery
+        </button>
       </div>
     </div>
   </div>
@@ -155,12 +201,8 @@
     <div class="panel-header">
       <div class="panel-title">Analysis Display</div>
     </div>
-    <div class="panel-content">
-      <div class="placeholder">
-        Select a battery from the left panel to begin
-        <br><br>
-        Battery analysis content will display here
-      </div>
+    <div class="panel-content" style="padding: 0;">
+      <iframe id="main-content-frame" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
   </div>
 
@@ -195,6 +237,35 @@
   </div>
 
 </div>
+
+<script>
+// Load battery HTML into main panel iframe
+function loadBattery(batteryCode) {
+  const iframe = document.getElementById('main-content-frame');
+  const pair = '0063'; // Currently hardcoded to Pair 63
+  
+  // Map battery codes to file paths
+  const batteryPaths = {
+    'em': 'epistemic_motion/pair_0063_em.html'
+  };
+  
+  // Load the battery HTML
+  if (batteryPaths[batteryCode]) {
+    iframe.src = batteryPaths[batteryCode];
+  }
+  
+  // Update active button state
+  document.querySelectorAll('.battery-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.getElementById('btn-' + batteryCode).classList.add('active');
+}
+
+// Load EM battery on page load
+window.addEventListener('DOMContentLoaded', function() {
+  loadBattery('em');
+});
+</script>
 
 </body>
 </html>
