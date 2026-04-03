@@ -207,6 +207,12 @@
         <button class="battery-btn active" id="btn-em" onclick="loadBattery('em')">
           EM Battery
         </button>
+        <button class="battery-btn" id="btn-fa" onclick="loadBattery('fa')">
+          FA Battery
+        </button>
+        <button class="battery-btn" id="btn-sc" onclick="loadBattery('sc')">
+          SC Battery
+        </button>
       </div>
     </div>
   </div>
@@ -261,7 +267,9 @@ function loadBattery(batteryCode) {
   
   // Map battery codes to file paths
   const batteryPaths = {
-    'em': 'epistemic_motion/pair_0063_em.html'
+    'em': 'epistemic_motion/pair_0063_em.html',
+    'fa': 'forensic_analysis/pair_0063_fa.html',
+    'sc': 'semantic_content/pair_0063_sc.html'
   };
   
   // Load the battery HTML
