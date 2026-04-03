@@ -214,6 +214,28 @@
           SC Battery
         </button>
       </div>
+
+      <div class="battery-section">
+        <div class="section-label">STRATEGIC</div>
+        <button class="battery-btn" id="btn-em-client" onclick="loadBattery('em_client')">
+          EM (Client)
+        </button>
+        <button class="battery-btn" id="btn-em-opp" onclick="loadBattery('em_opp')">
+          EM (Opposition)
+        </button>
+        <button class="battery-btn" id="btn-fa-client" onclick="loadBattery('fa_client')">
+          FA (Client)
+        </button>
+        <button class="battery-btn" id="btn-fa-opp" onclick="loadBattery('fa_opp')">
+          FA (Opposition)
+        </button>
+        <button class="battery-btn" id="btn-sc-client" onclick="loadBattery('sc_client')">
+          SC (Client)
+        </button>
+        <button class="battery-btn" id="btn-sc-opp" onclick="loadBattery('sc_opp')">
+          SC (Opposition)
+        </button>
+      </div>
     </div>
   </div>
 
@@ -269,7 +291,13 @@ function loadBattery(batteryCode) {
   const batteryPaths = {
     'em': 'epistemic_motion/pair_0063_em.html',
     'fa': 'forensic_analysis/pair_0063_fa.html',
-    'sc': 'semantic_content/pair_0063_sc.html'
+    'sc': 'semantic_content/pair_0063_sc.html',
+    'em_client': 'strategic_interpretation/call7_0063_em_si.html',
+    'em_opp': 'strategic_interpretation/call7_0063_em_si_OPPOSITION.html',
+    'fa_client': 'strategic_interpretation/call7_0063_fa_si.html',
+    'fa_opp': 'strategic_interpretation/call7_0063_fa_si_OPPOSITION.html',
+    'sc_client': 'strategic_interpretation/call7_0063_sc_si.html',
+    'sc_opp': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html'
   };
   
   // Load the battery HTML
