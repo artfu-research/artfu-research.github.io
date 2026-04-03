@@ -516,19 +516,20 @@ const batteryPaths = {
 function selectBattery(battery) {
   currentBattery = battery;
   
-  // Evaluative batteries clear strategic modifier
-  if (['wpb', 'apb', 'jsb', 'eeb'].includes(battery)) {
+  // Evaluative batteries clear strategic modifier (except JUR)
+  if (['wpb', 'apb', 'eeb'].includes(battery)) {
     strategicModifier = null;
     updateStrategicButtons();
   }
+  // JUR keeps strategic modifier but requires one to be set
   
   updateBatteryButtons();
   loadCurrentView();
 }
 
 function selectStrategic(modifier) {
-  // Can only select strategic if on a primary battery
-  if (!['em', 'fa', 'sc'].includes(currentBattery)) {
+  // Can only select strategic if on a primary battery OR on JUR
+  if (!['em', 'fa', 'sc', 'jsb'].includes(currentBattery)) {
     return;
   }
   
@@ -546,9 +547,45 @@ function selectStrategic(modifier) {
 function loadCurrentView() {
   const iframe = document.getElementById('main-content-frame');
   
+  // Special case: JUR requires strategic modifier
+  if (currentBattery === 'jsb' && !strategicModifier) {
+    // Show placeholder message instead of loading file
+    iframe.srcdoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body {
+            background: #0d0f14;
+            color: #6b7194;
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 40px;
+          }
+        </style>
+      </head>
+      <body>
+        <div>
+          Please select either Client or Opposition<br>
+          perspective to view Jury Selection Battery.
+        </div>
+      </body>
+      </html>
+    `;
+    return;
+  }
+  
   // Determine which file to load
   let fileKey;
   if (strategicModifier && ['em', 'fa', 'sc'].includes(currentBattery)) {
+    fileKey = currentBattery + '_' + strategicModifier;
+  } else if (strategicModifier && currentBattery === 'jsb') {
     fileKey = currentBattery + '_' + strategicModifier;
   } else {
     fileKey = currentBattery;
@@ -856,7 +893,10 @@ async function extractAPBSummary(pair) {
 
 async function extractJURSummary(pair, perspective) {
   const pairStr = String(pair).padStart(4, '0');
-  const suffix = perspective === 'op' ? '_prosecution' : '_defense';
+  // File naming is opposite of perspective:
+  // - prosecution file = defense/client perspective (what hurts prosecution)
+  // - defense file = prosecution/opposition perspective (what hurts defense)
+  const suffix = perspective === 'op' ? '_defense' : '_prosecution';
   const path = `juror_profiles/pair_${pairStr}_jpb${suffix}.html`;
   
   try {
