@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EM · Pair 180</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .turn {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border-left: 2px solid;
+  }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+
+  /* PATTERN DECLARATION */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS GRID */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+
+  .field-block {
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .field-note {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 9px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 4px 6px;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .data-table td {
+    padding: 4px 6px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Pair 180 · gibson_sp180</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.60 l.13 · 2026-03-26</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"You mentioned that -- in your report: "Blinding activities began without a written sequence of the work to follow in which specific order of the pipe spools and the blinds would be installed/removed." Tell me what you mean by that, that they weren't specific enough on whether you needed to blind all the isolation points first before removing spools."</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"No. So what -- what it's getting at is by allowing to first work up top and then where the bottom of the inlet to the E-P3-1133 is the last step. You've already gone up top to the outlet side, it's been opened to blind the MOVs up there. Now you've got the equipment and the process is open to atmosphere without having obtained proper isolation upstream, like at MOV-2516 coming into the vessel. And so you don't have positive isolation. You should have worked from upstream, the bottom, the inlets, get that positive isolated before ever opening the upper section and doing the blinding up there. Because by doing that, it allowed it a pathway to -- when the isolation was not proper, the process, the hydrocarbons come out, it rushes straight out because it's already opened. That's the sequencing I'm talking about. So you plan That's right. That's right."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Clarify Confirm<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-reasoning">Turn 1 asks for clarification of sequencing, and Turn 2 provides a detailed explanation that confirms the correct order, aligning both parties’ understanding and preventing divergence.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: TRANSFORMATION -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
+          <div class="field-answer">sequencing clarified</div>
+          <div class="field-reasoning">The witness moves from uncertainty about whether all isolation points needed to be blinded first to a clear statement that the proper sequence is upstream isolation first, thereby clarifying the sequencing issue.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
+          <div class="field-answer">blinding sequence</div>
+          <div class="field-reasoning">The focus of the exchange is the order of blinding and isolation operations, specifically whether isolation points must be blinded first.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-row">
+            <div class="field-key">T1</div>
+            <div class="field-val">sequence question framing</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">T2</div>
+            <div class="field-val">upstream isolation priority</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Emergent</div>
+            <div class="field-val">upstream-first sequencing</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:4px;">The question frames the issue around the sequence of operations; the answer emphasizes upstream isolation priority; together they create an emergent support that stresses upstream-first sequencing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2: MECHANICS -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 1 constrained Turn 2 to explain the lack of specificity in the sequencing of blinding and spool removal, and enabled Turn 2 to elaborate on the correct upstream-first sequence and its safety implications.</div>
+          <div class="field-reasoning">The question explicitly asks for clarification on the sequence and specificity; the answer must address that and explain the proper procedure.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 2 reframes Turn 1 by detailing that the sequence was wrong—upstream isolation was omitted—highlighting why the lack of specificity mattered and what the correct sequence should have been.</div>
+          <div class="field-reasoning">The answer provides the missing detail that Turn 1 sought, showing the core issue of improper sequencing and isolation.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">4.0</div>
+        </div>
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">4.0</div>
+        </div>
+      </div>
+      <div class="field-reasoning">Both turns align strongly; the question prompts the explanation and the explanation directly addresses the question, preserving and extending the frame without loss.</div>
+    </div>
+
+    <!-- CALL 3: CONSEQUENCES -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Constrained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">Sequence</span></td>
+                <td>Operational</td>
+                <td>sequence order</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">Isolation</span></td>
+                <td>Safety</td>
+                <td>isolation step</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">Documentation</span></td>
+                <td>Procedural</td>
+                <td>documentation</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The exchange establishes that work must follow a written sequence, that isolation must be achieved upstream first, and that documentation of the sequence is required.</div>
+        </div>
+        <div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-green">Sequence</span></td>
+                <td>Clarification</td>
+                <td>order</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">Safety</span></td>
+                <td>Argument</td>
+                <td>hazard</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">Documentation</span></td>
+                <td>Review</td>
+                <td>gap</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The witness clarifies the correct sequence, highlights the safety risk, and reveals a documentation gap, opening new lines of inquiry.</div>
+        </div>
+        <div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">blinding activities</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">written sequence</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">specific order</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">pipe spools</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">blinds installed</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">blinds removed</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">blinded isolation points</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">removing spools</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">lack of clarity</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">procedure question</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">work up top</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">bottom inlet</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">E-P3-1133</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">blind MOVs</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">process open to atmosphere</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">proper isolation upstream</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">MOV-2516</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">positive isolation</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">work from upstream</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">inlets</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">upper section</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">blinding up there</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">pathway</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">hydrocarbons rush out</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">sequencing</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">sequence error</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">risk of release</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">lack of isolation hazard</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">correct upstream procedure</div>
+          <div class="field-reasoning" style="margin-top:6px;">Explicit items are directly stated in the dialogue; implicit items are inferred from the context and implications of the statements.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4: GEOMETRY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: clarification, confirmation</div>
+          <div class="field-reasoning" style="margin-top:4px;">The attorney asked for clarification on the sequence, and the witness provided a detailed explanation confirming the correct order, moving both toward a shared understanding.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          <div class="field-note">Prevented by: clarification, confirmation</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness’s explanation clarified the sequence, preventing any divergence in understanding that might have arisen from the attorney’s question.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          <div class="field-reasoning" style="margin-top:4px;">No new conceptual structure emerged beyond what was already present in the witness’s answer.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5: TRAJECTORY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">sequencing importance</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">blinding order</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">isolation prerequisite</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">upstream start</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">hydrocarbon escape risk</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">isolation requirement</div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now sees that the lack of a written sequence caused confusion about the order of blinding and spool removal. Gibson now realizes that starting upstream and ensuring isolation is essential to prevent hydrocarbons from escaping.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">sequencing protocol</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">isolation procedure</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">hydrocarbon escape</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">blinding location</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">These concepts directly influence the procedural integrity of the work and will guide subsequent questioning and evidence gathering.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">sequencing</div>
+            <div class="field-val" style="color:var(--text);">→ clarify procedure</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">isolation</div>
+            <div class="field-val" style="color:var(--text);">→ prevent leaks</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">risk</div>
+            <div class="field-val" style="color:var(--text);">→ identify hazards</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The exchange opens the possibility of clarifying the correct order of operations, preventing leaks, and identifying hazards that could arise from improper sequencing.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: epistemic_motion · v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

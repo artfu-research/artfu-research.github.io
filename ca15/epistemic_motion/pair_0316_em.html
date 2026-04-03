@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EM · Pair 316</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .turn {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border-left: 2px solid;
+  }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+
+  /* PATTERN DECLARATION */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS GRID */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+
+  .field-block {
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .field-note {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 9px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 4px 6px;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .data-table td {
+    padding: 4px 6px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Pair 316 · gibson_sp316</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.112 l.10 · 2026-03-26</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"Can you describe to me what it means to bump a valve? I think you said open/close or -- can you describe what that process is? (MR. GRINNAN objection: object to the form.)"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"As it was, you know, developed, this Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.) site appears to have kind of developed, like, this rogue procedure in the field that differs from what Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.) standards say to do. But they would -- instead of removing LOTO, canceling the permits, all the things described by the isolation standard, would just remove LOTO and bump the valve, meaning give it a little bit of open, stop, close, because maybe that will relieve the tension. These gate valves -- these valves have a seat. And if there's tension on it, I think that was the thought, and that's bumping it to -- which you can try to do manually and see if you can open and close. But that's what we mean by "bumping.""</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Definition Clarification<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-reasoning">The first turn requests a clear definition of a technical term; the second turn supplies that definition along with procedural context, thereby resolving uncertainty and aligning both participants’ understanding.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: TRANSFORMATION -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
+          <div class="field-answer">define valve bumping</div>
+          <div class="field-reasoning">The witness shifts from an uncertain, vague description of valve bumping to a clear definition of the procedure, explaining its purpose and steps.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
+          <div class="field-answer">valve bumping procedure</div>
+          <div class="field-reasoning">The focus of the exchange is the specific act of bumping a valve, which the witness clarifies as a procedural action.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-row">
+            <div class="field-key">T1</div>
+            <div class="field-val">questioning uncertainty</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">T2</div>
+            <div class="field-val">providing procedural context</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Emergent</div>
+            <div class="field-val">clarified technical definition</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:4px;">The question frames uncertainty, the answer supplies context and detail, and together they produce a clear technical definition.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2: MECHANICS -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 1 set a frame that required a clear, concise definition of what "bumping a valve" means. It constrained Turn 2 to focus on explaining that process, while also enabling Turn 2 to supply the broader operational context that gives the definition its meaning.</div>
+          <div class="field-reasoning">The question explicitly asks for a description of the process, so Turn 2 must provide that explanation. The answer does so and adds details about Shell’s procedure, which is a natural extension of the requested definition.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 2 reframes Turn 1 by showing that the question was about a specific, non‑standard practice used at Shell, not just a generic mechanical action. It reveals that Turn 1 was probing for the meaning of the term within the context of Shell’s rogue procedure.</div>
+          <div class="field-reasoning">The answer explains that bumping involves removing LOTO, opening and closing to relieve tension, and ties it to Shell’s isolation standard, thereby contextualizing the definition that Turn 1 sought.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.0</div>
+        </div>
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.5</div>
+        </div>
+      </div>
+      <div class="field-reasoning">Turn 2 largely follows the frame of Turn 1 by providing a definition, earning a strong alignment (+3.00). It also expands the frame with context, slightly diluting the strictness of the original request, so the reverse alignment is moderate (+2.50).</div>
+    </div>
+
+    <!-- CALL 3: CONSEQUENCES -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Constrained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">Question Scope</span></td>
+                <td>Definition</td>
+                <td>Bump Valve</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">Objection</span></td>
+                <td>Form</td>
+                <td>Question</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">Procedural Context</span></td>
+                <td>Standard</td>
+                <td>LOTO Removal</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The question imposes a definition constraint on the term "bump valve". The objection introduces a form constraint on the question. The witness’s answer brings in a procedural constraint regarding LOTO removal.</div>
+        </div>
+        <div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-green">Definition</span></td>
+                <td>Clarification</td>
+                <td>Bump Valve</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">Procedure</span></td>
+                <td>Explanation</td>
+                <td>LOTO Removal</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">Mechanism</span></td>
+                <td>Tension Relief</td>
+                <td>Valve</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The witness’s explanation opens up the definition of bumping, explains the rogue procedure of removing LOTO, and describes the mechanical relief of tension on the valve.</div>
+        </div>
+        <div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">bump valve meaning</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">open/close</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">expectation of explanation</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">rogue procedure</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">remove LOTO</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">bump valve</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">relieve tension</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">seat of valve</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">Shell standards differ</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">tension exists</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">manual operation possible</div>
+          <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly states the question about bumping and the open/close process, while implicitly signaling that an explanation is expected. Turn 2 explicitly provides the procedural details and mechanical description, and implicitly conveys that Shell’s standards differ, tension is present, and manual operation is possible.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4: GEOMETRY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: define process, explain action</div>
+          <div class="field-reasoning" style="margin-top:4px;">The question seeks a definition of bumping a valve, and the witness provides a clear explanation of the process, aligning the two turns toward a shared understanding.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          <div class="field-note">Prevented by: clear question, direct answer</div>
+          <div class="field-reasoning" style="margin-top:4px;">No evidence of the turns moving apart; instead, the witness’s direct answer counteracts any potential divergence introduced by the objection.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: new term, add context</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness introduces new concepts such as a "rogue procedure" and the practice of removing LOTO, which were not present in the question and arise from the interaction.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5: TRAJECTORY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">bump valve definition</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">LOTO removal context</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">bump valve meaning</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">rogue procedure context</div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now understands the specific meaning of "bump valve" and its link to LOTO removal. Gibson clarifies the operational definition of bumping and the context of a rogue procedure.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">bump valve</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">LOTO removal</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">rogue procedure</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">These objects are central to the safety procedure discussion and will likely be referenced in subsequent questions, thereby strengthening coherence.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">definition</div>
+            <div class="field-val" style="color:var(--text);">→ clarify process</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">procedure</div>
+            <div class="field-val" style="color:var(--text);">→ explain context</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">safety</div>
+            <div class="field-val" style="color:var(--text);">→ focus question</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The exchange opens possibilities for clarifying technical terms, explaining procedural deviations, and steering the discussion toward safety compliance.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: epistemic_motion · v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

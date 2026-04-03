@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EM · Pair 386</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .turn {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border-left: 2px solid;
+  }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+
+  /* PATTERN DECLARATION */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS GRID */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+
+  .field-block {
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .field-note {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 9px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 4px 6px;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .data-table td {
+    padding: 4px 6px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Pair 386 · gibson_sp386</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.145 l.14 · 2026-03-26</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"Will you be offering any opinions or testimony on the cause of the plaintiffs' injuries?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"Only to the sense, broadly -- (MR. GRINNAN objection to MS. EASTERLING's question: object to the form.) -- this type of, you know, massive fire incident results in -- it's typical to see some injuries from such a big incident. But no, not to say, "And this caused Mr. So-and-so to have this specific injury." No. It's more this incident and the factors causing the incident leading up to all that."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Scope Shift<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-reasoning">Across all lenses the witness moves from a specific causal claim to a broad discussion of incident factors, using an objection to the question’s form to reframe the scope. This two‑word signature captures the core epistemic change—shifting the permissible scope of testimony.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: TRANSFORMATION -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
+          <div class="field-answer">specific to broad</div>
+          <div class="field-reasoning">The witness shifts from a precise causal attribution to a broader discussion of incident factors.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
+          <div class="field-answer">specific causal attribution</div>
+          <div class="field-reasoning">The focus of the epistemic change is on how the witness frames the causal link between the incident and injuries.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-row">
+            <div class="field-key">T1</div>
+            <div class="field-val">question about causation</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">T2</div>
+            <div class="field-val">objection to form</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Emergent</div>
+            <div class="field-val">general incident context</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:4px;">Turn 1 sets a causal question; turn 2 uses an objection to redirect to a broader incident context, creating a new scaffold for understanding.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2: MECHANICS -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 1 set a frame asking whether the witness would provide causal opinions about the plaintiffs' injuries. Turn 2 responds by narrowing that scope, refusing to give specific causal links, and instead offering a general discussion of the incident and its contributing factors.</div>
+          <div class="field-reasoning">The question prompted Gibson to clarify that he would not attribute the injuries to a specific cause. It made necessary for him to limit his testimony to broad factors and made it impossible for him to give a direct causal statement.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 2 reframes Turn 1 by indicating that the question is too broad for specific causal testimony and that the witness will only provide general context. It recontextualizes the inquiry as a request for factors leading to the incident rather than a direct link to individual injuries.</div>
+          <div class="field-reasoning">Gibson’s answer shows that he interprets the question as seeking a specific causal opinion, which he refuses to give. He therefore shifts the focus to broader incident factors, altering the original frame.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.0</div>
+        </div>
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">1.0</div>
+        </div>
+      </div>
+      <div class="field-reasoning">The witness partially aligns with the question by acknowledging it but limits the scope, giving a moderate alignment (+2.00). The question is partially accepted but redefined, resulting in a weaker alignment (+1.00).</div>
+    </div>
+
+    <!-- CALL 3: CONSEQUENCES -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Constrained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">OpinionScope</span></td>
+                <td>Scope</td>
+                <td>specific injury</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">FormObjection</span></td>
+                <td>Objection</td>
+                <td>question form</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">IncidentFactors</span></td>
+                <td>Content</td>
+                <td>injury attribution</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The witness limited his testimony to a broad sense and explicitly denied attributing a specific injury to the incident, while the objection constrained the form of the question.</div>
+        </div>
+        <div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-green">IncidentFactors</span></td>
+                <td>Content</td>
+                <td>general discussion</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">TypicalInjuries</span></td>
+                <td>Content</td>
+                <td>typical injuries</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">BroadOpinion</span></td>
+                <td>Scope</td>
+                <td>broad opinion</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">By refusing to give a specific causal link, the witness opened space for discussing incident factors and typical injuries in a broad sense.</div>
+        </div>
+        <div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">opinions</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">testimony</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">cause</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">injuries</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">expert role</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">potential testimony</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">broad sense</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">not specific injury</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">incident factors</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">typical injuries</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">objection to form</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">scope limitation</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">expert testimony boundary</div>
+          <div class="field-reasoning" style="margin-top:6px;">The first turn directly states the question about opinions and testimony on injury cause, while the second turn explicitly limits scope and implicitly signals the objection and boundary of expert testimony.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4: GEOMETRY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-blue">partial</span></div>
+          <div class="field-note">Mechanism: partial alignment</div>
+          <div class="field-note">Prevented by: objection form</div>
+          <div class="field-reasoning" style="margin-top:4px;">The question seeks a specific causal opinion, while Gibson limits his answer to a broad statement about typical injuries, showing a partial alignment of focus but not full agreement. The presence of an objection indicates a partial divergence that also contributes to the convergence analysis.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: scope shift</div>
+          <div class="field-reasoning" style="margin-top:4px;">Ms. Easterling asks for a direct causal opinion; Gibson shifts the scope to a general discussion of typical injuries, thereby diverging from the expected answer.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: objection form</div>
+          <div class="field-reasoning" style="margin-top:4px;">The objection to the form of Ms. Easterling's question introduces a new procedural element that was not present in either turn alone, creating an emergent dynamic.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5: TRAJECTORY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">no specific injury causation</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">general incident cause</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">question about specific injury causation</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">scope limitation</div>
+          <div class="field-reasoning" style="margin-top:6px;">The attorney’s question focuses on causal opinions for individual injuries, and the witness clarifies he will not provide such specific opinions, instead offering a broad view of the incident’s causes. This exchange updates each speaker’s view of the permissible scope of testimony.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">N/A</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">N/A</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">These two concepts determine the direction of the testimony: whether the witness will address individual injuries or the broader incident. They are central to the conversation’s coherence.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">scope</div>
+            <div class="field-val" style="color:var(--text);">→ general cause discussion</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">objection</div>
+            <div class="field-val" style="color:var(--text);">→ form clarification</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The witness’s restriction on scope opens the possibility for a general discussion of incident causes, while the objection signals a procedural focus on question form.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: epistemic_motion · v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

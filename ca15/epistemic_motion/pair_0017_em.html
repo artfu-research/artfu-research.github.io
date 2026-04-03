@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EM · Pair 017</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .turn {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border-left: 2px solid;
+  }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+
+  /* PATTERN DECLARATION */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS GRID */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+
+  .field-block {
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .field-note {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 9px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 4px 6px;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .data-table td {
+    padding: 4px 6px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Pair 017 · gibson_sp017</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.10 l.3 · 2026-03-25</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"And who was the contractor that retained you to consult on that project?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"The Brahma Group."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Uncertainty Resolved<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-reasoning">Across all lenses the exchange moves from a state of unknown contractor identity to a confirmed fact, aligning question and answer, converging frames, and enabling further inquiry—capturing the epistemic shift from uncertainty to knowledge.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: TRANSFORMATION -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
+          <div class="field-answer">uncertainty resolved</div>
+          <div class="field-reasoning">The question sought unknown information; the answer supplied that information, turning uncertainty into knowledge.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
+          <div class="field-answer">contractor identity</div>
+          <div class="field-reasoning">The focus was on identifying which contractor was involved.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-row">
+            <div class="field-key">T1</div>
+            <div class="field-val">identifying contractor identity</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">T2</div>
+            <div class="field-val">providing contractor identity</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Emergent</div>
+            <div class="field-val">establishing factual basis</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:4px;">The question scaffolded by asking for identity; the answer scaffolded by supplying that identity; together they established a factual basis.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2: MECHANICS -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 1’s question set a clear requirement for a specific contractor name, thereby constraining Turn 2 to supply that name and enabling it by providing a focused target for the answer.</div>
+          <div class="field-reasoning">The question explicitly asks for the contractor’s identity, so Turn 2 must respond with that information. This requirement limits Turn 2’s possible replies to a single factual statement and gives it a clear directive.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 2’s answer supplies the contractor name, reframing Turn 1’s request as a confirmation of that entity and revealing that Turn 1 was specifically seeking the identity of the contractor.</div>
+          <div class="field-reasoning">By naming the contractor, Turn 2 clarifies the content of Turn 1’s inquiry and confirms that the question was about identifying the contractor. It reframes the prior question as a request for a specific fact.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">4.0</div>
+        </div>
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">4.0</div>
+        </div>
+      </div>
+      <div class="field-reasoning">Turn 1’s question and Turn 2’s answer are tightly aligned: the answer directly satisfies the question’s demand, and the question’s frame is preserved by the answer. Both directions show very strong alignment.</div>
+    </div>
+
+    <!-- CALL 3: CONSEQUENCES -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Constrained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">identification</span></td>
+                <td>specificity</td>
+                <td>contractor</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">focus</span></td>
+                <td>question</td>
+                <td>contractor</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">answer</span></td>
+                <td>completeness</td>
+                <td>contractor</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The question explicitly requests the contractor’s identity, thereby setting a constraint that the answer must identify a contractor. The answer provides a specific name, which further narrows the contractor to that entity, limiting any other possibilities. This constrains the scope of subsequent inquiry to that contractor.</div>
+        </div>
+        <div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-green">follow-up</span></td>
+                <td>questioning</td>
+                <td>Brahma Group</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">clarification</span></td>
+                <td>questioning</td>
+                <td>contractor role</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">context</span></td>
+                <td>information</td>
+                <td>project details</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">By naming the contractor, the answer opens the possibility of asking about Brahma Group’s responsibilities. It also allows the examiner to clarify the contractor’s role in the project. Additionally, the answer provides context that can be built upon in later questions.</div>
+        </div>
+        <div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">contractor</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">retained</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">consult</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">project</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">identity</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">role</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">project context</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">Brahma Group</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">contractor</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">consultant</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">project context</div>
+          <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly names the contractor and the act of retaining for consultation, while implicitly indicating the contractor’s identity and the project context. Turn 2 explicitly states the contractor’s name, and implicitly confirms the contractor’s role as consultant and the project context.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4: GEOMETRY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: direct response</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness directly answered the attorney’s question, providing the contractor’s name, aligning the frames.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          <div class="field-note">Prevented by: no divergence</div>
+          <div class="field-reasoning" style="margin-top:4px;">The answer was relevant, so no divergence occurred; the lack of divergence is what prevented it.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-red">false</span></div>
+          <div class="field-reasoning" style="margin-top:4px;">No new structure emerged beyond the simple question–answer exchange.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5: TRAJECTORY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">contractor identity</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Brahma Group</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">contractor identity</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">Brahma Group</div>
+          <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling learns the contractor is Brahma Group; Gibson confirms the contractor was Brahma Group.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">Brahma Group</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">retainer relationship</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">Identifying Brahma Group and the retainer relationship are key for subsequent questioning and shape the conversation.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">relationship</div>
+            <div class="field-val" style="color:var(--text);">→ explore conflict</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">consulting</div>
+            <div class="field-val" style="color:var(--text);">→ question scope</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The exchange opens possibilities to examine the relationship between Gibson and the contractor and to question the scope of his consulting role.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: epistemic_motion · v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

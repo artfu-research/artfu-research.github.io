@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EM · Pair 155</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --red: #c97070;
+    --green: #6ea898;
+    --pattern-color: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--text-bright);
+  }
+
+  .header-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .turn {
+    padding: 10px 12px;
+    border-radius: 4px;
+    border-left: 2px solid;
+  }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
+
+  .turn-speaker {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--green); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+
+  /* PATTERN DECLARATION */
+  .pattern-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+  }
+
+  .pattern-label {
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    color: var(--pattern-color);
+    letter-spacing: 0.02em;
+  }
+
+  .pattern-reasoning {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  /* PANELS GRID */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+
+  .panel-call {
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+
+  .field-block {
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .field-note {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
+  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 9px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 4px 6px;
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .data-table td {
+    padding: 4px 6px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Epistemic Motion Battery</span>
+      <span class="header-title">Pair 155 · gibson_sp155</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v3.0 · gpt-oss:20b</div>
+      <div>seed 11111 · temp 0.5</div>
+      <div>p.50 l.7 · 2026-03-26</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"So the way that you're making it sound is if the DSM specifically says that you're supposed to use a reamer tool for a stream of inert gas or nitrogen to verify zero energy, but it doesn't say that, does it?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"It tells you you've got to check the bleeder and verify it. It doesn't prescribe -- I mean, yeah, I guess you're right. You've pointed out another shortcoming in Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s policies. It should be -- (MS. EASTERLING objection to MS. EASTERLING's question: nonresponsive.) (MR. GRINNAN discussion: hold on. you can finish your answer, mr. gibson. keep going.) I would agree with your assessment. It should be more detailed and specified the means through which they want you to check the bleeder, but that -- it wasn't done in any capacity. And I think Mr. Ferrell testified it was plugged and it was a failure. That part was missed. So it's not just Rhodes. I think Ferrell agreed to that as well."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN DECLARATION -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 6<br>Pattern</div>
+    <div class="pattern-declaration">Clarify-Expand<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-reasoning">The first turn raises uncertainty about a procedural requirement; the second turn confirms the absence of that requirement (clarifying a gap) and then broadens the discussion to policy critique and evidence, thus the dynamic is a clarification followed by an expansion.</div>
+  </div>
+
+  <!-- PANELS GRID -->
+  <div class="panels">
+
+    <!-- CALL 1: TRANSFORMATION -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 1 · Epistemic Object</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
+          <div class="field-answer">gap clarified</div>
+          <div class="field-reasoning">The witness shifts from questioning a procedural requirement to acknowledging that the requirement is not prescribed, thereby revealing a policy gap.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
+          <div class="field-answer">DSM requirement interpretation</div>
+          <div class="field-reasoning">Both turns focus on whether the DSM mandates the use of a reamer tool for inert gas verification, making this the central concept being examined.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-row">
+            <div class="field-key">T1</div>
+            <div class="field-val">question framing uncertainty</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">T2</div>
+            <div class="field-val">expert elaboration acknowledgment</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Emergent</div>
+            <div class="field-val">policy critique reinforcement</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:4px;">Turn 1 frames the inquiry as uncertainty about DSM, turn 2 provides expert elaboration and acknowledges a shortcoming, together reinforcing a critique of policy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 2: MECHANICS -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 1 posed a specific claim about the DSM’s instructions, which constrained Turn 2 to confirm whether the DSM prescribes a reamer tool and to address the question’s premise. The question also enabled Turn 2 to expand beyond the DSM, discussing broader policy shortcomings and the bleeder check.</div>
+          <div class="field-reasoning">The question frames a specific issue about the DSM, requiring Gibson to address that issue directly. Once he confirms the DSM’s lack of prescription, he is free to broaden the discussion to Shell’s policies, which the question implicitly invites by highlighting a potential gap.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-answer">Turn 2 reframes Turn 1’s question by shifting the focus from the DSM’s specific instruction to a critique of Shell’s overall policies and procedures. Gibson’s answer recontextualizes the question as an opportunity to highlight broader procedural failures rather than merely confirming the DSM’s wording.</div>
+          <div class="field-reasoning">After acknowledging the question, Gibson moves from the DSM’s wording to a discussion of policy detail, the bleeder check, and testimony about plugged bleeders, thereby reinterpreting the question as a broader policy critique.</div>
+        </div>
+      </div>
+      
+      <hr class="divider">
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.0</div>
+        </div>
+        <div class="field-block">
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
+          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.0</div>
+        </div>
+      </div>
+      <div class="field-reasoning">Gibson largely accepts the frame set by Ms. Easterling (confirming the DSM’s lack of prescription) but extends it to broader policy critique, showing moderate alignment. Likewise, Ms. Easterling’s question is answered in part, but Gibson’s response also expands beyond the original frame, yielding a similar moderate alignment score.</div>
+    </div>
+
+    <!-- CALL 3: CONSEQUENCES -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 3 · Epistemic Consequences</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Constrained</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-red">DSM</span></td>
+                <td>definition</td>
+                <td>reamer tool</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">policy</span></td>
+                <td>adequacy</td>
+                <td>Shell policies</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-red">verification</span></td>
+                <td>method</td>
+                <td>bleeder check</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">The question forces a focus on whether DSM prescribes a reamer tool, while the answer confirms it does not, thereby limiting discussion to policy adequacy and verification method. This establishes constraints on the DSM instruction, Shell’s policy detail, and the required bleeder check.</div>
+        </div>
+        <div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Type</th>
+                <th>Enabled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-green">policy</span></td>
+                <td>challenge</td>
+                <td>Shell policies</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">testimony</span></td>
+                <td>evidence</td>
+                <td>Ferrell testimony</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-green">method</span></td>
+                <td>clarify</td>
+                <td>bleeder check</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="field-reasoning" style="margin-top:6px;">Gibson’s reply highlights Shell’s policy shortcoming, the necessity of checking the bleeder, and references Ferrell’s testimony, opening avenues to challenge compliance and bring new evidence into play.</div>
+        </div>
+        <div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">DSM</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">reamer tool</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">inert gas</div>
+          <div class="tag tag-blue" style="margin-bottom:2px;">verify zero energy</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">policy compliance</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">standard requirement</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">check bleeder</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">verify</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">Shell policies shortcoming</div>
+          <div class="tag tag-green" style="margin-bottom:2px;">Ferrell testimony</div>
+          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">DSM nonprescription</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">policy inadequacy</div>
+          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">failure</div>
+          <div class="field-reasoning" style="margin-top:6px;">The first turn explicitly names DSM and the reamer tool while implicitly suggesting a compliance check. The second turn explicitly states the need to check the bleeder and references policy shortcoming, while implicitly indicating DSM does not prescribe the tool and that there is a failure.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 4: GEOMETRY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 4 · Epistemic Shape</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: acknowledge, policy lacking</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness confirms that the policy does not prescribe a specific tool and agrees that there is a shortcoming, aligning with the attorney’s implication.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-blue">partial</span></div>
+          <div class="field-note">Mechanism: extra context</div>
+          <div class="field-note">Prevented by: question focus</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness adds details about checking the bleeder and testimony, extending beyond the attorney’s question focus, indicating a partial shift away from the original frame.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
+          <div class="field-answer"><span class="tag tag-green">true</span></div>
+          <div class="field-note">Mechanism: new detail</div>
+          <div class="field-reasoning" style="margin-top:4px;">The witness introduces new information about Mr. Ferrell’s testimony regarding a plugged bleeder, which was not present in the question, creating a new element.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALL 5: TRAJECTORY -->
+    <div class="panel" style="grid-column: span 3;">
+      <div class="panel-call">Call 5 · What Now Matters</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div class="field-block">
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">DSM lacks method</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Shell policy shortcoming</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">Bleeder check required</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">Policy detail missing</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">Plug failure testimony</div>
+          <div class="field-reasoning" style="margin-top:6px;">The question highlights that DSM does not specify a reamer tool, and Gibson confirms that DSM only requires a bleeder check, not the method. He also notes Shell's policy lacks detail and cites plug failure testimony.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">DSM requires bleeder check</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">Shell policy shortcoming</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">Plug failure testimony</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key" style="min-width:90px;">Method unspecified</div>
+            <div class="field-val"><span class="tag-gold">↑ active</span></div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">The exchange brings up DSM's requirement for bleeder verification, Shell policy shortcomings, plug failure testimony, and the absence of a prescribed method, all of which will influence subsequent questions.</div>
+        </div>
+        
+        <div class="field-block">
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">clarification</div>
+            <div class="field-val" style="color:var(--text);">→ question raised</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">evidence</div>
+            <div class="field-val" style="color:var(--text);">→ plug failure</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">policy</div>
+            <div class="field-val" style="color:var(--text);">→ shortcoming noted</div>
+          </div>
+          <div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key" style="min-width:70px;">procedure</div>
+            <div class="field-val" style="color:var(--text);">→ bleeder check</div>
+          </div>
+          <div class="field-reasoning" style="margin-top:6px;">Gibson's answer opens possibilities for clarifying procedures, presenting evidence of plug failure, critiquing policy, and focusing on bleeder checks.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: epistemic_motion · v3.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>
