@@ -273,51 +273,39 @@
     <div class="panel-content">
       <div class="battery-section">
         <div class="section-label">PRIMARY</div>
-        <button class="battery-btn active" id="btn-em" onclick="loadBattery('em')">
+        <button class="battery-btn active" id="btn-em" onclick="selectBattery('em')">
           EM Battery
         </button>
-        <button class="battery-btn" id="btn-fa" onclick="loadBattery('fa')">
+        <button class="battery-btn" id="btn-fa" onclick="selectBattery('fa')">
           FA Battery
         </button>
-        <button class="battery-btn" id="btn-sc" onclick="loadBattery('sc')">
+        <button class="battery-btn" id="btn-sc" onclick="selectBattery('sc')">
           SC Battery
         </button>
       </div>
 
       <div class="battery-section">
         <div class="section-label">STRATEGIC</div>
-        <button class="battery-btn" id="btn-em-client" onclick="loadBattery('em_client')">
-          EM (Client)
+        <button class="battery-btn" id="btn-client" onclick="selectStrategic('client')">
+          Client
         </button>
-        <button class="battery-btn" id="btn-em-opp" onclick="loadBattery('em_opp')">
-          EM (Opposition)
-        </button>
-        <button class="battery-btn" id="btn-fa-client" onclick="loadBattery('fa_client')">
-          FA (Client)
-        </button>
-        <button class="battery-btn" id="btn-fa-opp" onclick="loadBattery('fa_opp')">
-          FA (Opposition)
-        </button>
-        <button class="battery-btn" id="btn-sc-client" onclick="loadBattery('sc_client')">
-          SC (Client)
-        </button>
-        <button class="battery-btn" id="btn-sc-opp" onclick="loadBattery('sc_opp')">
-          SC (Opposition)
+        <button class="battery-btn" id="btn-opposition" onclick="selectStrategic('opposition')">
+          Opposition
         </button>
       </div>
 
       <div class="battery-section">
         <div class="section-label">EVALUATIVE</div>
-        <button class="battery-btn" id="btn-wpb" onclick="loadBattery('wpb')">
+        <button class="battery-btn" id="btn-wpb" onclick="selectBattery('wpb')">
           Witness Posture
         </button>
-        <button class="battery-btn" id="btn-apb" onclick="loadBattery('apb')">
+        <button class="battery-btn" id="btn-apb" onclick="selectBattery('apb')">
           Attorney Performance
         </button>
-        <button class="battery-btn" id="btn-jsb" onclick="loadBattery('jsb')">
+        <button class="battery-btn" id="btn-jsb" onclick="selectBattery('jsb')">
           Jury Selection
         </button>
-        <button class="battery-btn" id="btn-eeb" onclick="loadBattery('eeb')">
+        <button class="battery-btn" id="btn-eeb" onclick="selectBattery('eeb')">
           Entity Extraction
         </button>
       </div>
@@ -390,43 +378,102 @@
 </div>
 
 <script>
-// Load battery HTML into main panel iframe
-function loadBattery(batteryCode) {
-  const iframe = document.getElementById('main-content-frame');
-  const pair = '0063'; // Currently hardcoded to Pair 63
+// Current state
+let currentBattery = 'em';        // em, fa, sc, wpb, apb, jsb, eeb
+let strategicModifier = null;     // null, 'client', 'opposition'
+
+// Map battery codes to file paths
+const batteryPaths = {
+  'em': 'epistemic_motion/pair_0063_em.html',
+  'fa': 'forensic_analysis/pair_0063_fa.html',
+  'sc': 'semantic_content/pair_0063_sc.html',
+  'em_client': 'strategic_interpretation/call7_0063_em_si.html',
+  'em_opposition': 'strategic_interpretation/call7_0063_em_si_OPPOSITION.html',
+  'fa_client': 'strategic_interpretation/call7_0063_fa_si.html',
+  'fa_opposition': 'strategic_interpretation/call7_0063_fa_si_OPPOSITION.html',
+  'sc_client': 'strategic_interpretation/call7_0063_sc_si.html',
+  'sc_opposition': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html',
+  'wpb': 'witness_posture/pair_0063_wpb.html',
+  'apb': 'attorney_performance/pair_0063_apb.html',
+  'jsb': 'juror_profiles/pair_0063_jpb_defense.html',
+  'eeb': 'entity_extraction/pair_0063_eeb.html'
+};
+
+function selectBattery(battery) {
+  currentBattery = battery;
   
-  // Map battery codes to file paths
-  const batteryPaths = {
-    'em': 'epistemic_motion/pair_0063_em.html',
-    'fa': 'forensic_analysis/pair_0063_fa.html',
-    'sc': 'semantic_content/pair_0063_sc.html',
-    'em_client': 'strategic_interpretation/call7_0063_em_si.html',
-    'em_opp': 'strategic_interpretation/call7_0063_em_si_OPPOSITION.html',
-    'fa_client': 'strategic_interpretation/call7_0063_fa_si.html',
-    'fa_opp': 'strategic_interpretation/call7_0063_fa_si_OPPOSITION.html',
-    'sc_client': 'strategic_interpretation/call7_0063_sc_si.html',
-    'sc_opp': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html',
-    'wpb': 'witness_posture/pair_0063_wpb.html',
-    'apb': 'attorney_performance/pair_0063_apb.html',
-    'jsb': 'juror_profiles/pair_0063_jpb_defense.html',
-    'eeb': 'entity_extraction/pair_0063_eeb.html'
-  };
-  
-  // Load the battery HTML
-  if (batteryPaths[batteryCode]) {
-    iframe.src = batteryPaths[batteryCode];
+  // Evaluative batteries clear strategic modifier
+  if (['wpb', 'apb', 'jsb', 'eeb'].includes(battery)) {
+    strategicModifier = null;
+    updateStrategicButtons();
   }
   
-  // Update active button state
+  updateBatteryButtons();
+  loadCurrentView();
+}
+
+function selectStrategic(modifier) {
+  // Can only select strategic if on a primary battery
+  if (!['em', 'fa', 'sc'].includes(currentBattery)) {
+    return;
+  }
+  
+  // Toggle behavior: clicking same button deselects
+  if (strategicModifier === modifier) {
+    strategicModifier = null;
+  } else {
+    strategicModifier = modifier;
+  }
+  
+  updateStrategicButtons();
+  loadCurrentView();
+}
+
+function loadCurrentView() {
+  const iframe = document.getElementById('main-content-frame');
+  
+  // Determine which file to load
+  let fileKey;
+  if (strategicModifier && ['em', 'fa', 'sc'].includes(currentBattery)) {
+    fileKey = currentBattery + '_' + strategicModifier;
+  } else {
+    fileKey = currentBattery;
+  }
+  
+  if (batteryPaths[fileKey]) {
+    iframe.src = batteryPaths[fileKey];
+  }
+}
+
+function updateBatteryButtons() {
+  // Clear all battery button active states
   document.querySelectorAll('.battery-btn').forEach(btn => {
-    btn.classList.remove('active');
+    if (!btn.id.startsWith('btn-client') && !btn.id.startsWith('btn-opposition')) {
+      btn.classList.remove('active');
+    }
   });
-  document.getElementById('btn-' + batteryCode).classList.add('active');
+  
+  // Set active battery
+  const batteryBtn = document.getElementById('btn-' + currentBattery);
+  if (batteryBtn) {
+    batteryBtn.classList.add('active');
+  }
+}
+
+function updateStrategicButtons() {
+  document.getElementById('btn-client').classList.remove('active');
+  document.getElementById('btn-opposition').classList.remove('active');
+  
+  if (strategicModifier === 'client') {
+    document.getElementById('btn-client').classList.add('active');
+  } else if (strategicModifier === 'opposition') {
+    document.getElementById('btn-opposition').classList.add('active');
+  }
 }
 
 // Load EM battery on page load
 window.addEventListener('DOMContentLoaded', function() {
-  loadBattery('em');
+  loadCurrentView();
 });
 
 // Filter state management
