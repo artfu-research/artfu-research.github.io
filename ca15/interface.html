@@ -584,9 +584,7 @@ function loadCurrentView() {
   
   // Determine which file to load
   let fileKey;
-  if (strategicModifier && ['em', 'fa', 'sc'].includes(currentBattery)) {
-    fileKey = currentBattery + '_' + strategicModifier;
-  } else if (strategicModifier && currentBattery === 'jsb') {
+  if (strategicModifier && ['em', 'fa', 'sc', 'jsb'].includes(currentBattery)) {
     fileKey = currentBattery + '_' + strategicModifier;
   } else {
     fileKey = currentBattery;
@@ -1005,7 +1003,13 @@ function loadPairFromSummary(pairNum) {
     };
     batteryToLoad = evalMap[filterState.evaluative];
     currentBattery = batteryToLoad;
-    strategicModifier = null;
+    
+    // JUR requires strategic modifier - preserve it from filter state
+    if (batteryToLoad === 'jsb' && filterState.si) {
+      strategicModifier = filterState.si === 'cl' ? 'client' : 'opposition';
+    } else {
+      strategicModifier = null;
+    }
   } else if (filterState.si) {
     // STRATEGIC overlay selected
     batteryToLoad = filterState.primary;
