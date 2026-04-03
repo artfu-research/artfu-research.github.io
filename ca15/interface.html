@@ -752,6 +752,14 @@ function attachInfoIconHandlers() {
       }
     });
   });
+  
+  // Click anywhere in iframe (except info icons) returns to overview
+  iframeDoc.addEventListener('click', function(e) {
+    // If clicked element is not an info icon
+    if (!e.target.classList.contains('info-icon')) {
+      displaySchemaOverview();
+    }
+  });
 }
 
 function updateBatteryButtons() {
