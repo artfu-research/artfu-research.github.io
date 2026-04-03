@@ -502,27 +502,39 @@
 // Current state
 let currentBattery = 'em';        // em, fa, sc, wpb, apb, jsb, eeb
 let strategicModifier = null;     // null, 'client', 'opposition'
+let currentPair = 63;             // Currently selected pair (1-395)
 
 // Schema state
 let currentSchema = null;         // Currently loaded schema JSON
 const schemaCache = {};           // Cache loaded schemas
 
-// Map battery codes to file paths
-const batteryPaths = {
-  'em': 'epistemic_motion/pair_0063_em.html',
-  'fa': 'forensic_analysis/pair_0063_fa.html',
-  'sc': 'semantic_content/pair_0063_sc.html',
-  'em_client': 'strategic_interpretation/call7_0063_em_si.html',
-  'em_opposition': 'strategic_interpretation/call7_0063_em_si_OPPOSITION.html',
-  'fa_client': 'strategic_interpretation/call7_0063_fa_si.html',
-  'fa_opposition': 'strategic_interpretation/call7_0063_fa_si_OPPOSITION.html',
-  'sc_client': 'strategic_interpretation/call7_0063_sc_si.html',
-  'sc_opposition': 'strategic_interpretation/call7_0063_sc_si_OPPOSITION.html',
-  'wpb': 'witness_posture/pair_0063_wpb.html',
-  'apb': 'attorney_performance/pair_0063_apb.html',
-  'jsb_client': 'juror_profiles/pair_0063_jpb_prosecution.html',
-  'jsb_opposition': 'juror_profiles/pair_0063_jpb_defense.html',
-  'eeb': 'entity_extraction/pair_0063_eeb.html'
+// Generate battery path based on current pair
+function getBatteryPath(battery, pair, modifier = null) {
+  const pairStr = String(pair).padStart(4, '0');
+  
+  const pathMap = {
+    'em': `epistemic_motion/pair_${pairStr}_em.html`,
+    'fa': `forensic_analysis/pair_${pairStr}_fa.html`,
+    'sc': `semantic_content/pair_${pairStr}_sc.html`,
+    'em_client': `strategic_interpretation/call7_${pairStr}_em_si.html`,
+    'em_opposition': `strategic_interpretation/call7_${pairStr}_em_si_OPPOSITION.html`,
+    'fa_client': `strategic_interpretation/call7_${pairStr}_fa_si.html`,
+    'fa_opposition': `strategic_interpretation/call7_${pairStr}_fa_si_OPPOSITION.html`,
+    'sc_client': `strategic_interpretation/call7_${pairStr}_sc_si.html`,
+    'sc_opposition': `strategic_interpretation/call7_${pairStr}_sc_si_OPPOSITION.html`,
+    'wpb': `witness_posture/pair_${pairStr}_wpb.html`,
+    'apb': `attorney_performance/pair_${pairStr}_apb.html`,
+    'jsb_client': `juror_profiles/pair_${pairStr}_jpb_prosecution.html`,
+    'jsb_opposition': `juror_profiles/pair_${pairStr}_jpb_defense.html`,
+    'eeb': `entity_extraction/pair_${pairStr}_eeb.html`
+  };
+  
+  let key = battery;
+  if (modifier && ['em', 'fa', 'sc', 'jsb'].includes(battery)) {
+    key = battery + '_' + modifier;
+  }
+  
+  return pathMap[key];
 };
 
 function selectBattery(battery) {
@@ -594,18 +606,11 @@ function loadCurrentView() {
     return;
   }
   
-  // Determine which file to load
-  let fileKey;
-  if (strategicModifier && ['em', 'fa', 'sc'].includes(currentBattery)) {
-    fileKey = currentBattery + '_' + strategicModifier;
-  } else if (strategicModifier && currentBattery === 'jsb') {
-    fileKey = currentBattery + '_' + strategicModifier;
-  } else {
-    fileKey = currentBattery;
-  }
+  // Get path for current battery, pair, and modifier
+  const path = getBatteryPath(currentBattery, currentPair, strategicModifier);
   
-  if (batteryPaths[fileKey]) {
-    iframe.src = batteryPaths[fileKey];
+  if (path) {
+    iframe.src = path;
     
     // Attach ⓘ click handlers once iframe loads
     iframe.onload = function() {
@@ -809,8 +814,6 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // Pair summary data extraction and rendering
-let currentPair = 63; // Currently selected pair
-
 async function updatePairSummaries() {
   const container = document.getElementById('pair-summaries-container');
   
@@ -826,17 +829,22 @@ async function updatePairSummaries() {
     return;
   }
   
-  // For Phase 9: Just render Pair 63
-  try {
-    const summaryHTML = await renderPairSummary(63);
-    container.innerHTML = summaryHTML;
-    
-    // Highlight current pair
-    highlightPair(currentPair);
-  } catch (error) {
-    console.error('Error rendering pair summaries:', error);
-    container.innerHTML = `<div class="placeholder">Error loading summaries</div>`;
+  // Generate simple pair list (1-395)
+  let summariesHTML = '';
+  for (let i = 1; i <= 395; i++) {
+    const pairStr = String(i).padStart(4, '0');
+    summariesHTML += `
+      <div class="pair-block" data-pair="${i}" onclick="loadPairFromSummary(${i})">
+        <div class="pair-header">
+          <span class="pair-num">Pair ${pairStr}</span>
+        </div>
+      </div>
+    `;
   }
+  container.innerHTML = summariesHTML;
+  
+  // Highlight current pair
+  highlightPair(currentPair);
 }
 
 async function renderPairSummary(pairNum) {
