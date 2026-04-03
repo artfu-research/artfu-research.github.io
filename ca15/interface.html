@@ -714,9 +714,22 @@ async function extractStrategicSummary(pair, primary, perspective) {
     );
     const summary = summaryLabel?.nextElementSibling?.textContent.trim();
     
-    // Extract scores (this is tricky - they're in sig-scores div)
-    const scoresDiv = doc.querySelector('.sig-scores');
-    const scoreText = scoresDiv?.textContent || '';
+    // Extract scores - parse the score-row divs
+    const scoreRows = doc.querySelectorAll('.score-row');
+    let clientScore = '?';
+    let oppScore = '?';
+    
+    scoreRows.forEach(row => {
+      const label = row.querySelector('.score-label')?.textContent;
+      const scoreTag = row.querySelector('.tag')?.textContent.trim(); // Gets "7/10" or "5/10"
+      const scoreValue = scoreTag?.split('/')[0]; // Just the number before /
+      
+      if (label?.includes('Client')) {
+        clientScore = scoreValue || '?';
+      } else if (label?.includes('Opposition')) {
+        oppScore = scoreValue || '?';
+      }
+    });
     
     // Extract page/line
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
@@ -727,14 +740,13 @@ async function extractStrategicSummary(pair, primary, perspective) {
       page: pageMatch ? pageMatch[1] : '?',
       line: lineMatch ? lineMatch[1] : '?',
       content: `
-        <div class="pair-pattern">Signature: ${signature || 'Not found'}</div>
-        <div class="pair-summary">${summary || ''}</div>
-        <div class="pair-scores">
+        <div class="pair-scores" style="margin-bottom: 8px;">
           <div class="pair-score-item">
-            <span class="pair-score-label">Scores:</span>
-            <span class="pair-score-value">${scoreText}</span>
+            <span class="pair-score-value">CL:${clientScore} | OP:${oppScore}</span>
           </div>
         </div>
+        <div class="pair-pattern">Signature: ${signature || 'Not found'}</div>
+        <div class="pair-summary">${summary || ''}</div>
       `
     };
   } catch (error) {
@@ -772,6 +784,9 @@ async function extractWPBSummary(pair) {
     // Extract Call 7 pattern
     const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
     
+    // Extract Call 7 reasoning (it's right after pattern declaration)
+    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
+    
     // Extract grand total score
     const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
     
@@ -785,6 +800,7 @@ async function extractWPBSummary(pair) {
       line: lineMatch ? lineMatch[1] : '?',
       content: `
         <div class="pair-pattern">${pattern || 'Pattern not found'}</div>
+        <div class="pair-reasoning">${reasoning || ''}</div>
         <div class="pair-scores">
           <div class="pair-score-item">
             <span class="pair-score-label">Score:</span>
@@ -811,6 +827,7 @@ async function extractAPBSummary(pair) {
     const doc = parser.parseFromString(text, 'text/html');
     
     const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
     const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
     
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
@@ -822,6 +839,7 @@ async function extractAPBSummary(pair) {
       line: lineMatch ? lineMatch[1] : '?',
       content: `
         <div class="pair-pattern">${pattern || 'Pattern not found'}</div>
+        <div class="pair-reasoning">${reasoning || ''}</div>
         <div class="pair-scores">
           <div class="pair-score-item">
             <span class="pair-score-label">Score:</span>
@@ -847,8 +865,17 @@ async function extractJURSummary(pair, perspective) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // This will need inspection of actual JUR HTML structure
-    // For now, placeholder
+    // Extract wants pattern and reasoning from "tab-wants" section
+    const wantsTab = doc.querySelector('#tab-wants');
+    const wantsPattern = wantsTab?.querySelector('.pattern-declaration')?.textContent.trim();
+    const wantsReasoning = wantsTab?.querySelector('.pattern-reasoning')?.textContent.trim();
+    
+    // Extract don't wants pattern and reasoning from "tab-donts" section  
+    const dontsTab = doc.querySelector('#tab-donts');
+    const dontsPattern = dontsTab?.querySelector('.pattern-declaration')?.textContent.trim();
+    const dontsReasoning = dontsTab?.querySelector('.pattern-reasoning')?.textContent.trim();
+    
+    // Extract page/line
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -859,9 +886,14 @@ async function extractJURSummary(pair, perspective) {
       page: pageMatch ? pageMatch[1] : '?',
       line: lineMatch ? lineMatch[1] : '?',
       content: `
+        <div class="jur-label">${perspLabel} PREFERENCES</div>
         <div class="jur-section">
-          <div class="jur-label">${perspLabel} PREFERENCES</div>
-          <div class="pair-reasoning">Want: [Extraction pending]<br>Don't Want: [Extraction pending]</div>
+          <div class="pair-pattern">Want: ${wantsPattern || '?'}</div>
+          <div class="pair-reasoning">${wantsReasoning || ''}</div>
+        </div>
+        <div class="jur-section">
+          <div class="pair-pattern">Don't Want: ${dontsPattern || '?'}</div>
+          <div class="pair-reasoning">${dontsReasoning || ''}</div>
         </div>
       `
     };
@@ -910,14 +942,23 @@ function loadPairFromSummary(pairNum) {
   let batteryToLoad;
   
   if (filterState.evaluative) {
-    batteryToLoad = filterState.evaluative;
+    // EVALUATIVE battery selected - map to battery codes
+    const evalMap = {
+      'wit': 'wpb',
+      'att': 'apb',
+      'jur': 'jsb',
+      'ent': 'eeb'
+    };
+    batteryToLoad = evalMap[filterState.evaluative];
     currentBattery = batteryToLoad;
     strategicModifier = null;
   } else if (filterState.si) {
+    // STRATEGIC overlay selected
     batteryToLoad = filterState.primary;
     currentBattery = batteryToLoad;
     strategicModifier = filterState.si === 'cl' ? 'client' : 'opposition';
   } else {
+    // PRIMARY battery selected
     batteryToLoad = filterState.primary;
     currentBattery = batteryToLoad;
     strategicModifier = null;
