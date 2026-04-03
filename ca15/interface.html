@@ -496,6 +496,10 @@
 let currentBattery = 'em';        // em, fa, sc, wpb, apb, jsb, eeb
 let strategicModifier = null;     // null, 'client', 'opposition'
 
+// Schema state
+let currentSchema = null;         // Currently loaded schema JSON
+const schemaCache = {};           // Cache loaded schemas
+
 // Map battery codes to file paths
 const batteryPaths = {
   'em': 'epistemic_motion/pair_0063_em.html',
@@ -526,6 +530,7 @@ function selectBattery(battery) {
   
   updateBatteryButtons();
   loadCurrentView();
+  loadBatterySchema(battery);  // Load schema for this battery
 }
 
 function selectStrategic(modifier) {
@@ -584,7 +589,9 @@ function loadCurrentView() {
   
   // Determine which file to load
   let fileKey;
-  if (strategicModifier && ['em', 'fa', 'sc', 'jsb'].includes(currentBattery)) {
+  if (strategicModifier && ['em', 'fa', 'sc'].includes(currentBattery)) {
+    fileKey = currentBattery + '_' + strategicModifier;
+  } else if (strategicModifier && currentBattery === 'jsb') {
     fileKey = currentBattery + '_' + strategicModifier;
   } else {
     fileKey = currentBattery;
@@ -592,7 +599,154 @@ function loadCurrentView() {
   
   if (batteryPaths[fileKey]) {
     iframe.src = batteryPaths[fileKey];
+    
+    // Attach ⓘ click handlers once iframe loads
+    iframe.onload = function() {
+      attachInfoIconHandlers();
+    };
   }
+}
+
+// ============================================================================
+// SCHEMA LOADING AND DISPLAY
+// ============================================================================
+
+const batterySchemaMap = {
+  'em': 'schemas/em_schema.json',
+  'fa': 'schemas/fa_schema.json',
+  'sc': 'schemas/sc_schema.json',
+  'wpb': 'schemas/wpb_schema.json',
+  'apb': 'schemas/apb_schema.json',
+  'jsb': 'schemas/jsb_schema.json',
+  'eeb': 'schemas/eeb_schema.json'
+};
+
+async function loadBatterySchema(batteryCode) {
+  // Check cache first
+  if (schemaCache[batteryCode]) {
+    currentSchema = schemaCache[batteryCode];
+    displaySchemaOverview();
+    return;
+  }
+  
+  // Load from JSON if file exists
+  const schemaPath = batterySchemaMap[batteryCode];
+  if (!schemaPath) {
+    displaySchemaPlaceholder();
+    return;
+  }
+  
+  try {
+    const response = await fetch(schemaPath);
+    if (!response.ok) {
+      throw new Error(`Schema not found: ${schemaPath}`);
+    }
+    const schema = await response.json();
+    schemaCache[batteryCode] = schema;
+    currentSchema = schema;
+    displaySchemaOverview();
+  } catch (error) {
+    console.log(`Schema not yet available for ${batteryCode}:`, error.message);
+    displaySchemaPlaceholder();
+  }
+}
+
+function displaySchemaOverview() {
+  const panel = document.querySelector('.bottom-panel .panel-content');
+  if (!currentSchema) {
+    displaySchemaPlaceholder();
+    return;
+  }
+  
+  panel.innerHTML = `
+    <div style="padding: 16px 20px;">
+      <div style="font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">
+        ${currentSchema.battery_name} · Overview
+      </div>
+      <div style="font-size: 10px; color: var(--text-dim); line-height: 1.7;">
+        ${currentSchema.battery_overview}
+      </div>
+    </div>
+  `;
+}
+
+function displayFieldSchema(fieldId) {
+  const panel = document.querySelector('.bottom-panel .panel-content');
+  if (!currentSchema) return;
+  
+  // Find field in schema
+  let field = null;
+  if (currentSchema.pattern_field && currentSchema.pattern_field.id === fieldId) {
+    field = currentSchema.pattern_field;
+  } else {
+    field = currentSchema.fields.find(f => f.id === fieldId);
+  }
+  
+  if (!field) {
+    console.log(`Field ${fieldId} not found in schema`);
+    return;
+  }
+  
+  panel.innerHTML = `
+    <div style="padding: 16px 20px;">
+      <div style="font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">
+        ${field.label}
+        <span style="font-size: 8px; font-weight: 400; color: var(--text-dim); margin-left: 8px;">Call ${field.call}</span>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">What it measures:</div>
+        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.definition}</div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale/Range:</div>
+        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.scale}</div>
+      </div>
+      <div>
+        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Why it matters:</div>
+        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">${field.why_it_matters}</div>
+      </div>
+      ${field.examples ? `
+      <div style="margin-top: 10px;">
+        <div style="font-size: 9px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Examples:</div>
+        <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6; font-style: italic;">${field.examples}</div>
+      </div>
+      ` : ''}
+      <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+        <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 12px; border-radius: 3px; font-size: 9px; cursor: pointer; font-family: 'DM Mono', monospace;">
+          ← Back to ${currentSchema.battery_name} overview
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function displaySchemaPlaceholder() {
+  const panel = document.querySelector('.bottom-panel .panel-content');
+  panel.innerHTML = `
+    <div class="placeholder">
+      Schema for this battery will be available soon
+    </div>
+  `;
+}
+
+function attachInfoIconHandlers() {
+  const iframe = document.getElementById('main-content-frame');
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  
+  if (!iframeDoc) return;
+  
+  const infoIcons = iframeDoc.querySelectorAll('.info-icon');
+  
+  infoIcons.forEach(icon => {
+    icon.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const fieldId = this.getAttribute('data-field-id');
+      if (fieldId) {
+        displayFieldSchema(fieldId);
+      }
+    });
+  });
 }
 
 function updateBatteryButtons() {
@@ -638,6 +792,7 @@ function updateStrategicButtons() {
 window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
   updatePairSummaries(); // Load pair summaries
+  loadBatterySchema(currentBattery); // Load initial schema (EM)
 });
 
 // Pair summary data extraction and rendering
@@ -1003,13 +1158,7 @@ function loadPairFromSummary(pairNum) {
     };
     batteryToLoad = evalMap[filterState.evaluative];
     currentBattery = batteryToLoad;
-    
-    // JUR requires strategic modifier - preserve it from filter state
-    if (batteryToLoad === 'jsb' && filterState.si) {
-      strategicModifier = filterState.si === 'cl' ? 'client' : 'opposition';
-    } else {
-      strategicModifier = null;
-    }
+    strategicModifier = null;
   } else if (filterState.si) {
     // STRATEGIC overlay selected
     batteryToLoad = filterState.primary;
