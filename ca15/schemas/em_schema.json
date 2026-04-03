@@ -1,0 +1,176 @@
+{
+  "battery_code": "em",
+  "battery_name": "Epistemic Motion",
+  "battery_overview": "The Epistemic Motion Battery analyzes a question–answer turn-pair from a legal deposition. It measures how knowledge, belief, and responsibility move between the two speakers — what gets transformed, how the turns mechanically constrain each other, what new lines of inquiry open or close, what shape the exchange takes geometrically, and what meaning carries forward into the rest of the deposition. Six sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration.",
+  "pattern_field": {
+    "id": "pattern_declaration",
+    "label": "Pattern Declaration",
+    "call": 6,
+    "definition": "A two-word label that captures the dominant epistemic movement of the exchange. Derived after all five prior lenses are computed and represents the instrument's single synthesized judgment about what happened in this turn-pair.",
+    "scale": "Qualitative (2-word phrase)",
+    "why_it_matters": "Not a summary of content, but a label for the kind of transformation that occurred. When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how understanding moved through the entire conversation.",
+    "examples": "Blame Shift, Frame Capture, Evasion Loop, Anchor Drop"
+  },
+  "fields": [
+    {
+      "id": "transformation",
+      "label": "Transformation",
+      "call": 1,
+      "parent_section": "Epistemic Object",
+      "definition": "What changed at the level of understanding between Turn 1 and Turn 2. Not what was said, but what shifted in the epistemic state.",
+      "scale": "Qualitative (3-word maximum compressed label)",
+      "why_it_matters": "Identifies the fundamental shift in knowledge state that occurred in the exchange.",
+      "order": 1
+    },
+    {
+      "id": "object_of_transformation",
+      "label": "Object Of Transformation",
+      "call": 1,
+      "parent_section": "Epistemic Object",
+      "definition": "The specific concept, framing, or confusion that was operated upon. The raw material before it was redefined, clarified, or reframed.",
+      "scale": "Qualitative (3-word maximum label)",
+      "why_it_matters": "Identifies what semantic content was the target of transformation.",
+      "order": 2
+    },
+    {
+      "id": "scaffolding",
+      "label": "Scaffolding",
+      "call": 1,
+      "parent_section": "Epistemic Object",
+      "definition": "The structural support that held the exchange stable enough for transformation to occur. Three components: what scaffolded Turn 1, what scaffolded Turn 2, and what arose from the pair as a unit (emergent support).",
+      "scale": "Qualitative (3-word maximum label per component: turn_1_scaffolding, turn_2_scaffolding, emergent_support)",
+      "why_it_matters": "Shows what foundational structures made the epistemic transformation possible.",
+      "order": 3
+    },
+    {
+      "id": "t1_to_t2_relationship",
+      "label": "T1 To T2 Relationship",
+      "call": 2,
+      "parent_section": "Bidirectional Relationship",
+      "definition": "How Turn 1 constrained and enabled Turn 2. What did the question make necessary, possible, or impossible for the answer?",
+      "scale": "Paragraph-length analysis",
+      "why_it_matters": "Reveals how the question shaped the answer's possibility space.",
+      "order": 4
+    },
+    {
+      "id": "t2_to_t1_relationship",
+      "label": "T2 To T1 Relationship",
+      "call": 2,
+      "parent_section": "Bidirectional Relationship",
+      "definition": "How Turn 2 reframed or recontextualized Turn 1. What does the answer reveal about what the question was actually doing?",
+      "scale": "Paragraph-length analysis",
+      "why_it_matters": "Shows how the answer retrospectively changed the meaning of the question.",
+      "order": 5
+    },
+    {
+      "id": "alignment_bidirectional_q_to_a",
+      "label": "Alignment Bidirectional (Q→A)",
+      "call": 2,
+      "parent_section": "Bidirectional Relationship",
+      "definition": "How faithfully Turn 2 received the frame established by Turn 1.",
+      "scale": "-5 to +5 (negative = misalignment/frame rejection, positive = alignment/reception, zero = neutral/even)",
+      "why_it_matters": "Measures whether the witness accepted or resisted the attorney's framing.",
+      "order": 6
+    },
+    {
+      "id": "alignment_bidirectional_a_to_q",
+      "label": "Alignment Bidirectional (A→Q)",
+      "call": 2,
+      "parent_section": "Bidirectional Relationship",
+      "definition": "How faithfully Turn 1's frame holds after Turn 2's response.",
+      "scale": "-5 to +5 (negative = frame undermined, positive = frame validated)",
+      "why_it_matters": "Measures whether the answer validated or undermined the question's premise.",
+      "order": 7
+    },
+    {
+      "id": "constraints_operationalized",
+      "label": "Constraints Operationalized",
+      "call": 3,
+      "parent_section": "Epistemic Consequences",
+      "definition": "Limits that became active as a result of this exchange. Definitions, boundaries, or framings that now reduce the viable space of what can coherently follow.",
+      "scale": "Structured list (constraint_class: 1-2 words, constraint_type: 1-2 words, constrained: 2 words max)",
+      "why_it_matters": "Identifies what new boundaries were established that restrict future moves.",
+      "order": 8
+    },
+    {
+      "id": "enablements_created",
+      "label": "Enablements Created",
+      "call": 3,
+      "parent_section": "Epistemic Consequences",
+      "definition": "New directions that became possible that were not possible before this exchange. What has been opened up, unlocked, or made available.",
+      "scale": "Structured list (enablement_class: 1-2 words, enablement_type: 1-2 words, enabled: 2 words max)",
+      "why_it_matters": "Identifies what new possibilities were created for future moves.",
+      "order": 9
+    },
+    {
+      "id": "epistemic_encoding",
+      "label": "Epistemic Encoding",
+      "call": 3,
+      "parent_section": "Epistemic Consequences",
+      "definition": "How meaning was distributed across explicit and implicit channels in this exchange. For each turn, identifies which semantic objects were carried implicitly (requiring inference) and which were carried explicitly (directly stated).",
+      "scale": "Structured objects (turn_1: {explicit: [], implicit: []}, turn_2: {explicit: [], implicit: []}), each object name 2-3 words max",
+      "why_it_matters": "Shows what was said versus what was meant, revealing the information architecture of the exchange.",
+      "order": 10
+    },
+    {
+      "id": "convergence",
+      "label": "Convergence",
+      "call": 4,
+      "parent_section": "Epistemic Shape",
+      "definition": "Did the two turns move toward shared structure, closing distance between frames?",
+      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max per item when partial)",
+      "why_it_matters": "Indicates whether the exchange created alignment or maintained separation.",
+      "order": 11
+    },
+    {
+      "id": "divergence",
+      "label": "Divergence",
+      "call": 4,
+      "parent_section": "Epistemic Shape",
+      "definition": "Did the two turns move away from shared structure, increasing distance between frames?",
+      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max per item when partial)",
+      "why_it_matters": "Indicates whether the exchange created separation or maintained alignment.",
+      "order": 12
+    },
+    {
+      "id": "emergence",
+      "label": "Emergence",
+      "call": 4,
+      "parent_section": "Epistemic Shape",
+      "definition": "Did the two turns produce something neither contained independently, a structure that arose from the interaction itself?",
+      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max when partial only — false has no prevented_by)",
+      "why_it_matters": "Identifies whether new understanding emerged from the interaction that neither speaker brought independently.",
+      "order": 13
+    },
+    {
+      "id": "change_in_understanding",
+      "label": "Change In Understanding",
+      "call": 5,
+      "parent_section": "What Now Matters",
+      "definition": "What each speaker now understands as a result of the exchange.",
+      "scale": "Structured arrays (turn_1_now_understands: [], turn_2_now_understands: []), each item 2-3 words representing new knowledge",
+      "why_it_matters": "Tracks what was actually learned by each party in the exchange.",
+      "order": 14
+    },
+    {
+      "id": "what_matters",
+      "label": "What Matters",
+      "call": 5,
+      "parent_section": "What Now Matters",
+      "definition": "What in this exchange is relevant to the trajectory of the conversation. Semantic objects that carry forward, will shape what comes next, or would be a loss if forgotten.",
+      "scale": "Structured list (object: 2-3 words, trajectory: -1/0/+1 where -1=degrading, 0=stable, +1=enhancing)",
+      "why_it_matters": "Identifies which content from this exchange has forward momentum in the deposition.",
+      "order": 15
+    },
+    {
+      "id": "meaning_generated",
+      "label": "Meaning Generated",
+      "call": 5,
+      "parent_section": "What Now Matters",
+      "definition": "The effect of this exchange on the future possibility space. What can now be thought, said, or built that the conversation is pointed toward.",
+      "scale": "Structured list (meaning_object: 1 word naming concept, now_possible: 2 words describing what became possible)",
+      "why_it_matters": "Shows what new conceptual territory became accessible as a result of this exchange.",
+      "order": 16
+    }
+  ]
+}

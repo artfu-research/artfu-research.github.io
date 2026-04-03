@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CA_15 · Epistemic Motion · Pair 063</title>
+<title>CA_15 · EM · Pair 063</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -30,56 +30,39 @@
     font-family: 'DM Mono', monospace;
     font-size: 11px;
     line-height: 1.5;
-    min-height: 100vh;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
   }
 
-  .tab-bar {
-    display: flex;
-    gap: 1px;
-    background: var(--border);
-    border-radius: 6px 6px 0 0;
-    overflow: hidden;
-    margin: 0 auto 1px;
-    max-width: 960px;
-  }
-
-  .tab {
-    flex: 1;
-    padding: 10px 16px;
-    background: var(--surface2);
-    color: var(--text-dim);
-    text-align: center;
-    cursor: pointer;
-    font-family: 'Syne', sans-serif;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    transition: all 0.2s;
-  }
-
-  .tab:hover {
-    background: var(--surface);
-    color: var(--text);
-  }
-
-  .tab.active {
-    background: var(--bg);
-    color: var(--accent);
-  }
-
+  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
-    display: none;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0 0 6px 6px;
-    overflow: hidden;
-    max-width: 960px;
-    margin: 0 auto;
+    width: 100%;
+    min-height: 100vh;
   }
 
-  .page.active {
-    display: block;
+  /* INFO ICON STYLES */
+  .info-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    user-select: none;
+    vertical-align: middle;
+    transition: all 0.15s;
+  }
+
+  .info-icon:active {
+    background: var(--accent);
+    color: var(--bg);
+    transform: scale(0.95);
   }
 
   /* HEADER */
@@ -116,28 +99,6 @@
     text-align: right;
     line-height: 1.8;
     letter-spacing: 0.05em;
-  }
-
-  .overview {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  .overview p {
-    font-size: 10px;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
-
-  .overview-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 6px;
   }
 
   /* EXCHANGE */
@@ -330,25 +291,6 @@
     border-bottom: none;
   }
 
-  .def-term {
-    font-family: 'Instrument Serif', serif;
-    font-size: 13px;
-    font-style: italic;
-    color: var(--text-bright);
-    margin-bottom: 4px;
-    margin-top: 10px;
-  }
-
-  .def-term:first-of-type {
-    margin-top: 0;
-  }
-
-  .def-body {
-    font-size: 9px;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
-
   /* FOOTER */
   .footer {
     padding: 8px 20px;
@@ -368,12 +310,7 @@
 </head>
 <body>
 
-<div class="tab-bar">
-  <div class="tab active" onclick="switchTab('data')">PAIR DATA</div>
-  <div class="tab" onclick="switchTab('schema')">BATTERY SCHEMA</div>
-</div>
-
-<div class="page active" id="page-data">
+<div class="page">
 
   <!-- HEADER -->
   <div class="header">
@@ -403,7 +340,7 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Blame Shift</div>
+    <div class="pattern-declaration">Blame Shift<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
     <div class="pattern-reasoning">Across all lenses the exchange moves from an initial focus on blaming the plaintiff to a clarified stance that no blame is directed at the plaintiff and responsibility is shifted to the contractor and foreman. The two words capture this core shift in attribution.</div>
   </div>
 
@@ -416,19 +353,19 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
         <div class="field-block">
-          <div class="field-label">Transformation</div>
+          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
           <div class="field-answer">clarified blame focus</div>
           <div class="field-reasoning">The witness moved from a vague notion of blame to a specific clarification that the plaintiff was not being blamed, shifting the focus to contractor responsibility.</div>
         </div>
         
         <div class="field-block">
-          <div class="field-label">Object Of Transformation</div>
+          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
           <div class="field-answer">plaintiff blame attribution</div>
           <div class="field-reasoning">The core concept being addressed and redefined was whether the plaintiff was being blamed in the case.</div>
         </div>
         
         <div class="field-block">
-          <div class="field-label">Scaffolding</div>
+          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
             <div class="field-val">blame question framing</div>
@@ -452,13 +389,13 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div class="field-block">
-          <div class="field-label">T1 To T2 Relationship</div>
+          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
           <div class="field-answer">Turn 1 posed a specific blame question and introduced an objection, which constrained Gibson to address the blame issue and the objection, while enabling him to provide context about Energy Transfer and contractor responsibilities.</div>
           <div class="field-reasoning">The question explicitly asked if the opinions blamed the plaintiff, forcing Gibson to clarify that they did not. The objection to form also required him to address foundation concerns. These constraints allowed him to explain that Energy Transfer was not involved and that the foreman chose the means and method.</div>
         </div>
         
         <div class="field-block">
-          <div class="field-label">T2 To T1 Relationship</div>
+          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
           <div class="field-answer">Gibson’s reply reframes the question by shifting focus from blame to operational responsibility, revealing that the original premise of blame was incorrect and redirecting the inquiry to Energy Transfer’s role.</div>
           <div class="field-reasoning">Instead of simply affirming blame, Gibson states it was not blaming the plaintiff and explains the contractor’s role. This recontextualizes the question, showing the question was misdirected. It also reveals that the question was too broad.</div>
         </div>
@@ -468,11 +405,11 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (Q→A)</div>
+          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
           <div class="field-answer" style="font-size:18px;color:var(--accent);">2.5</div>
         </div>
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (A→Q)</div>
+          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
           <div class="field-answer" style="font-size:18px;color:var(--accent);">2.5</div>
         </div>
       </div>
@@ -485,7 +422,7 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
         <div>
-          <div class="field-label">Constraints Operationalized</div>
+          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
           <table class="data-table">
             <thead>
               <tr>
@@ -510,7 +447,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The objection by Mr. Grinnan limits the question’s form and the admissibility of the opinion, narrowing what can be asked and answered.</div>
         </div>
         <div>
-          <div class="field-label">Enablements Created</div>
+          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
           <table class="data-table">
             <thead>
               <tr>
@@ -540,7 +477,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Gibson’s answer opens up new lines of inquiry about who was responsible and how the incident was framed, allowing the plaintiffs to explore liability beyond the plaintiff.</div>
         </div>
         <div>
-          <div class="field-label">Epistemic Encoding</div>
+          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
           <div class="tag tag-blue" style="margin-bottom:2px;">blaming plaintiff</div>
           <div class="tag tag-blue" style="margin-bottom:2px;">incident</div>
@@ -574,7 +511,7 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
         <div class="field-block">
-          <div class="field-label">Convergence</div>
+          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
           <div class="field-answer"><span class="tag tag-blue">partial</span></div>
           <div class="field-note">Mechanism: partial alignment</div>
           <div class="field-note">Prevented by: additional nuance</div>
@@ -582,7 +519,7 @@
         </div>
         
         <div class="field-block">
-          <div class="field-label">Divergence</div>
+          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
           <div class="field-answer"><span class="tag tag-blue">partial</span></div>
           <div class="field-note">Mechanism: shift focus</div>
           <div class="field-note">Prevented by: question framing</div>
@@ -590,7 +527,7 @@
         </div>
         
         <div class="field-block">
-          <div class="field-label">Emergence</div>
+          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
           <div class="field-answer"><span class="tag tag-red">false</span></div>
           <div class="field-reasoning" style="margin-top:4px;">The additional content about Energy Transfer and the contractor was supplied by the witness alone and did not arise from the interaction itself. Therefore no emergent structure is present.</div>
         </div>
@@ -603,7 +540,7 @@
       
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
         <div class="field-block">
-          <div class="field-label">Change In Understanding</div>
+          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">not blaming plaintiff</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Energy Transfer not involved</div>
@@ -616,7 +553,7 @@
         </div>
         
         <div class="field-block">
-          <div class="field-label">What Matters</div>
+          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key" style="min-width:90px;">blaming plaintiff</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
@@ -641,7 +578,7 @@
         </div>
         
         <div class="field-block">
-          <div class="field-label">Meaning Generated</div>
+          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key" style="min-width:70px;">blame</div>
             <div class="field-val" style="color:var(--text);">→ shifted focus</div>
@@ -670,186 +607,7 @@
     <span>Artfu Research · Independent · Dallas TX</span>
   </div>
 
-</div>
-
-<div class="page" id="page-schema">
-
-
-  <div class="header">
-    <div class="header-left">
-      <span class="battery-label">Epistemic Motion Battery</span>
-      <span class="header-title">Schema Reference</span>
-    </div>
-    <div class="header-meta">
-      <div>CA_15 · v3.0</div>
-      <div>6-call architecture</div>
-      <div>battery: epistemic_motion</div>
-    </div>
-  </div>
-
-  <div class="overview">
-    <div class="overview-label">What this battery does</div>
-    <p>The Epistemic Motion Battery analyzes a question–answer turn-pair from a legal deposition. It measures how knowledge, belief, and responsibility move between the two speakers — what gets transformed, how the turns mechanically constrain each other, what new lines of inquiry open or close, what shape the exchange takes geometrically, and what meaning carries forward into the rest of the deposition. Six sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration.</p>
-  </div>
-
-  <div class="pattern-bar">
-    <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Pattern Declaration</div>
-    <div class="pattern-reasoning">A two-word label that captures the dominant epistemic movement of the exchange. Derived after all five prior lenses are computed and represents the instrument's single synthesized judgment about what happened in this turn-pair. Not a summary of content, but a label for the kind of transformation that occurred. When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how understanding moved through the entire conversation. Examples: <em>Blame Shift, Frame Capture, Evasion Loop, Anchor Drop</em>.</div>
-  </div>
-
-  <div class="panels">
-
-    <!-- CALL 1 -->
-    <div class="panel" style="grid-column: span 3;">
-      <div class="panel-call">Call 1 · Epistemic Object</div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">Transformation</div>
-          <div class="def-body">What changed at the level of understanding between Turn 1 and Turn 2. Not what was said, but what shifted in the epistemic state. Captured as a 3-word maximum compressed label.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Object Of Transformation</div>
-          <div class="def-body">The specific concept, framing, or confusion that was operated upon. The raw material before it was redefined, clarified, or reframed. Captured as a 3-word maximum label.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Scaffolding</div>
-          <div class="def-body">The structural support that held the exchange stable enough for transformation to occur. Three components: what scaffolded Turn 1, what scaffolded Turn 2, and what arose from the pair as a unit (emergent support). Each component captured as a 3-word maximum label.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CALL 2 -->
-    <div class="panel" style="grid-column: span 3;">
-      <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">T1 To T2 Relationship</div>
-          <div class="def-body">How Turn 1 constrained and enabled Turn 2. What did the question make necessary, possible, or impossible for the answer? Captured as a paragraph-length analysis.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">T2 To T1 Relationship</div>
-          <div class="def-body">How Turn 2 reframed or recontextualized Turn 1. What does the answer reveal about what the question was actually doing? Captured as a paragraph-length analysis.</div>
-        </div>
-      </div>
-      
-      <hr class="divider">
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">Alignment Bidirectional (Q→A)</div>
-          <div class="def-body">How faithfully Turn 2 received the frame established by Turn 1. Score on a -5 to +5 scale. Negative scores indicate misalignment or frame rejection. Positive scores indicate alignment and reception. Zero indicates neutral/even reception.</div>
-        </div>
-        <div>
-          <div class="def-term">Alignment Bidirectional (A→Q)</div>
-          <div class="def-body">How faithfully Turn 1's frame holds after Turn 2's response. Score on a -5 to +5 scale. Measures whether the answer validated or undermined the question's premise.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CALL 3 -->
-    <div class="panel" style="grid-column: span 3;">
-      <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">Constraints Operationalized</div>
-          <div class="def-body">Limits that became active as a result of this exchange. Definitions, boundaries, or framings that now reduce the viable space of what can coherently follow. Each constraint has three parts: constraint_class (1-2 words), constraint_type (1-2 words), and constrained (what got constrained, 2 words max). Listed as many as are present.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Enablements Created</div>
-          <div class="def-body">New directions that became possible that were not possible before this exchange. What has been opened up, unlocked, or made available. Each enablement has three parts: enablement_class (1-2 words), enablement_type (1-2 words), and enabled (what got enabled, 2 words max). Listed as many as are present.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Epistemic Encoding</div>
-          <div class="def-body">How meaning was distributed across explicit and implicit channels in this exchange. For each turn, identifies which semantic objects were carried implicitly (requiring inference) and which were carried explicitly (directly stated). Object names are 2-3 words maximum.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CALL 4 -->
-    <div class="panel" style="grid-column: span 3;">
-      <div class="panel-call">Call 4 · Epistemic Shape</div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">Convergence</div>
-          <div class="def-body">Did the two turns move toward shared structure, closing distance between frames? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented, blocking factors are identified (2 words max per item).</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Divergence</div>
-          <div class="def-body">Did the two turns move away from shared structure, increasing distance between frames? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented, blocking factors are identified (2 words max per item).</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Emergence</div>
-          <div class="def-body">Did the two turns produce something neither contained independently, a structure that arose from the interaction itself? Evaluated as present (true), absent (false), or partial. When present or partial, mechanisms are identified (2 words max per item). When prevented (partial only), blocking factors are identified. Emergence as false has no prevented_by array — absence of conditions is not a blocked event.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CALL 5 -->
-    <div class="panel" style="grid-column: span 3;">
-      <div class="panel-call">Call 5 · What Now Matters</div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-        <div>
-          <div class="def-term">Change In Understanding</div>
-          <div class="def-body">What each speaker now understands as a result of the exchange. Two arrays: turn_1_now_understands (what the attorney learned) and turn_2_now_understands (what the witness learned). Each item is a 2-3 word semantic object representing new knowledge.</div>
-        </div>
-        
-        <div>
-          <div class="def-term">What Matters</div>
-          <div class="def-body">What in this exchange is relevant to the trajectory of the conversation. Semantic objects that carry forward, will shape what comes next, or would be a loss if forgotten. Each object has: object name (2-3 words) and trajectory score (-1 for degrading, 0 for stable, +1 for enhancing).</div>
-        </div>
-        
-        <div>
-          <div class="def-term">Meaning Generated</div>
-          <div class="def-body">The effect of this exchange on the future possibility space. What can now be thought, said, or built that the conversation is pointed toward. Each has: meaning_object (1 word naming the concept) and now_possible (2 words describing what became possible).</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="footer">
-    <div class="footer-left">
-      <span>CA_15 Instrument Suite</span>
-      <span>Schema Reference — Epistemic Motion Battery</span>
-      <span>v3.0</span>
-    </div>
-    <span>Artfu Research · Independent · Dallas TX</span>
-  </div>
-
-
-</div>
-
-<script>
-function switchTab(which) {
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.querySelectorAll('.page').forEach(page => {
-    page.classList.remove('active');
-  });
-  
-  if (which === 'data') {
-    document.querySelectorAll('.tab')[0].classList.add('active');
-    document.getElementById('page-data').classList.add('active');
-  } else {
-    document.querySelectorAll('.tab')[1].classList.add('active');
-    document.getElementById('page-schema').classList.add('active');
-  }
-}
-</script>
+</div><!-- end page -->
 
 </body>
 </html>
