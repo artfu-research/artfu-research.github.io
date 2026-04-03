@@ -190,6 +190,74 @@
     color: var(--accent);
     font-weight: 500;
   }
+
+  /* FILTER BUTTONS (RIGHT PANEL) */
+  .filter-controls {
+    padding: 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .filter-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .filter-group-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    min-width: 80px;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--text-bright);
+  }
+
+  .filter-btn.active {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .filter-btn.disabled:hover {
+    background: var(--surface2);
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .pair-summaries {
+    padding: 16px;
+  }
 </style>
 </head>
 <body>
@@ -271,12 +339,35 @@
       <div class="panel-title">Pair Navigator</div>
     </div>
     <div class="panel-content">
-      <div class="placeholder">
-        Filter buttons and pair summaries will appear here
-        <br><br>
-        (EM/FA/SC, SI: CL/OP, WIT/ATT/JUR/ENT)
-        <br><br>
-        Scrollable list of all 395 pairs
+      <div class="filter-controls">
+        <div class="filter-row">
+          <div class="filter-group-label">PRIMARY:</div>
+          <button class="filter-btn primary active" id="filter-em" onclick="selectFilter('primary', 'em')">EM</button>
+          <button class="filter-btn primary" id="filter-fa" onclick="selectFilter('primary', 'fa')">FA</button>
+          <button class="filter-btn primary" id="filter-sc" onclick="selectFilter('primary', 'sc')">SC</button>
+        </div>
+        
+        <div class="filter-row">
+          <div class="filter-group-label">SI:</div>
+          <button class="filter-btn si" id="filter-cl" onclick="selectFilter('si', 'cl')">CL</button>
+          <button class="filter-btn si" id="filter-op" onclick="selectFilter('si', 'op')">OP</button>
+        </div>
+        
+        <div class="filter-row">
+          <div class="filter-group-label">EVALUATIVE:</div>
+          <button class="filter-btn eval" id="filter-wit" onclick="selectFilter('eval', 'wit')">WIT</button>
+          <button class="filter-btn eval" id="filter-att" onclick="selectFilter('eval', 'att')">ATT</button>
+          <button class="filter-btn eval" id="filter-jur" onclick="selectFilter('eval', 'jur')">JUR</button>
+          <button class="filter-btn eval" id="filter-ent" onclick="selectFilter('eval', 'ent')">ENT</button>
+        </div>
+      </div>
+      
+      <div class="pair-summaries">
+        <div class="placeholder">
+          Pair summaries will appear here based on selected filter
+          <br><br>
+          (Phase 9)
+        </div>
       </div>
     </div>
   </div>
@@ -336,6 +427,68 @@ function loadBattery(batteryCode) {
 window.addEventListener('DOMContentLoaded', function() {
   loadBattery('em');
 });
+
+// Filter state management
+let filterState = {
+  primary: 'em',      // em, fa, sc
+  si: null,           // cl, op, or null
+  evaluative: null    // wit, att, jur, ent, or null
+};
+
+function selectFilter(group, value) {
+  if (group === 'primary') {
+    // Selecting PRIMARY clears evaluative
+    filterState.primary = value;
+    filterState.evaluative = null;
+    
+    // Update UI
+    document.querySelectorAll('.filter-btn.primary').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('filter-' + value).classList.add('active');
+    
+    document.querySelectorAll('.filter-btn.eval').forEach(btn => btn.classList.remove('active'));
+    
+    // Enable SI buttons
+    document.querySelectorAll('.filter-btn.si').forEach(btn => {
+      btn.classList.remove('disabled');
+      btn.disabled = false;
+    });
+    
+  } else if (group === 'si') {
+    // SI can only be selected if primary is active
+    if (!filterState.primary) return;
+    
+    // Toggle SI (can deselect)
+    if (filterState.si === value) {
+      filterState.si = null;
+      document.getElementById('filter-' + value).classList.remove('active');
+    } else {
+      // Deselect other SI, select this one
+      filterState.si = value;
+      document.querySelectorAll('.filter-btn.si').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('filter-' + value).classList.add('active');
+    }
+    
+  } else if (group === 'eval') {
+    // Selecting EVALUATIVE clears primary and SI
+    filterState.primary = null;
+    filterState.si = null;
+    filterState.evaluative = value;
+    
+    // Update UI
+    document.querySelectorAll('.filter-btn.primary').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.filter-btn.si').forEach(btn => {
+      btn.classList.remove('active');
+      btn.classList.add('disabled');
+      btn.disabled = true;
+    });
+    
+    document.querySelectorAll('.filter-btn.eval').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('filter-' + value).classList.add('active');
+  }
+  
+  console.log('Filter state:', filterState);
+  // TODO: Update pair summaries based on filterState (Phase 9)
+}
 </script>
 
 </body>
