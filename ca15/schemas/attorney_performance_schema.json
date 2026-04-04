@@ -1,0 +1,407 @@
+{
+  "battery_code": "apb",
+  "battery_name": "Attorney Performance",
+  "battery_overview": "The Attorney Performance Battery analyzes the examining attorney's questioning effectiveness across a single deposition turn-pair. Six sequential calls evaluate question construction quality, answer control, strategic execution, technical proficiency, delivery effectiveness, and control and dominance. Call 7 synthesizes all six lenses into a two-word pattern declaration. The battery scores the examining attorney regardless of which side they represent — it is an instrument for measuring performance, not allegiance. For this deposition, the examining attorney is Ms. Kate Easterling, representing the Defense (Shell USA, Inc. and Shell Chemical, L.P.). All scores reflect Ms. Easterling's performance from her own client's perspective.",
+  "score_anchor": {
+    "positive": "The examining attorney's client is happy this exchange is on the record. The question served the attorney's side — extracted a useful concession, advanced case theory, demonstrated control, or produced trial-useful material. Magnitude reflects how strongly the client benefits.",
+    "negative": "The examining attorney's client is upset this exchange is on the record. The question backfired, gave the witness room to recover, opened a line of attack for opposing counsel, or harmed the attorney's own case. Magnitude reflects how badly the client is hurt.",
+    "important_note": "Because the examining attorney is the opposition (Defense/Shell), a high APB score for a given pair is an unfavorable finding for Judd's side."
+  },
+  "scoring_architecture": {
+    "field_score": "Integer −5 to +5 anchored to the examining attorney's client perspective. Score 0 is forbidden when answer is true or false — if a condition is present or absent it had some effect on the client's position. Score is omitted when answer is null.",
+    "null_fields": "Null is not a failure state. Many fields are structurally inapplicable in most pairs and are expected to be null. Null fields are excluded from score aggregation — they do not penalize the pair.",
+    "call_total": "Sum of all non-null field scores within the call vs. possible max (non-null fields × 5). Scores computed on the fly — no pre-scored JSON.",
+    "tag_total": "Fields aggregate by dimension tag within each call and across the full pair. A field with multiple tags contributes its score to each tag.",
+    "grand_total": "Sum of all non-null field scores across all six calls vs. total possible max. The bipolar range is ±max.",
+    "score_scale": {
+      "-5": "Catastrophic for the attorney's client",
+      "-4": "Severe — materially damages client position",
+      "-3": "Poor — clear harm to client interests",
+      "-2": "Weak — below standard, noticeable deficiency",
+      "-1": "Marginal — slight harm, minor concern",
+      "+1": "Adequate — meets minimum standard",
+      "+2": "Moderate — solid, meets expectations",
+      "+3": "Solid — clearly above standard",
+      "+4": "Strong — notably effective for client",
+      "+5": "Exemplary — best observable performance"
+    }
+  },
+  "dimensions": {
+    "strategic": "Advancing case theory, damaging opposition, creating trial utility",
+    "tactical":  "Controlling witness and answer flow, preventing deflection and evasion",
+    "technical": "Legal proficiency — evidentiary rules, form, foundation, leading appropriately",
+    "composure": "Professional demeanor, emotional control, delivery calibration",
+    "control":   "Narrative dominance, commitment extraction, evasion detection and pursuit"
+  },
+  "universal_return_format": {
+    "answer": "true (condition present) | false (condition absent/negative) | null (field does not apply to this pair)",
+    "confidence": "Float 0.0–1.0. Present only when answer is true.",
+    "evidence": "Array of 1–3 verbatim quotes. Present only when confidence = 1.0.",
+    "reasoning": "Required for both true AND false answers. Never present when null. Written in abstracted language — quotes belong only in evidence.",
+    "score": "Integer −5 to +5. Non-zero when answer is true or false. Omitted when answer is null.",
+    "tags": "Performance dimension labels assigned at battery design time. Fixed metadata — not sent to the model."
+  },
+  "pattern_field": {
+    "id": "pattern_declaration",
+    "label": "Pattern Declaration",
+    "call": 7,
+    "definition": "A two-word label naming what the attorney demonstrated across all six analytical lenses — not a topic label, not a content summary, but a structural signature of how the attorney performed in this exchange. Synthesized after all six calls complete.",
+    "scale": "Qualitative (2-word phrase)",
+    "why_it_matters": "When read in sequence across hundreds of turn-pairs it reveals the higher-order shape of attorney performance throughout the deposition.",
+    "examples": "Leading Uncontrolled, Precise Extraction, Narrative Collapse, Tactical Setup"
+  },
+  "fields": [
+    {
+      "id": "clear_and_unambiguous",
+      "label": "Clear And Unambiguous",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Does the question have a single clear interpretation with no room for misunderstanding? A well-formed question cannot be intentionally misread. High positive = precise and clean; negative = genuinely confusing, gave witness an out.",
+      "scale": "Standard return format. Score direction: positive = clean question, negative = ambiguity harmed client.",
+      "tags": ["strategic", "technical"],
+      "null_when": null,
+      "order": 1
+    },
+    {
+      "id": "scope_controlled",
+      "label": "Scope Controlled",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Is the question narrow enough to prevent witness deflection or scope expansion? Broad open-ended questions invite drift; tightly scoped questions constrain the witness. Negative when loose scope gave the witness room to wander.",
+      "scale": "Standard return format. Score direction: positive = tight scope, negative = loose scope harmed client.",
+      "tags": ["tactical", "control"],
+      "null_when": null,
+      "order": 2
+    },
+    {
+      "id": "assumes_facts_not_in_evidence",
+      "label": "Assumes Facts Not In Evidence",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Does the question embed an assumption as fact not supported within this pair? Evaluated only against what is present in this exchange. Positive when the answer confirms the assumption; negative when the assumption is unsupported and harmful.",
+      "scale": "Standard return format. Score direction: positive = assumption confirmed, negative = unsupported assumption backfired.",
+      "tags": ["technical"],
+      "null_when": null,
+      "order": 3
+    },
+    {
+      "id": "compound_question",
+      "label": "Compound Question",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Does the question ask the witness to address two or more genuinely distinct factual matters simultaneously? Scored on impact: compound + witness answered both fully = positive; compound + witness selectively answered = negative.",
+      "scale": "Standard return format. Score direction: positive = compound worked, negative = witness exploited compound structure.",
+      "tags": ["technical"],
+      "null_when": null,
+      "order": 4
+    },
+    {
+      "id": "foundation_established",
+      "label": "Foundation Established",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Is there sufficient grounding visible within this exchange to support the question? Evaluated only against what is present in this pair. Foundation absent but witness answered fully anyway = positive (no harm); foundation absent and witness was confused or non-responsive = negative.",
+      "scale": "Standard return format. Score direction reflects impact of foundation state on client.",
+      "tags": ["technical"],
+      "null_when": null,
+      "order": 5
+    },
+    {
+      "id": "objectionable_form",
+      "label": "Objectionable Form",
+      "call": 1,
+      "parent_section": "Question Construction Quality",
+      "definition": "Does the question's form warrant a valid procedural objection, regardless of whether one was raised? Presence of an objection is evidence to consider but not proof of validity. Negative when bad form harmed the examination; positive when form is clean.",
+      "scale": "Standard return format. Score direction: positive = clean form, negative = objectionable form harmed client.",
+      "tags": ["technical"],
+      "null_when": null,
+      "order": 6
+    },
+    {
+      "id": "answer_responsive",
+      "label": "Answer Responsive",
+      "call": 2,
+      "parent_section": "Answer Control",
+      "definition": "Did the witness answer what was actually asked? Positive when fully responsive; negative when non-responsive or evasive. Distinct from deflection — responsiveness is about answering the literal question.",
+      "scale": "Standard return format. Score direction: positive = witness answered, negative = witness evaded.",
+      "tags": ["tactical", "control"],
+      "null_when": null,
+      "order": 7
+    },
+    {
+      "id": "deflection_present",
+      "label": "Deflection Present",
+      "call": 2,
+      "parent_section": "Answer Control",
+      "definition": "Did the witness deflect, evade, or redirect away from what was asked? When true, reasoning must identify specifically what was deflected and how — this feeds the next pair's deflection_addressed evaluation.",
+      "scale": "Standard return format. Score direction: positive = attorney caught the deflection, negative = witness escaped.",
+      "tags": ["tactical", "control"],
+      "null_when": null,
+      "order": 8
+    },
+    {
+      "id": "deflection_addressed",
+      "label": "Deflection Addressed",
+      "call": 2,
+      "parent_section": "Answer Control",
+      "definition": "Did the attorney address a deflection identified in the prior pair? Null by default — only scored when prior deflection context is injected. Positive when attorney pursued what was deflected; negative when thread was dropped.",
+      "scale": "Standard return format.",
+      "tags": ["tactical", "control"],
+      "null_when": "null in most pairs — activated by prior deflection carry",
+      "order": 9
+    },
+    {
+      "id": "objection_valid",
+      "label": "Objection Valid",
+      "call": 2,
+      "parent_section": "Answer Control",
+      "definition": "Strategic significance of objection activity. Three live states: (1) objection present + valid + attorney caught off guard = true, negative; (2) objection present + valid + attorney drew it deliberately = true, positive; (3) no objection + question was objectionable = false, positive. All other states are null.",
+      "scale": "Standard return format.",
+      "tags": ["technical", "tactical"],
+      "null_when": "null when no objection + clean question, or objection invalid",
+      "order": 10
+    },
+    {
+      "id": "answer_elicited",
+      "label": "Answer Elicited",
+      "call": 2,
+      "parent_section": "Answer Control",
+      "definition": "Did the attorney successfully extract the information they were seeking? A judgment about whether the attorney got what they came for. Positive when target information was cleanly extracted; negative when the attorney failed to elicit.",
+      "scale": "Standard return format. Score direction: positive = successful extraction, negative = failed elicitation.",
+      "tags": ["strategic", "control"],
+      "null_when": null,
+      "order": 11
+    },
+    {
+      "id": "advances_theory",
+      "label": "Advances Theory",
+      "call": 3,
+      "parent_section": "Strategic Execution",
+      "definition": "Does this exchange advance the examining attorney's case theory? Adversarial: did it extract something damaging to the opposing narrative? Cooperative: did it cement favorable testimony? Scored from examining attorney's client perspective in both modes.",
+      "scale": "Standard return format. Score direction: positive = theory advanced, negative = theory damaged.",
+      "tags": ["strategic"],
+      "null_when": null,
+      "order": 12
+    },
+    {
+      "id": "damages_opposition",
+      "label": "Damages Opposition",
+      "call": 3,
+      "parent_section": "Strategic Execution",
+      "definition": "Does the answer harm the opposing side's position or credibility? Positive when opposing side is meaningfully damaged; negative when opposition is actually strengthened by this exchange.",
+      "scale": "Standard return format. Score direction: positive = opposition damaged, negative = opposition strengthened.",
+      "tags": ["strategic"],
+      "null_when": null,
+      "order": 13
+    },
+    {
+      "id": "impeachment_setup",
+      "label": "Impeachment Setup",
+      "call": 3,
+      "parent_section": "Strategic Execution",
+      "definition": "Does the question create foundation for later impeachment or contradiction? Active only in adversarial examination — null when attorney and witness are on the same side. Positive when clean setup is laid; negative when an impeachment opportunity was missed.",
+      "scale": "Standard return format.",
+      "tags": ["strategic", "tactical"],
+      "null_when": "null in cooperative examination",
+      "order": 14
+    },
+    {
+      "id": "witness_credibility_challenged",
+      "label": "Witness Credibility Challenged",
+      "call": 3,
+      "parent_section": "Strategic Execution",
+      "definition": "Does the exchange expose weakness, bias, or unreliability in the witness? Active only in adversarial examination — null when attorney and witness are on the same side. Positive when credibility is effectively challenged; negative when a challenge opportunity was missed.",
+      "scale": "Standard return format.",
+      "tags": ["strategic", "tactical"],
+      "null_when": "null in cooperative examination",
+      "order": 15
+    },
+    {
+      "id": "trial_utility",
+      "label": "Trial Utility",
+      "call": 3,
+      "parent_section": "Strategic Execution",
+      "definition": "Did this pair as a complete unit produce something useful for trial? Holistic judgment. true + positive = useful for examining attorney's side. true + negative = pair produced material but it backfired. false + positive = no direct utility but opens forward momentum. false + negative = no utility and actively harmful. null = purely procedural or transitional.",
+      "scale": "Standard return format.",
+      "tags": ["strategic", "technical"],
+      "null_when": "null for purely procedural exchanges",
+      "order": 16
+    },
+    {
+      "id": "counsel_preparedness",
+      "label": "Counsel Preparedness",
+      "call": 4,
+      "parent_section": "Technical Proficiency",
+      "definition": "Does the attorney appear prepared for this witness, topic, and moment? Visible in precision of the question, familiarity with subject matter, and whether the attorney seems in control rather than reactive. Positive when preparedness serves the client; negative when unpreparedness reveals itself.",
+      "scale": "Standard return format. Score direction: positive = prepared, negative = unpreparedness visible.",
+      "tags": ["technical", "strategic"],
+      "null_when": null,
+      "order": 17
+    },
+    {
+      "id": "leading_question_appropriate",
+      "label": "Leading Question Appropriate",
+      "call": 4,
+      "parent_section": "Technical Proficiency",
+      "definition": "Is the use of leading questions appropriate given the attorney-witness relationship? Adversarial: positive when used well to extract admissions, negative when failing to lead leaves witness too much room. Cooperative: negative when leading undermines credibility, positive when used appropriately to clarify.",
+      "scale": "Standard return format. Score direction depends on relationship context.",
+      "tags": ["technical"],
+      "null_when": null,
+      "order": 18
+    },
+    {
+      "id": "hearsay_avoided",
+      "label": "Hearsay Avoided",
+      "call": 4,
+      "parent_section": "Technical Proficiency",
+      "definition": "Does the question avoid eliciting inadmissible hearsay? Negative when the attorney created hearsay risk that could undermine testimony value. Most pairs will be null.",
+      "scale": "Standard return format.",
+      "tags": ["technical"],
+      "null_when": "null when hearsay not implicated",
+      "order": 19
+    },
+    {
+      "id": "expertise_invoked",
+      "label": "Expertise Invoked",
+      "call": 4,
+      "parent_section": "Technical Proficiency",
+      "definition": "Did the question create conditions for the witness to answer as an expert? Adversarial: positive when witness committed to an expert position now challengeable; negative when witness escaped into vague non-expert territory. Cooperative: positive when expert grounding strengthened the record.",
+      "scale": "Standard return format.",
+      "tags": ["technical", "strategic"],
+      "null_when": "null when expert opinion not implicated",
+      "order": 20
+    },
+    {
+      "id": "repair_opportunity",
+      "label": "Repair Opportunity",
+      "call": 4,
+      "parent_section": "Technical Proficiency",
+      "definition": "Did witness self-repair occur and did the attorney create the conditions? Three-step: (1) did repair occur — if no, null; (2) did attorney create the opening — if no, null; (3) if yes to both: true scored from client perspective. Adversarial: true + negative (attorney gave opposing witness room to recover). Cooperative: true + positive (witness recovered well) or true + negative (repair weakened rather than helped).",
+      "scale": "Standard return format.",
+      "tags": ["tactical", "strategic"],
+      "null_when": "null when no repair occurred, or repair not attorney-created",
+      "order": 21
+    },
+    {
+      "id": "speech_fluency",
+      "label": "Speech Fluency",
+      "call": 5,
+      "parent_section": "Delivery Effectiveness",
+      "definition": "Does the attorney's delivery show signs of dysfluency — hedging, false starts, restarts, self-corrections, filler phrases, or incomplete structures? Observable in transcript text. true + negative = dysfluency undermined the question. true + positive = deliberate halting delivery that served the client. false + positive = clean fluent delivery.",
+      "scale": "Standard return format. Score direction: positive = fluency served client, negative = dysfluency harmed client.",
+      "tags": ["composure", "technical"],
+      "null_when": null,
+      "order": 22
+    },
+    {
+      "id": "clear_delivery",
+      "label": "Clear Delivery",
+      "call": 5,
+      "parent_section": "Delivery Effectiveness",
+      "definition": "Is the question structurally clear and followable — can the witness understand what is being asked without confusion? Observable from sentence structure, word choice, and logical flow. Distinct from scope_controlled (which is about breadth) — this is about comprehensibility.",
+      "scale": "Standard return format. Score direction: positive = clear, negative = unclear delivery caused problems.",
+      "tags": ["composure", "technical"],
+      "null_when": null,
+      "order": 23
+    },
+    {
+      "id": "comportment",
+      "label": "Comportment",
+      "call": 5,
+      "parent_section": "Delivery Effectiveness",
+      "definition": "Is the attorney conducting themselves within professional standards expected in deposition? Not about effectiveness — baseline professional conduct: respectful of the process, within appropriate examination bounds, not abusive or improper. Negative when attorney's conduct embarrassed the client or the case.",
+      "scale": "Standard return format.",
+      "tags": ["composure", "technical"],
+      "null_when": "null when conduct unremarkable in either direction",
+      "order": 24
+    },
+    {
+      "id": "emotional_valence",
+      "label": "Emotional Valence",
+      "call": 5,
+      "parent_section": "Delivery Effectiveness",
+      "definition": "What emotional register is the attorney operating in, and did it serve the client? Observable in word choice, sentence construction, directness, aggression, warmth, urgency, or detachment. No universally correct register — confrontational can be right for an adversarial witness; warm can be right for a cooperative one. true + positive = register served client; false + negative = flat delivery when stronger register was needed.",
+      "scale": "Standard return format. Score direction: positive = register served client, negative = register mismatch harmed client.",
+      "tags": ["composure", "strategic"],
+      "null_when": null,
+      "order": 25
+    },
+    {
+      "id": "register_calibration",
+      "label": "Register Calibration",
+      "call": 5,
+      "parent_section": "Delivery Effectiveness",
+      "definition": "Did the attorney pitch their language, vocabulary, formality, and style to the level of this specific witness? Too elevated = witness cannot follow. Too casual = witness dismisses attorney. Calibrated = witness engages fully. Positive when calibration produced engagement; negative when miscalibration caused confusion, evasion, or dismissal.",
+      "scale": "Standard return format. Score direction: positive = well-calibrated, negative = miscalibration harmed exchange.",
+      "tags": ["composure", "tactical"],
+      "null_when": null,
+      "order": 26
+    },
+    {
+      "id": "witness_handling",
+      "label": "Witness Handling",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "How effectively did the attorney manage and direct the witness? Adversarial: did the attorney control, constrain, and direct the opposing witness — preventing runaway answers? Cooperative: did the attorney facilitate testimony productively while keeping the exchange on track?",
+      "scale": "Standard return format. Score direction: positive = effective handling, negative = witness took control.",
+      "tags": ["control", "tactical"],
+      "null_when": null,
+      "order": 27
+    },
+    {
+      "id": "narrative_control_maintained",
+      "label": "Narrative Control Maintained",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "Did the attorney drive the story, or did the witness control the narrative? Adversarial: did the attorney keep the witness from hijacking with their own preferred framing? Cooperative: did the attorney guide toward the most favorable framing? Negative when witness took control in a way that hurt the client.",
+      "scale": "Standard return format. Score direction: positive = attorney controlled narrative, negative = witness hijacked.",
+      "tags": ["control", "strategic"],
+      "null_when": null,
+      "order": 28
+    },
+    {
+      "id": "commitment_solidified",
+      "label": "Commitment Solidified",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "Did the attorney get the witness to commit to a specific, attributable position on the record? Adversarial: was the witness pinned to a position they cannot easily walk back? Cooperative: was the witness guided to state their position clearly? Null when commitment was not a relevant moment. Negative when commitment was needed and missed.",
+      "scale": "Standard return format.",
+      "tags": ["strategic", "control"],
+      "null_when": "null when commitment not relevant to this exchange",
+      "order": 29
+    },
+    {
+      "id": "evasion_present",
+      "label": "Evasion Present",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "Did the witness evade — refusing to commit while appearing to respond — distinct from deflection which redirects to a different topic? Adversarial: evasion = witness protecting from damaging admission. When true, reasoning must describe specifically what was evaded — feeds next pair's evasion_addressed evaluation.",
+      "scale": "Standard return format. Score direction: positive = attorney caught evasion, negative = witness escaped.",
+      "tags": ["control", "tactical"],
+      "null_when": null,
+      "order": 30
+    },
+    {
+      "id": "evasion_addressed",
+      "label": "Evasion Addressed",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "Did the attorney address an evasion identified in the prior pair? Null by default — only scored when prior evasion context is injected. Adversarial: positive when attorney caught and pursued the evasion; negative when attorney missed it. Cooperative: false + positive when attorney deliberately chose not to re-ask correctly; false + negative when missed.",
+      "scale": "Standard return format.",
+      "tags": ["control", "tactical"],
+      "null_when": "null in most pairs — activated by prior evasion carry",
+      "order": 31
+    },
+    {
+      "id": "implicit_signaling",
+      "label": "Implicit Signaling",
+      "call": 6,
+      "parent_section": "Control And Dominance",
+      "definition": "Did observable implicit communication occur between attorney and witness — signals through word choice, hesitation, framing, or incomplete answers that carry meaning beyond literal content? Null in most pairs. Attorney signals → witness notices: cooperative positive, adversarial negative. Witness signals → attorney notices: positive in both modes. Witness signals → attorney misses: negative in both modes.",
+      "scale": "Standard return format.",
+      "tags": ["strategic", "tactical"],
+      "null_when": "null in most pairs — requires explicit signal detection",
+      "order": 32
+    }
+  ]
+}
