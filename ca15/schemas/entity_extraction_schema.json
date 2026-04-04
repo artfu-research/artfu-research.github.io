@@ -1,0 +1,115 @@
+{
+  "battery_code": "eeb",
+  "battery_name": "Entity Extraction",
+  "battery_overview": "The Entity Extraction Battery is a two-stage pipeline that extracts and enriches every semantically meaningful entity from a deposition turn-pair. Call 1 (breadth pass) extracts all entities with their primary type, source turn, speaker, and surrounding context. Call 2 (enrichment, batched for large pairs) characterizes each entity, identifies relationships between entities, assigns certainty markers and significance ratings, and adds secondary type labels. After all enrichment completes, the Hoover Maneuver runs locally at zero API cost — it diffs all word positions claimed by extracted entities and characterization terms against the full token set of each turn, collecting unclaimed words into a leftover bucket and computing filler density ratios. The battery produces no pattern declaration — it is a structural extraction instrument, not an analytical one. Its output feeds downstream network, relationship, and semantic density analyses.",
+  "no_pattern_declaration": true,
+  "pipeline_architecture": {
+    "call_1_breadth": "Extract every semantically meaningful entity from both turns. Coverage is the primary objective — nothing meaningful missed. Each entity is assigned its primary type, source, speaker, and context. Discovered types are registered. Call 1 produces a flat list of entities with no enrichment.",
+    "call_2_enrichment": "Enrich each extracted entity with secondary types, characterizations, certainty markers, relationships, and significance. Batched for large pairs: N ≤ 10 entities runs as one call; N > 10 entities splits evenly. All batches are equal or near-equal size.",
+    "call_2_batching": "N ≤ 10 → 1 enrichment call · N > 10 → ⌈N/10⌉ batches, evenly distributed, no ragged tail",
+    "hoover_maneuver": "Runs locally in Python after all enrichment completes — zero API cost. Diffs entity texts and characterization terms against tokenized turn text to claim word positions. Unclaimed positions become the leftover bucket. Density ratio computed per turn and combined."
+  },
+  "entity_type_families": {
+    "participants": ["persons", "companies", "places"],
+    "physical_documentary": ["tools", "documents", "measurements", "standards"],
+    "legal_normative": ["procedures", "principles", "policies", "obligations", "failures", "causation"],
+    "cognitive_epistemic": ["thoughts", "memories", "perspectives", "characterizations", "adjectives"],
+    "actions_relations": ["actions", "attributions", "relationships", "time_references"],
+    "behavioral_discovered": ["habits", "routines", "regularities", "oddities", "other#"]
+  },
+  "discovered_types_convention": "When no existing type fits, the model declares a new type using other#snake_case_name with a one-sentence definition. Discovered types are registered at the corpus level and available for all subsequent pairs. Example: other#legal_objection · other#incident_mechanism",
+  "characterization_classes": {
+    "positive_attribution": "Frames the entity favorably — credit, capability, compliance, or positive role assignment",
+    "negative_attribution": "Frames the entity unfavorably — blame, fault, failure, negligence, or negative role assignment",
+    "neutral_descriptor": "Names, labels, or describes the entity without directional framing — identification without evaluation",
+    "causal_framing": "Positions the entity within a cause-effect chain — as a cause, consequence, contributing factor, or condition",
+    "epistemic_qualifier": "Modulates certainty or knowledge status — hedges, qualifiers, belief markers, uncertainty signals",
+    "relational_framing": "Positions the entity in relation to another — structural connection, role dependency, or hierarchical placement",
+    "other": "Characterization present but not classifiable under the six primary classes — used sparingly"
+  },
+  "hoover_maneuver": {
+    "leftover_bucket_fields": ["leftover_words", "leftover_positions", "total_words", "leftover_count", "filler_density (0.0–1.0)"],
+    "filler_density_scale": "0.0 = fully claimed (every word captured by at least one entity or characterization term) · 1.0 = fully unclaimed (no entity extractable from the turn) · combined_filler_density: both turns aggregated",
+    "why_it_matters": "A witness who speaks a lot but leaves most words unclaimed is structurally different from one whose every word resolves to an entity. Filler density tracked across all pairs reveals where the witness was precise, where they were expansive, and where they filled time with language that carries no extractable meaning."
+  },
+  "fields": [
+    {
+      "id": "entity_text",
+      "label": "Entity Text",
+      "description": "The verbatim string extracted from the turn text — exact phrasing, no paraphrase or normalization. The anchor for all downstream processing: position resolution, relationship linking, and enrichment matching all use this string as the key.",
+      "format": "Verbatim string from turn text",
+      "order": 1
+    },
+    {
+      "id": "entity_type",
+      "label": "Entity Type",
+      "description": "The primary semantic category of the entity, chosen from the 25 base types or declared as a new type using the other# convention. When a new type is declared, it is registered for the remainder of the run and available to all subsequent pairs. Primary type is assigned at extraction time (Call 1) and does not appear in secondary_types.",
+      "format": "One of 25 base types or other#snake_case_name",
+      "order": 2
+    },
+    {
+      "id": "source",
+      "label": "Source",
+      "description": "Which turn the entity appears in. Three values: question (Turn 1 only), answer (Turn 2 only), or both (appears in or is referenced by both turns). Source drives position resolution.",
+      "values": ["question", "answer", "both"],
+      "order": 3
+    },
+    {
+      "id": "speaker",
+      "label": "Speaker",
+      "description": "The name or identifier of the speaker who introduced or stated the entity. When source is both, speaker may be both. Speaker is taken from the turn text verbatim — not normalized or inferred.",
+      "format": "Speaker name from turn text or 'both'",
+      "order": 4
+    },
+    {
+      "id": "context",
+      "label": "Context",
+      "description": "The minimum surrounding text needed to disambiguate this entity from other uses of the same or similar phrasing. Not a fixed word count — just enough context to uniquely locate the entity within the turn. Used for human review and downstream disambiguation.",
+      "format": "Short verbatim excerpt from turn text",
+      "order": 5
+    },
+    {
+      "id": "secondary_types",
+      "label": "Secondary Types",
+      "description": "Additional type labels that apply to the entity beyond its primary type, assigned during enrichment (Call 2). An entity can belong to multiple semantic categories simultaneously. The primary entity_type is never repeated in secondary_types.",
+      "format": "Array of type strings (may be empty)",
+      "order": 6
+    },
+    {
+      "id": "characterizations",
+      "label": "Characterizations",
+      "description": "An array of characterization objects, each with a class (one of the seven characterization classes) and terms (verbatim words from the turn text that carry that characterization). Multiple classes may apply to the same entity. Empty array if no characterization terms are present. Terms must be exact verbatim excerpts — no paraphrase.",
+      "format": "Array of {class: string, terms: [verbatim strings]}",
+      "order": 7
+    },
+    {
+      "id": "certainty_marker",
+      "label": "Certainty Marker",
+      "description": "Applies to memories and thoughts entity types only. Scores the epistemic confidence of the witness's mental state as expressed in the text. Null for all other entity types.",
+      "values": ["high", "medium", "low", "null"],
+      "note": "null for all types except memories and thoughts",
+      "order": 8
+    },
+    {
+      "id": "relationships",
+      "label": "Relationships",
+      "description": "An array of entity_text strings identifying other entities in this pair that this entity is meaningfully connected to. Relationships are directional from this entity to the listed entities. Populated by reference to other extracted entities in the same pair — not by inference or external knowledge.",
+      "format": "Array of entity_text strings (may be empty)",
+      "order": 9
+    },
+    {
+      "id": "significance",
+      "label": "Significance",
+      "description": "The strategic and legal importance of this entity to the case. High means legally or factually critical — relevant to liability, causation, duty, or credibility. Medium means relevant supporting detail. Low means background or contextual information unlikely to be dispositive.",
+      "values": ["high", "medium", "low"],
+      "order": 10
+    },
+    {
+      "id": "page_line",
+      "label": "Page · Line",
+      "description": "Deposition page and line number where the entity appears, populated when determinable from context. Null when the page/line cannot be reliably inferred. Connects the entity to its physical location in the deposition transcript for citation purposes.",
+      "format": "page: integer or null · line: integer or null",
+      "order": 11
+    }
+  ]
+}
