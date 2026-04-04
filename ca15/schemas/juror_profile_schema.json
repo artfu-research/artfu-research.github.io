@@ -1,0 +1,162 @@
+{
+  "battery_code": "jpb",
+  "battery_name": "Juror Profile",
+  "battery_overview": "The Juror Profile Battery generates 48 distinct juror profiles per turn-pair, organized across four strategic perspectives: prosecution wants seated, prosecution does not want seated, defense wants seated, defense does not want seated. Each perspective produces 12 profiles through a two-call pipeline — a demographic shell (Call A) and a psychological enrichment pass (Call B). A final synthesis call (Call 9) produces two-word pattern declarations for each perspective. Each profile represents a real, specific human type whose background, psychology, and lived experience primes them to read the deposition exchange in a predictable direction. Profiles are tools for voir dire strategy — not demographic predictions, but activation maps.",
+  "pipeline_architecture": {
+    "call_a": "Demographic Shell — generates 12 demographic profiles for one perspective. All fields are enumerated category/detail pairs. Diversity requirements enforce variation across age, ethnicity, occupation, education, and military experience. At least two profiles per perspective must be counterintuitive.",
+    "call_b": "Enrichment — takes the 12 demographic shells and adds all psychological, behavioral, strategic, and narrative fields. Every enrichment field must be grounded in the specific content of this pair's question and answer. The activation_feature must reference something actually present in the turn text.",
+    "call_9": "Pattern Synthesis — after all four perspectives are generated, produces a two-word pattern declaration for each perspective. The declaration names the dominant juror type for this pair.",
+    "total_calls": "8 profile calls + 1 synthesis = 9 calls per pair · 48 profiles per pair"
+  },
+  "four_perspectives": {
+    "prosecution_want": "Juror types the plaintiff's side (Judd) wants seated. Read this pair favorably for the prosecution. Value range: +1 to +5.",
+    "prosecution_dont": "Juror types the plaintiff's side does not want seated. Read this pair adversely for the prosecution. Value range: −1 to −5.",
+    "defense_want": "Juror types the defense side (Shell) wants seated. Read this pair favorably for the defense. Value range: +1 to +5.",
+    "defense_dont": "Juror types the defense side does not want seated. Read this pair adversely for the defense. Value range: −1 to −5."
+  },
+  "value_scale": {
+    "want_perspectives": {
+      "+5": "Exemplary — ideal receiver for this pair, reads it exactly as intended",
+      "+4": "Strong — this pair is a significant asset with this juror type",
+      "+3": "Solid — clearly favorable, will read this pair correctly",
+      "+2": "Moderate — reliably favorable on this pair",
+      "+1": "Adequate — slight favorable lean, worth having"
+    },
+    "avoid_perspectives": {
+      "-1": "Marginal — slight adverse lean, not a priority strike",
+      "-2": "Weak — leans adverse but may be persuadable",
+      "-3": "Poor — likely adverse, some mitigation possible",
+      "-4": "Severe — strong adverse read, difficult to overcome",
+      "-5": "Catastrophic — will actively damage your case on this pair"
+    }
+  },
+  "value_level_note": "value_level is always an integer. The model occasionally returns it as a dict with a 'category' key — generators must normalize both forms. corpus_flag fields are ignored entirely.",
+  "pattern_field": {
+    "id": "pattern_declaration",
+    "label": "Pattern Declaration",
+    "call": 9,
+    "definition": "A two-word strategic label for each perspective naming the dominant juror type for this pair. Generated after all four perspectives are complete. When read in sequence across hundreds of pairs, the four declarations reveal the higher-order shape of jury selection dynamics throughout the deposition.",
+    "scale": "Qualitative (2-word phrase) · one per perspective",
+    "why_it_matters": "Compresses each perspective's 12 profiles into a single strategic label — the dominant type that defines how this pair reads for each side.",
+    "examples": "Accountability Seeker, Authority Deferrer, Corporate Skeptic, Safety Champion"
+  },
+  "demographic_fields": {
+    "age_range": {
+      "description": "Juror's age bracket.",
+      "values": ["18-25", "26-35", "36-45", "46-55", "56-65", "65+"],
+      "format": "category + detail"
+    },
+    "sex": {
+      "description": "Juror's sex.",
+      "values": ["male", "female", "nonbinary"],
+      "format": "category + detail"
+    },
+    "ethnicity": {
+      "description": "Juror's ethnicity. Used for litigation strategy analysis only.",
+      "values": ["white", "black", "hispanic", "asian", "native", "mixed", "other"],
+      "format": "category + detail"
+    },
+    "sexuality": {
+      "description": "Juror's sexual orientation. Used for litigation strategy analysis only.",
+      "format": "category + detail"
+    },
+    "income_bracket": {
+      "description": "Juror's income level.",
+      "values": ["poverty", "working-class", "middle-class", "upper-middle", "wealthy"],
+      "format": "category + detail"
+    },
+    "occupation": {
+      "description": "Juror's occupation category.",
+      "values": ["trades", "labor", "service", "clerical", "technical", "professional", "managerial", "executive", "retired", "unemployed", "student"],
+      "format": "category + detail"
+    },
+    "education_level": {
+      "description": "Juror's highest education level.",
+      "format": "category + detail"
+    },
+    "iq_range": {
+      "description": "Estimated IQ range. Profile descriptor, not a clinical assessment.",
+      "values": ["70-85", "85-100", "100-115", "115-130", "130+"],
+      "format": "category + detail"
+    },
+    "common_sense": {
+      "description": "Practical reasoning ability. Profile descriptor, not a clinical assessment.",
+      "values": ["low", "moderate", "high"],
+      "format": "category + detail"
+    },
+    "health": {
+      "description": "General health status.",
+      "values": ["excellent", "good", "chronic-condition", "disability", "serious-illness"],
+      "format": "category + detail"
+    },
+    "disability_consideration": {
+      "description": "Disability type if present. When non-null, voir_dire_signal must be indirect — may not reference the disability directly.",
+      "values": ["none", "mobility", "sensory", "cognitive", "chronic-pain", "mental-health"],
+      "format": "category + detail"
+    },
+    "military_experience": {
+      "description": "Military background.",
+      "values": ["none", "veteran", "active", "reserves", "military-family"],
+      "format": "category + detail"
+    }
+  },
+  "enrichment_fields": {
+    "disposition": {
+      "description": "The juror's general emotional and evaluative posture toward authority, institutions, and contested claims.",
+      "values": ["optimistic", "pessimistic", "cynical", "trusting", "suspicious", "neutral"]
+    },
+    "cognitive_style": {
+      "description": "How this juror processes information and reaches conclusions — their dominant mode of reasoning under trial conditions.",
+      "values": ["analytical", "narrative", "emotional", "authority-deferring", "adversarial", "consensus-seeking", "intuitive"]
+    },
+    "authority_orientation": {
+      "description": "How this juror relates to authority figures — experts, attorneys, institutions, and the legal process itself.",
+      "values": ["deferential", "neutral", "skeptical", "hostile"]
+    },
+    "risk_tolerance": {
+      "description": "How willing this juror is to accept uncertainty and assign responsibility.",
+      "values": ["risk-averse", "moderate", "risk-tolerant"]
+    },
+    "media_consumption": {
+      "description": "Primary media diet. Influences framing preferences and institutional trust.",
+      "values": ["mainstream", "conservative", "liberal", "independent", "none", "social-media-primary"]
+    },
+    "litigation_history": {
+      "description": "Prior involvement in litigation.",
+      "values": ["none", "plaintiff", "defendant", "witness", "juror", "multiple"]
+    },
+    "cat_or_dog": {
+      "description": "Low-stakes behavioral signal. Dog = loyalty, group orientation. Cat = independence, selectivity. Useful quick read on deliberation dynamics.",
+      "values": ["cat", "dog", "neither", "both"]
+    },
+    "relevant_life_experience": {
+      "description": "Two to five words identifying the specific lived experience that primes this juror to read the pair in their particular direction. The one experiential lens that makes this exchange legible to this type in a predictable way.",
+      "format": "2–5 word phrase"
+    },
+    "activation_feature": {
+      "description": "Two to five words identifying the specific element of the question or answer that triggers this juror's read. Must be something actually present in the turn text — not an inference or extrapolation.",
+      "format": "2–5 word phrase"
+    },
+    "read_direction": {
+      "description": "Whether this profile reads the pair as favorable or adverse to their perspective. For want profiles: always favorable. For don't want profiles: always adverse.",
+      "values": ["favorable", "adverse"]
+    },
+    "read_reasoning": {
+      "description": "One to two sentences explaining why this profile produces this particular read on this pair. Grounded in the content of the exchange.",
+      "format": "1–2 sentences"
+    },
+    "profile_narrative": {
+      "description": "One to two sentences that bring this person to life as they would sit in the jury box. Specific enough that you could recognize them. Includes detail values, not just categories.",
+      "format": "1–2 sentences"
+    },
+    "voir_dire_signal": {
+      "description": "A single question of ten words or fewer that surfaces this juror type without revealing strategy. Must be neutral in tone — askable without telegraphing which answer you want. Probes the activation feature or relevant life experience indirectly.",
+      "format": "≤10 word question",
+      "note": "When disability_consideration is non-null, the question must be indirect — may not reference the disability directly."
+    },
+    "value_level": {
+      "description": "Integer scoring the strategic value of this juror type to this perspective on this specific pair. Always an integer — normalize if returned as dict.",
+      "scale": "+1 to +5 for want perspectives · −1 to −5 for avoid perspectives"
+    }
+  }
+}
