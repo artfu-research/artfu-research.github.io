@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · JPB · Prosecution · Judd · Pair 017</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #6ea898;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin:0;padding:0;box-sizing:border-box; }
+
+  body {
+    background:var(--bg);color:var(--text);
+    font-family:'DM Mono',monospace;font-size:11px;
+    line-height:1.5;margin:0;padding:0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background:var(--surface);width:100%;min-height:100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display:inline-block;width:14px;height:14px;line-height:14px;
+    text-align:center;border-radius:50%;border:1px solid var(--accent);
+    color:var(--accent);font-size:9px;cursor:pointer;margin-left:4px;
+    user-select:none;vertical-align:middle;transition:all 0.15s;
+  }
+  .info-icon:active { background:var(--accent);color:var(--bg);transform:scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg);
+  }
+  .header-left { display:flex;align-items:baseline;gap:12px; }
+  .battery-label {
+    font-family:'Syne',sans-serif;font-size:9px;font-weight:700;
+    letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);
+  }
+  .header-title {
+    font-family:'Instrument Serif',serif;font-size:18px;
+    font-style:italic;color:var(--text-bright);
+  }
+  .header-meta {
+    font-size:9px;color:var(--text-dim);text-align:right;
+    line-height:1.8;letter-spacing:0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding:12px 20px;border-bottom:1px solid var(--border);
+    background:var(--surface2);display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .turn { padding:9px 12px;border-radius:4px;border-left:2px solid; }
+  .turn.q { border-color:#5b8fa8;background:rgba(91,143,168,0.06); }
+  .turn.a { border-color:#6ea898;background:rgba(110,168,152,0.06); }
+  .turn-speaker {
+    font-size:8px;font-weight:500;letter-spacing:0.15em;
+    text-transform:uppercase;margin-bottom:3px;
+  }
+  .turn.q .turn-speaker { color:#5b8fa8; }
+  .turn.a .turn-speaker { color:#6ea898; }
+  .turn-text { font-size:10px;color:var(--text);line-height:1.6;font-style:italic; }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    font-family:'Syne',sans-serif;font-size:8px;font-weight:700;
+    letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);
+  }
+
+  /* SECTION CONTENT */
+  .section-content { padding:14px 16px; }
+
+  /* PATTERN BAR */
+  .pattern-bar {
+    display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;
+    padding:12px 16px;margin-bottom:14px;
+    background:var(--surface2);border:1px solid var(--border);border-radius:4px;
+  }
+  .pattern-bar-left { display:flex;flex-direction:column;gap:2px; }
+  .pattern-bar-label {
+    font-family:'Syne',sans-serif;font-size:7px;font-weight:700;
+    letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);
+  }
+  .pattern-declaration {
+    font-family:'Instrument Serif',serif;font-size:20px;font-style:italic;
+  }
+  .pattern-reasoning { font-size:9px;color:var(--text-dim);line-height:1.5;font-style:italic; }
+
+  /* PROFILE GRID */
+  .profiles-grid {
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  }
+
+  /* PROFILE CARD */
+  .profile-card {
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:4px;padding:10px 12px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .profile-header { display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap; }
+  .profile-value { flex-shrink:0; }
+  .profile-demo-chips { flex:1;line-height:1.8; }
+  .profile-cat-dog { font-size:14px;flex-shrink:0; }
+  .profile-narrative {
+    font-size:9px;color:var(--text-bright);line-height:1.6;
+    font-style:italic;border-top:1px solid var(--border);padding-top:6px;
+  }
+  .profile-psych-chips { line-height:1.8; }
+  .profile-fields {
+    display:flex;flex-direction:column;gap:3px;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .profile-field { display:flex;gap:6px;align-items:baseline;font-size:8px; }
+  .pf-label {
+    color:var(--text-dim);flex-shrink:0;width:68px;
+    letter-spacing:0.05em;text-transform:uppercase;font-size:7px;
+  }
+  .pf-value { color:var(--text);line-height:1.4; }
+  .pf-activation { color:var(--accent);font-weight:600; }
+  .profile-reasoning {
+    font-size:8px;color:var(--text-dim);line-height:1.5;font-style:italic;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .profile-voir-dire {
+    display:flex;gap:6px;align-items:baseline;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .vd-label {
+    font-family:'Syne',sans-serif;font-size:7px;font-weight:700;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);flex-shrink:0;
+  }
+  .vd-text { font-size:8.5px;color:var(--text-bright);font-style:italic;line-height:1.4; }
+
+  /* FOOTER */
+  .footer {
+    padding:8px 20px;border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:8px;color:var(--text-dim);letter-spacing:0.08em;background:var(--bg);
+  }
+  .footer-left { display:flex;gap:16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Juror Profile Battery · Prosecution · Judd</span>
+      <span class="header-title">Pair 017 · gibson_sp017</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>corpus: direct · 12 profiles/section</div>
+      <div>p.10 l.3 · 2026-03-29</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"And who was the contractor that retained you to consult on that project?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"The Brahma Group."</div>
+    </div>
+  </div>
+
+  <!-- WANTS SECTION -->
+  <div class="section-divider">↑ Wants — juror types to seat</div>
+  <div class="section-content">
+    <div class="pattern-bar" style="border-left:3px solid #6ea898;">
+      <div class="pattern-bar-left">
+        <div class="pattern-bar-label">Wants — Pattern Declaration<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+        <div class="pattern-declaration" style="color:#6ea898;">Contractor Skeptic</div>
+      </div>
+      <div class="pattern-reasoning">These jurors are analytical, skeptical of contractors, and have prior plaintiff experience, making them likely to scrutinize contractor testimony in favor of plaintiffs.</div>
+    </div><div class="profiles-grid"><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">nonbinary</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">native</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 52-year-old Indigenous nonbinary social worker with a master's degree and high IQ, who has served as a plaintiff, sits in the jury box ready to challenge contractor claims."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">social work client advocacy</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">This social worker has a history of advocating for plaintiffs and will scrutinize contractor testimony.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors often harm clients?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 40-year-old East Asian female engineer with a master's degree and high IQ, who has served as a plaintiff, sits in the jury box ready to evaluate contractor compliance."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">engineering safety audits</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">This engineer’s background in safety audits will make them scrutinize contractor claims and favor plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors follow safety regulations?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 38-year-old white male lawyer with a bachelor's degree and a high IQ, who has served as a plaintiff in a prior case, sits in the jury box ready to scrutinize contractor testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">construction site injury</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">This juror’s construction injury experience and analytical mindset make them likely to scrutinize contractor testimony, favoring plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors are often reliable?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">65+</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">wealthy</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">executive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">doctoral</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 70-year-old white male retired executive with a PhD and very high IQ, who has served as a plaintiff, sits in the jury box ready to evaluate contractor responsibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">executive risk management</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">Having managed risk as a retired executive, this juror will scrutinize contractor liability and likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors should be held accountable?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 38-year-old East Asian male accountant with a master's degree and high IQ, who has served as a plaintiff, sits in the jury box ready to challenge contractor testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">accounting audit</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">This accountant’s audit background will scrutinize contractor claims and favor plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors keep accurate records?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">managerial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ veteran</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 60-year-old African American retired manager with a master's degree and average IQ, who has served as a plaintiff, sits in the jury box ready to evaluate contractor testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">liberal</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">retired manager oversight</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">Having managed teams, this juror will scrutinize contractor claims and likely support plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think corporate contractors are trustworthy?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">clerical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ reserves</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 58-year-old Hispanic female admin assistant with an associate degree and average IQ, who has served as a plaintiff, sits in the jury box ready to evaluate contractor credibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">liberal</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:plaintiff</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">clerical administrative oversight</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">This administrative assistant’s attention to detail will scrutinize contractor testimony and favor plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors are reliable?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trades</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 30-year-old Hispanic female electrician with an associate degree and average IQ, who has worked as a witness in construction disputes, sits in the jury box ready to question contractor credibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">conservative</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:witness</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">electrician safety training</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a former electrician, this juror is wary of contractor negligence and will likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust contractors to keep safety standards?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">labor</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 48-year-old African American male construction worker with an associate degree and average IQ, who has worked as a witness, sits in the jury box ready to question contractor accountability."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">conservative</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:witness</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">construction worker injury</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a construction worker, this juror is wary of contractor negligence and will likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors are responsible for safety?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #7a9e6e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid #7a9e6e33;font-family:'Syne',sans-serif;">+1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">student</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 22-year-old East Asian female college student with a high school diploma and average IQ, who has no litigation history, sits in the jury box hopeful that plaintiffs will prevail."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">optimistic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:deferential</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">consult</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">student activism</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a student activist, this juror is optimistic about justice and will likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you believe the justice system works for everyone?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #7a9e6e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid #7a9e6e33;font-family:'Syne',sans-serif;">+1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">service</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 28-year-old Hispanic male waiter with an associate degree and average IQ, who has no litigation history, sits in the jury box ready to question contractor testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">consult</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">waiter customer service</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a waiter, this juror is skeptical of corporate claims and will likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust large corporations?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #7a9e6e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid #7a9e6e33;font-family:'Syne',sans-serif;">+1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mixed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">unemployed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">no-diploma</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 20-year-old mixed-race female with no diploma and chronic condition, who is unemployed, sits in the jury box hopeful that plaintiffs will prevail."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">optimistic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:deferential</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">consult</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">unemployed job search</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As an unemployed individual, this juror is hopeful for justice and will likely side with plaintiffs.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think the justice system helps the disadvantaged?"</span>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- DON'T WANTS SECTION -->
+  <div class="section-divider">↓ Don't Wants — juror types to strike</div>
+  <div class="section-content">
+    <div class="pattern-bar" style="border-left:3px solid #c97070;">
+      <div class="pattern-bar-left">
+        <div class="pattern-bar-label">Don't Wants — Pattern Declaration<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+        <div class="pattern-declaration" style="color:#c97070;">Contractor Skeptic</div>
+      </div>
+      <div class="pattern-reasoning">These jurors share the same skepticism but carry negative dispositions and low values, making them prone to side with the defense and pose a threat to the prosecution’s case.</div>
+    </div><div class="profiles-grid"><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">65+</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">wealthy</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">executive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">doctoral</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 70-year-old white CEO with a PhD who has fought corporate lawsuits, he will view the expert as a corporate ally."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">adversarial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:hostile</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-tolerant</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">conservative</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:defendant</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group name</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">led corporate legal battles</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a CEO, he sees the expert as a corporate ally, likely biased.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think experts favor their employers?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trades</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ veteran</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ mobility</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 52-year-old African American electrician, Army vet, who has seen contractors on job sites, will question the expert’s neutrality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">authority-deferring</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:defendant</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor retained expert</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">worked with contractors on jobs</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may think the expert is biased due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think contractors influence experts?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">65+</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">nonbinary</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">unemployed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">no-diploma</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ mental-health</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 70-year-old Latino nonbinary person battling cancer, they will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">adversarial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">none</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">expert retained by contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">lived with cancer</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may suspect bias due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think experts favor their employers?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">nonbinary</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 42-year-old Asian consultant who has advised big firms, they will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">adversarial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:witness</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group name</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">consulted for large firms</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">As a consultant, they suspect the expert's loyalty to the contractor.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"How do you handle conflicts of interest?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">managerial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 30-year-old Latina HR manager with an MBA, she will scrutinize the expert’s ties to the contractor."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:deferential</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:witness</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">expert retained by contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">managed corporate hires</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She may think the expert is biased due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"How do you handle conflicts in hiring?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">clerical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ sensory</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 50-year-old Asian office assistant with diabetes, she will question the expert’s neutrality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">authority-deferring</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:deferential</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">expert hired by contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">worked with contractors in office</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She may suspect the expert is biased due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust experts hired by contractors?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">service</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 22-year-old Latina retail clerk who has seen corporate managers push sales, she will question the expert’s neutrality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">adversarial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor name</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">worked retail with managers</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She sees the expert hired by a contractor, raising doubts about impartiality.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust experts hired by contractors?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">native</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">retired</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 63-year-old Native American retired teacher who has taught about bias, she will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">expert hired by contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">teaching about bias</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She may suspect the expert's bias due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the contractor affect your impartiality?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">student</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 40-year-old African American graduate student who has studied corporate law, he will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group name</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">studied corporate law</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may suspect bias because the expert was hired by a contractor.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the contractor affect your research?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ reserves</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 60-year-old white engineer who has worked on contractor projects, he will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">conservative</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:defendant</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">Brahma Group name</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">engineered for contractors</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may think the expert is biased due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the contractor influence your testimony?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6b7194;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 30-year-old gay IT support specialist who has dealt with corporate systems, he will scrutinize the expert’s ties to the contractor."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">expert retained by contractor</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">IT support for corporate clients</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may think the expert is biased because hired by contractor.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the contractor influence your testimony?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6b7194;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mixed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">labor</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">no-diploma</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ chronic-pain</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 22-year-old mixed-race construction worker with chronic pain, he will question the expert’s impartiality."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">adversarial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">contractor hired expert</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">worked with contractors on sites</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He may suspect the expert is biased due to contractor hire.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the contractor influence your work?"</span>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: juror_profile · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

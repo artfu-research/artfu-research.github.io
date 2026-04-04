@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · JPB · Defense · Shell · Pair 092</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c97070;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin:0;padding:0;box-sizing:border-box; }
+
+  body {
+    background:var(--bg);color:var(--text);
+    font-family:'DM Mono',monospace;font-size:11px;
+    line-height:1.5;margin:0;padding:0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background:var(--surface);width:100%;min-height:100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display:inline-block;width:14px;height:14px;line-height:14px;
+    text-align:center;border-radius:50%;border:1px solid var(--accent);
+    color:var(--accent);font-size:9px;cursor:pointer;margin-left:4px;
+    user-select:none;vertical-align:middle;transition:all 0.15s;
+  }
+  .info-icon:active { background:var(--accent);color:var(--bg);transform:scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg);
+  }
+  .header-left { display:flex;align-items:baseline;gap:12px; }
+  .battery-label {
+    font-family:'Syne',sans-serif;font-size:9px;font-weight:700;
+    letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);
+  }
+  .header-title {
+    font-family:'Instrument Serif',serif;font-size:18px;
+    font-style:italic;color:var(--text-bright);
+  }
+  .header-meta {
+    font-size:9px;color:var(--text-dim);text-align:right;
+    line-height:1.8;letter-spacing:0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding:12px 20px;border-bottom:1px solid var(--border);
+    background:var(--surface2);display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .turn { padding:9px 12px;border-radius:4px;border-left:2px solid; }
+  .turn.q { border-color:#5b8fa8;background:rgba(91,143,168,0.06); }
+  .turn.a { border-color:#6ea898;background:rgba(110,168,152,0.06); }
+  .turn-speaker {
+    font-size:8px;font-weight:500;letter-spacing:0.15em;
+    text-transform:uppercase;margin-bottom:3px;
+  }
+  .turn.q .turn-speaker { color:#5b8fa8; }
+  .turn.a .turn-speaker { color:#6ea898; }
+  .turn-text { font-size:10px;color:var(--text);line-height:1.6;font-style:italic; }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    font-family:'Syne',sans-serif;font-size:8px;font-weight:700;
+    letter-spacing:0.2em;text-transform:uppercase;color:var(--text-dim);
+  }
+
+  /* SECTION CONTENT */
+  .section-content { padding:14px 16px; }
+
+  /* PATTERN BAR */
+  .pattern-bar {
+    display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center;
+    padding:12px 16px;margin-bottom:14px;
+    background:var(--surface2);border:1px solid var(--border);border-radius:4px;
+  }
+  .pattern-bar-left { display:flex;flex-direction:column;gap:2px; }
+  .pattern-bar-label {
+    font-family:'Syne',sans-serif;font-size:7px;font-weight:700;
+    letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);
+  }
+  .pattern-declaration {
+    font-family:'Instrument Serif',serif;font-size:20px;font-style:italic;
+  }
+  .pattern-reasoning { font-size:9px;color:var(--text-dim);line-height:1.5;font-style:italic; }
+
+  /* PROFILE GRID */
+  .profiles-grid {
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  }
+
+  /* PROFILE CARD */
+  .profile-card {
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:4px;padding:10px 12px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .profile-header { display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap; }
+  .profile-value { flex-shrink:0; }
+  .profile-demo-chips { flex:1;line-height:1.8; }
+  .profile-cat-dog { font-size:14px;flex-shrink:0; }
+  .profile-narrative {
+    font-size:9px;color:var(--text-bright);line-height:1.6;
+    font-style:italic;border-top:1px solid var(--border);padding-top:6px;
+  }
+  .profile-psych-chips { line-height:1.8; }
+  .profile-fields {
+    display:flex;flex-direction:column;gap:3px;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .profile-field { display:flex;gap:6px;align-items:baseline;font-size:8px; }
+  .pf-label {
+    color:var(--text-dim);flex-shrink:0;width:68px;
+    letter-spacing:0.05em;text-transform:uppercase;font-size:7px;
+  }
+  .pf-value { color:var(--text);line-height:1.4; }
+  .pf-activation { color:var(--accent);font-weight:600; }
+  .profile-reasoning {
+    font-size:8px;color:var(--text-dim);line-height:1.5;font-style:italic;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .profile-voir-dire {
+    display:flex;gap:6px;align-items:baseline;
+    border-top:1px solid var(--border);padding-top:5px;
+  }
+  .vd-label {
+    font-family:'Syne',sans-serif;font-size:7px;font-weight:700;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);flex-shrink:0;
+  }
+  .vd-text { font-size:8.5px;color:var(--text-bright);font-style:italic;line-height:1.4; }
+
+  /* FOOTER */
+  .footer {
+    padding:8px 20px;border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:8px;color:var(--text-dim);letter-spacing:0.08em;background:var(--bg);
+  }
+  .footer-left { display:flex;gap:16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Juror Profile Battery · Defense · Shell</span>
+      <span class="header-title">Pair 092 · gibson_sp092</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>corpus: direct · 12 profiles/section</div>
+      <div>p.29 l.3 · 2026-03-30</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"We were kind of talking about when you were first retained for this case. We talked about the materials listed, right?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"Correct, correct."</div>
+    </div>
+  </div>
+
+  <!-- WANTS SECTION -->
+  <div class="section-divider">↑ Wants — juror types to seat</div>
+  <div class="section-content">
+    <div class="pattern-bar" style="border-left:3px solid #6ea898;">
+      <div class="pattern-bar-left">
+        <div class="pattern-bar-label">Wants — Pattern Declaration<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+        <div class="pattern-declaration" style="color:#6ea898;">Trusting Analyst</div>
+      </div>
+      <div class="pattern-reasoning">Defense seeks jurors who are thorough, open to credible evidence, and willing to support the expert’s credibility.</div>
+    </div><div class="profiles-grid"><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">managerial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ veteran</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A seasoned HR manager in her late sixties, she values thoroughness and sees the witness’s confirmation as a sign of credibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">HR managerial experience</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She values thoroughness; the witness’s confirmation signals reliability, aligning with the defense’s emphasis on credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">65+</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">wealthy</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">executive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">doctoral</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A seasoned CEO in his senior years, he evaluates the witness’s confirmation with a strategic mind, hoping it will bolster the defense."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">executive experience</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He interprets the witness’s confirmation as evidence of thoroughness, reinforcing the defense’s credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">retired</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ veteran</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A retired Air Force officer in his late sixties, he listens for signs of thoroughness, hoping the witness’s confirmation will support the defense."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">retired officer</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He interprets the witness’s confirmation as evidence of thoroughness, reinforcing the defense’s credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A seasoned attorney in his early fifties, he sits with a calm, analytical mind, ready to weigh the expert’s credibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:defendant</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">defense attorney experience</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He sees the question confirming the witness’s knowledge, indicating thoroughness that supports the defense’s credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span></div>
+        
+      </div>
+      <div class="profile-narrative">"An experienced engineer in her early fifties, she values precise confirmation, seeing the witness’s answer as a sign of credibility."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">engineering background</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She values precise confirmation; the witness’s answer signals reliability, supporting the defense’s credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6ea898;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.15);border:1px solid #6ea89833;font-family:'Syne',sans-serif;">+4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A young lawyer, she evaluates the witness’s confirmation with a sharp analytical mind, hoping it will reinforce the defense."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">lawyer background</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She sees the witness’s confirmation as a sign of thoroughness, aligning with the defense’s emphasis on credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A young software engineer with a logical mindset, he watches the witness’s confirmation, hoping it will strengthen the defense’s narrative."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">software engineering</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He sees the witness’s confirmation as a sign of meticulousness, supporting the defense’s narrative of credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">native</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">service</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A dedicated nurse in her early forties, she listens for signs of thoroughness, hoping the witness’s confirmation will support the defense."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">nursing background</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She sees the witness’s confirmation as a sign of diligence, supporting the defense’s emphasis on credibility.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trades</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A hardworking electrician in her early forties, she listens attentively, hoping the expert’s thoroughness will back the defense’s case."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">electrician background</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She interprets the witness’s confirmation as evidence of organization, which aligns with the defense’s portrayal of thoroughness.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.15);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">+2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">clerical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A young office manager, he watches the witness’s confirmation, hoping it will reinforce the defense’s case."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">office management</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He interprets the witness’s confirmation as evidence of organization, aligning with the defense’s portrayal of thoroughness.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #7a9e6e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid #7a9e6e33;font-family:'Syne',sans-serif;">+1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">nonbinary</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mixed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">unemployed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">no-diploma</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A young nonbinary individual with limited experience, they listen cautiously, hoping the witness’s confirmation will reassure them."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">emotional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">none</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">limited experience</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">Despite initial caution, the witness’s confirmation suggests reliability, nudging him toward a favorable view of the defense.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #7a9e6e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid #7a9e6e33;font-family:'Syne',sans-serif;">+1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">labor</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A construction worker in his early forties, he listens for signs of thoroughness, hoping the witness’s confirmation will support the defense."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">construction work</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He sees the witness’s confirmation as evidence of thoroughness, nudging him toward a favorable view of the defense.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Did the witness confirm the materials?"</span>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- DON'T WANTS SECTION -->
+  <div class="section-divider">↓ Don't Wants — juror types to strike</div>
+  <div class="section-content">
+    <div class="pattern-bar" style="border-left:3px solid #c97070;">
+      <div class="pattern-bar-left">
+        <div class="pattern-bar-label">Don't Wants — Pattern Declaration<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+        <div class="pattern-declaration" style="color:#c97070;">Cynical Executive</div>
+      </div>
+      <div class="pattern-reasoning">The worst jurors for defense are high‑profile, skeptical of corporate experts, and likely to undermine the defense’s case.</div>
+    </div><div class="profiles-grid"><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">wealthy</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">doctoral</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 63-year-old seasoned attorney who has fought corporate giants, skeptical of expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:hostile</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:multiple</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">fought corporate giants</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She will scrutinize the materials and suspect the expert is biased toward the corporation.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"What makes you confident in the expert's data?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-5</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">white</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">wealthy</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">executive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 52-year-old CEO who has defended corporate interests, skeptical of expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:hostile</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-tolerant</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">lit:multiple</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">led corporate litigation</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He will view the expert as biased toward the corporation.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think experts are objective?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">65+</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mixed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">retired</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ veteran</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 68-year-old retired veteran who served in hazardous environments, cautious about expert claims."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">consensus-seeking</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">military hazardous exposure</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She will question the materials as potential bias.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"How do you evaluate expert testimony?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c97070;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-4</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚔ reserves</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 32-year-old engineer who designs safety protocols, cautious about expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">engineered safety protocols</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She will scrutinize materials, suspecting bias.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"How do you evaluate expert evidence?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">service</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 32-year-old waitress who has seen corporate promises broken, skeptical of expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">customer service with corporate</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She will question the expert’s early engagement and materials, suspecting bias.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think experts are biased?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">native</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">labor</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ mobility</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 22-year-old construction worker who has seen toxic spills, wary of corporate experts."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">pessimistic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:hostile</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">construction site hazards</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He will view the expert’s early engagement as a corporate tactic.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you think experts are biased?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.15);border:1px solid #c9707033;font-family:'Syne',sans-serif;">-3</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">18-25</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">poverty</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">unemployed</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">no-diploma</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">⚕ mental-health</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 21-year-old unemployed youth who has seen corporate negligence, skeptical of expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">pessimistic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:hostile</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">social-media-primary</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">lived in low-income neighborhoods</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He will see the expert as a corporate tool.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust corporate experts?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">middle-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trades</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">college</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 42-year-old electrician who has handled chemical spills, skeptical of corporate expert claims."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.10);border:1px solid #c9707044;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">cynical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">handled hazardous materials</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He will scrutinize the materials, suspecting they favor the expert.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"How do you evaluate technical evidence?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">26-35</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">male</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">black</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">clerical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">high-school</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 30-year-old office clerk who has seen corporate paperwork, skeptical of expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">suspicious</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">intuitive</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">office paperwork</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">He will suspect the expert’s early engagement as biased.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust the expert's qualifications?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #c8a96e;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-2</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">56-65</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">working-class</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">student</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">some-college</span></div>
+        <div class="profile-cat-dog">🐈</div>
+      </div>
+      <div class="profile-narrative">"A 60-year-old student who studies corporate ethics, cautious about expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">narrative</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">student researching corporate ethics</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She may question the expert’s materials as potential bias.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"What do you think about the expert's data?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6b7194;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">46-55</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">nonbinary</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">asian</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">technical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">graduate</span></div>
+        
+      </div>
+      <div class="profile-narrative">"A 52-year-old engineer who designs safety systems, cautious about expert testimony."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">neutral</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">risk-averse</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">independent</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">first retained</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">engineered safety protocols</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She may doubt the expert’s early engagement, viewing it as potential bias.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"Do you trust expert qualifications?"</span>
+      </div>
+    </div><div class="profile-card" style="border-left:3px solid #6b7194;">
+      <div class="profile-header">
+        <div class="profile-value"><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid #c8a96e33;font-family:'Syne',sans-serif;">-1</span></div>
+        <div class="profile-demo-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">36-45</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid #a86e8a44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">female</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">hispanic</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">upper-middle</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid #7a9e6e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">managerial</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.10);border:1px solid #7a6e9e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">professional</span></div>
+        <div class="profile-cat-dog">🐕</div>
+      </div>
+      <div class="profile-narrative">"A 42-year-old manager who has overseen compliance, cautious about expert claims."</div>
+      <div class="profile-psych-chips"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid #6ea89844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">trusting</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid #5b8fa844;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">analytical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid #c8a96e44;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">auth:skeptical</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">moderate</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.10);border:1px solid #6b719444;font-family:'DM Mono',monospace;margin:1px 2px 1px 0;">mainstream</span></div>
+      <div class="profile-fields">
+        <div class="profile-field">
+          <span class="pf-label">Activation<span class="info-icon" data-field-id="activation_feature">ⓘ</span></span>
+          <span class="pf-value pf-activation">materials listed</span>
+        </div>
+        <div class="profile-field">
+          <span class="pf-label">Experience<span class="info-icon" data-field-id="relevant_life_experience">ⓘ</span></span>
+          <span class="pf-value">managed compliance</span>
+        </div>
+      </div>
+      <div class="profile-reasoning">She will scrutinize materials but may still trust the expert.</div>
+      <div class="profile-voir-dire">
+        <span class="vd-label">voir dire<span class="info-icon" data-field-id="voir_dire_signal">ⓘ</span></span>
+        <span class="vd-text">"What makes you confident in the expert?"</span>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: juror_profile · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>
