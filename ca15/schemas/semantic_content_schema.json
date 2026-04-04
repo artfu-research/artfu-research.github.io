@@ -1,0 +1,166 @@
+{
+  "battery_code": "sc",
+  "battery_name": "Semantic Content",
+  "battery_overview": "The Semantic Content Battery analyzes a question–answer turn-pair from a legal deposition for what semantic content is present and how it behaves. It examines what is being talked about and how specifically, what entities and targets anchor the exchange, what domain class the content belongs to, what the content is functionally trying to do and in what direction, and how structurally complex the concept layer is. Five sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration — identical in structure to all other CA_15 batteries.",
+  "pattern_field": {
+    "id": "pattern_declaration",
+    "label": "Pattern Declaration",
+    "call": 6,
+    "definition": "A two-word label capturing the dominant semantic event of the exchange. Derived after all five analytical calls are computed and represents the instrument's single synthesized judgment about what the semantic content was doing. Not a description of topic — a label for the kind of semantic movement or function that defined the exchange.",
+    "scale": "Qualitative (2-word phrase)",
+    "why_it_matters": "When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how semantic content moved, shifted, and functioned across the entire deposition.",
+    "examples": "Blame Redirect, Frame Lock, Concept Split, Domain Collapse"
+  },
+  "fields": [
+    {
+      "id": "topic_presence",
+      "label": "Topic Presence",
+      "call": 1,
+      "parent_section": "Semantic Presence",
+      "definition": "What subject matter is explicitly present in the exchange — what is being talked about, named, or referred to. Rendered as an open narrative description, not a label. This captures the raw semantic surface of the pair: what a neutral observer would say the conversation is about.",
+      "scale": "Narrative description (open text)",
+      "why_it_matters": "Establishes the baseline semantic surface of the exchange before any structural analysis — the literal subject matter being addressed.",
+      "order": 1
+    },
+    {
+      "id": "topic_specificity",
+      "label": "Topic Specificity",
+      "call": 1,
+      "parent_section": "Semantic Presence",
+      "definition": "How broad or narrow the topic is, scored on an integer scale of 1–10. A score of 5 represents ordinary conversational specificity. Scores above 5 indicate increasing precision and narrowness toward a singular semantic target. Scores below 5 indicate increasing generality. The score captures topical resolution, not importance or intensity.",
+      "scale": "Integer 1–10: 1 = maximally broad · 5 = ordinary specificity · 10 = singular semantic target",
+      "why_it_matters": "Quantifies how precisely targeted the exchange is — whether it is establishing broad context or closing in on a specific semantic object.",
+      "order": 2
+    },
+    {
+      "id": "topic_stability",
+      "label": "Topic Stability",
+      "call": 1,
+      "parent_section": "Semantic Presence",
+      "definition": "Whether the topic remains the same across both turns or shifts between them. Three components: state classifies the overall condition as stable or unstable; result names what the stability state produced in 2–4 words; mechanism names what caused that result in 2–4 words. Together these identify not just whether the topic held, but why and with what effect.",
+      "scale": "state: 'stable' | 'unstable' · result: text (2–4 words) · mechanism: text (2–4 words)",
+      "why_it_matters": "Identifies whether the exchange stayed on topic or drifted, and explains the mechanism by which stability was maintained or lost.",
+      "order": 3
+    },
+    {
+      "id": "referential_target",
+      "label": "Referential Target",
+      "call": 2,
+      "parent_section": "Semantic Anchor",
+      "definition": "Whether both turns point to the same semantic target, different targets, only one turn has an identifiable target (asymmetric), or neither does. State classifies the alignment. Conditional keys carry the target content: if_same holds the shared target (2–4 words); if_different holds turn_1_target and turn_2_target separately; if_asymmetric identifies which_turn has the target and what it is. Absent targets are null — not inferred.",
+      "scale": "state: 'same' | 'different' | 'asymmetric' | 'none' · conditional target fields depending on state",
+      "why_it_matters": "Determines whether the two turns are semantically co-oriented — pointing at the same thing — or operating on different referential objects.",
+      "order": 4
+    },
+    {
+      "id": "actor_presence",
+      "label": "Actor Presence",
+      "call": 2,
+      "parent_section": "Semantic Anchor",
+      "definition": "Whether there is an identifiable non-participant entity being discussed, acted upon, or referenced in the exchange. When present, five fields describe the actor: identity (2–4 words), type (what kind of thing it is), role (how it functions in the exchange), and action (what is being done to or by it, 2–4 words). Speakers themselves are never named as actors.",
+      "scale": "actor_present: boolean · type: 'person' | 'institution' | 'object' | 'concept' · role: 'subject' | 'target' | 'instrument' | 'reference' · identity: text · action: text (2–4 words)",
+      "why_it_matters": "Identifies the third-party entity at the center of the exchange — the person, institution, or concept that the exchange is about, as distinct from the speakers themselves.",
+      "order": 5
+    },
+    {
+      "id": "object_focus",
+      "label": "Object Focus",
+      "call": 2,
+      "parent_section": "Semantic Anchor",
+      "definition": "What object, entity, or concept sits at the semantic center of the exchange — the thing that both turns are most directly oriented toward, whether explicitly named or implied. This is a narrative description capturing the gravitational center of the pair's meaning, distinct from the topic (which is the surface subject) and the actor (which is a participant entity).",
+      "scale": "Narrative description (open text)",
+      "why_it_matters": "Names the semantic gravity point of the exchange — what everything else is oriented around, whether explicitly stated or only implied.",
+      "order": 6
+    },
+    {
+      "id": "domain_type",
+      "label": "Domain Type",
+      "call": 3,
+      "parent_section": "Semantic Class",
+      "definition": "What kind of world the semantic content belongs to — the ontological register of the exchange. Returned as an ordered array of class objects, from most to least dominant. Each class has a one-word class_name and a domains array of 1–2 word domain names (up to 5), also ordered most to least dominant. Domain types within a class must be of the same kind and not mixed across categories.",
+      "scale": "Ordered array of {class_name: text, domains: [text × 1–5]}. Example classes: legal · factual · technical · interpersonal · institutional · normative",
+      "why_it_matters": "Classifies the ontological register of the exchange — what kind of world the content inhabits, which determines what norms, standards, and interpretive frameworks apply.",
+      "order": 7
+    },
+    {
+      "id": "emotional_presence",
+      "label": "Emotional Presence",
+      "call": 3,
+      "parent_section": "Semantic Class",
+      "definition": "Whether explicit emotional content is present in the exchange. When present, source identifies which turn carries the emotion ('turn_1', 'turn_2', or 'both'). Emotion_array lists the emotion names ordered from most to least prominent. When absent, source is null and emotion_array is empty. Implicit or inferable emotion does not qualify — the emotion must be explicitly registered in the language.",
+      "scale": "present: 'yes' | 'no' · source: 'turn_1' | 'turn_2' | 'both' | null · emotion_array: [text] ordered most to least prominent",
+      "why_it_matters": "Identifies explicit affective content in the exchange — distinguishing emotionally charged testimony from neutral declarative statements.",
+      "order": 8
+    },
+    {
+      "id": "intensity_scale",
+      "label": "Intensity Scale",
+      "call": 3,
+      "parent_section": "Semantic Class",
+      "definition": "How semantically intense the exchange is, scored independently in each direction. Turn_1_to_turn_2 scores the intensity of what Turn 1 exerts on Turn 2 (how forcefully the question acts on the answer). Turn_2_to_turn_1 scores the intensity of what Turn 2 exerts back on Turn 1 (how forcefully the answer responds to or reframes the question). Both are integer scores 1–10.",
+      "scale": "turn_1_to_turn_2.score: 1–10 · turn_2_to_turn_1.score: 1–10. 1 = no detectable intensity · 5 = moderate/clearly active · 10 = maximum/defining feature",
+      "why_it_matters": "Measures the semantic force of each turn on the other — how hard the question is pushing and how hard the answer is pushing back.",
+      "order": 9
+    },
+    {
+      "id": "semantic_intent",
+      "label": "Semantic Intent",
+      "call": 4,
+      "parent_section": "Semantic Function",
+      "definition": "What the semantic content is functionally trying to do — not what it says, but what it is doing. Returned as an ordered array of up to five intent objects, from most obvious to most obscure. Each item has an intent_name of exactly three words (capturing the functional orientation) and an importance rating. This is not a summary of content; it is an analysis of function.",
+      "scale": "Ordered array of {intent_name: text (exactly 3 words), importance: 'small' | 'medium' | 'large'} up to 5 items",
+      "why_it_matters": "Identifies what the exchange is actually doing at the functional level — the strategic or communicative goals being pursued through the semantic content.",
+      "order": 10
+    },
+    {
+      "id": "direction_of_force",
+      "label": "Direction Of Force",
+      "call": 4,
+      "parent_section": "Semantic Function",
+      "definition": "What directional force the semantic content exerts. Five components: origin names the source of the force; name labels the force itself; magnitude_and_direction is an integer from -5 to +5 capturing both strength and directionality (negative values indicate force oriented against a target, positive toward); target names what the force is exerted upon; description is a one-sentence summary of what the force is doing.",
+      "scale": "magnitude_and_direction: integer −5 to +5 (negative = against target · positive = toward target). −5 = maximum negative · 0 = neutral · +5 = maximum positive",
+      "why_it_matters": "Maps the directional force vector of the exchange — where the semantic energy is coming from, what it is aimed at, and how strongly it is pushing.",
+      "order": 11
+    },
+    {
+      "id": "resolution_state",
+      "label": "Resolution State",
+      "call": 4,
+      "parent_section": "Semantic Function",
+      "definition": "What the semantic movement of the pair does to the possibility space of the conversation. Open means new possibilities emerge from this exchange. Continue means the existing trajectory carries forward unchanged. Narrow means the exchange reduces the viable possibility space toward a specific point. Close means a line of inquiry or action is terminated by this exchange.",
+      "scale": "state: 'open' | 'continue' | 'narrow' | 'close'",
+      "why_it_matters": "Classifies what the exchange does to future conversational possibility — whether it expands, maintains, contracts, or terminates a line of inquiry.",
+      "order": 12
+    },
+    {
+      "id": "concept_density",
+      "label": "Concept Density",
+      "call": 5,
+      "parent_section": "Semantic Complexity",
+      "definition": "Whether the semantic content is built around a single concept, layered across multiple concepts that coexist, or multiple concepts that compete for dominance. State classifies the condition. Conditional keys carry the concept content: if_single holds the one concept (2–4 words); if_layered is an array of concept names; if_competing is an object with side_a and side_b arrays naming the competing concept clusters. Concepts are named abstractly, not quoted from the text.",
+      "scale": "state: 'single' | 'layered' | 'competing' | 'none' · if_single: text (2–4 words) · if_layered: [text] · if_competing: {side_a: [text], side_b: [text]}",
+      "why_it_matters": "Measures how semantically complex the exchange is at the concept layer — whether one idea dominates, multiple ideas coexist, or competing ideas are in tension.",
+      "order": 13
+    },
+    {
+      "id": "semantic_drift",
+      "label": "Semantic Drift",
+      "call": 5,
+      "parent_section": "Semantic Complexity",
+      "definition": "Whether the semantic content remains stable across the pair or changes form. State classifies the type of change. When drift is present, from names the starting semantic pattern (2 words) and to names the ending semantic pattern (2 words). When state is stable, both from and to are null. This captures the directional shape of semantic movement within the pair, not content change but structural transformation.",
+      "scale": "state: 'stable' | 'narrowing' | 'broadening' | 'shifting' | 'splitting' | 'inversion' · from: text (2 words) or null · to: text (2 words) or null",
+      "why_it_matters": "Tracks whether the semantic content transformed across the exchange — and if so, in which structural direction (narrowing, broadening, shifting, splitting, or inverting).",
+      "order": 14
+    },
+    {
+      "id": "concept_coupling",
+      "label": "Concept Coupling",
+      "call": 5,
+      "parent_section": "Semantic Complexity",
+      "definition": "How the concepts in the exchange are structurally related to each other. State classifies the coupling strength. Side_a and side_b each hold arrays of concept names (2–4 words each) identifying the two sides of the coupling relationship. Concepts are named abstractly, not quoted. When no coupling is present, state is 'none' and both arrays are empty.",
+      "scale": "state: 'loosely_adjacent' | 'tightly_linked' | 'causally_fused' | 'none' · side_a: [text (2–4 words)] · side_b: [text (2–4 words)]",
+      "why_it_matters": "Identifies how tightly the concepts in the exchange are bound together — whether they sit near each other, depend on each other, or are causally fused into a single semantic unit.",
+      "order": 15
+    }
+  ]
+}
