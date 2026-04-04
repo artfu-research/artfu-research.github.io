@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · APB · Pair 138</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #c8a96e;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+    --pattern-color: #c8a96e;
+    --score-strong: #6ea898;
+    --score-mid: #c8a96e;
+    --score-low: #c97070;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    line-height: 1.5; margin: 0; padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background: var(--surface); width: 100%; min-height: 100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display: inline-block; width: 14px; height: 14px; line-height: 14px;
+    text-align: center; border-radius: 50%;
+    border: 1px solid var(--accent); color: var(--accent); font-size: 9px;
+    cursor: pointer; margin-left: 4px; user-select: none; vertical-align: middle;
+    transition: all 0.15s;
+  }
+  .info-icon:active { background: var(--accent); color: var(--bg); transform: scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif; font-size: 18px;
+    font-style: italic; color: var(--text-bright);
+  }
+  .header-meta { font-size: 9px; color: var(--text-dim); text-align: right; line-height: 1.8; letter-spacing: 0.05em; }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface2); display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--score-strong); background: rgba(110,168,152,0.06); }
+  .turn-speaker { font-size: 8px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--score-strong); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* PATTERN BAR */
+  .pattern-bar {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 80px 1fr auto; gap: 16px; align-items: start;
+    background: linear-gradient(90deg, rgba(200,169,110,0.07) 0%, transparent 60%);
+  }
+  .pattern-label {
+    font-size: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-dim); white-space: nowrap; padding-top: 4px;
+  }
+  .pattern-declaration {
+    font-family: 'Instrument Serif', serif; font-size: 24px;
+    font-style: italic; color: var(--pattern-color); letter-spacing: 0.02em; align-self: center;
+  }
+  .pattern-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+    border-left: 1px solid var(--border); padding-left: 16px; min-width: 220px;
+  }
+  .grand-total-score { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
+  .grand-total-pos { margin-top: 4px; margin-bottom: 6px; font-size: 9px; }
+  .pattern-reasoning { font-size: 8px; color: var(--text-dim); line-height: 1.5; text-align: right; font-style: italic; }
+
+  /* DIMENSION BARS */
+  .dim-bar-section {
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .dim-bar-title {
+    font-family: 'Syne', sans-serif; font-size: 7px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .dim-bar-row { display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; margin-bottom: 5px; }
+  .dim-bar-label { font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .dim-bar-track { font-size: 9px; }
+
+  /* CALL PANELS */
+  .call-panels-grid { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+  .call-panel { background: var(--surface); padding: 0; }
+  .call-header {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    padding: 8px 14px; background: var(--surface2); border-bottom: 1px solid var(--border);
+  }
+  .call-label {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+  }
+  .call-score-bar { font-size: 9px; }
+  .call-fields { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); }
+
+  /* FIELD BLOCKS */
+  .field-block { background: var(--surface); padding: 10px 12px; }
+  .field-header { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+  .field-name {
+    font-size: 8px; font-weight: 600; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em; flex: 1; min-width: 0;
+  }
+  .field-body { font-size: 9px; line-height: 1.6; }
+  .field-reasoning {
+    font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic;
+    margin-top: 5px; border-top: 1px solid var(--border); padding-top: 4px;
+  }
+  .field-evidence { font-size: 8px; color: var(--accent); font-style: italic; margin-top: 3px; opacity: 0.8; }
+
+  /* ANSWER TOKENS */
+  .ans-true  { color: var(--text-dim); font-size: 9px; }
+  .ans-false { color: var(--text-dim); font-size: 9px; }
+  .ans-null  { color: var(--text-dim); font-style: italic; font-size: 9px; }
+
+  /* SCORE BADGES */
+  .score-badge {
+    display: inline-block; font-size: 8px; font-weight: 400;
+    padding: 1px 5px; border-radius: 3px; font-family: 'DM Mono', monospace; flex-shrink: 0;
+    color: var(--text-dim); background: rgba(107,113,148,0.08); border: 1px solid rgba(107,113,148,0.15);
+  }
+
+  /* FIELD TAGS */
+  .ftag { display: inline-block; font-size: 7px; padding: 1px 4px; border-radius: 2px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Attorney Performance Battery</span>
+      <span class="header-title">Pair 138 · gibson_sp138</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>examiner: MS. EASTERLING</div>
+      <div>corpus: direct · p.42 l.11</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"Going to the -- sorry. Back to your report, which is Exhibit 1, going to next page, page 10 of Exhibit 1. Are you with me?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"I am, yes."</div>
+    </div>
+  </div>
+
+  <!-- PATTERN + GRAND TOTAL BAR -->
+  <div class="pattern-bar">
+    <div class="pattern-label">Call 7<br>Pattern</div>
+    <div class="pattern-declaration">Procedural Control<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-right">
+      <div class="grand-total-score" style="color:var(--score-strong);">+36<span style="font-size:14px;color:var(--text-dim);"> / ±125</span></div>
+      <div class="grand-total-pos"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−125</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+125</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+36</span></div>
+      <div class="pattern-reasoning">Across all lenses the attorney prioritizes clear, scoped questioning and tight witness management, achieving precise control of the record while making no strategic advances. The two words capture this disciplined, procedural focus.</div>
+    </div>
+  </div>
+
+  <!-- DIMENSION BARS -->
+  <div class="dim-bar-section">
+    <div class="dim-bar-title">Dimension Totals</div>
+    <div class="dim-bar-row">
+          <span class="dim-bar-label" style="color:#c8a96e;">Strategic</span>
+          <div class="dim-bar-track"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−50</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+50</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+8</span></div>
+        </div><div class="dim-bar-row">
+          <span class="dim-bar-label" style="color:#5b8fa8;">Tactical</span>
+          <div class="dim-bar-track"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−40</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+40</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+12</span></div>
+        </div><div class="dim-bar-row">
+          <span class="dim-bar-label" style="color:#7a9e6e;">Technical</span>
+          <div class="dim-bar-track"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−60</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+60</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+20</span></div>
+        </div><div class="dim-bar-row">
+          <span class="dim-bar-label" style="color:#a86e8a;">Composure</span>
+          <div class="dim-bar-track"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−25</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+25</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+10</span></div>
+        </div><div class="dim-bar-row">
+          <span class="dim-bar-label" style="color:#c97070;">Control</span>
+          <div class="dim-bar-track"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−35</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+35</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+15</span></div>
+        </div>
+  </div>
+
+  <!-- CALL PANELS -->
+  <div class="call-panels-grid">
+    
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 1 · Question Construction Quality</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−30</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+30</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+16</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">clear and unambiguous<span class="info-icon" data-field-id="clear_and_unambiguous">ⓘ</span></span>
+        <span class="score-badge score-exemplary">+4</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●●<span style="opacity:0.2;"></span></span> 1.00</span><div class="field-reasoning">The question ultimately asks a single, straightforward question about the witness’s current attention, with no ambiguous wording.</div><div class="field-evidence">""Are you with me?""</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">scope controlled<span class="info-icon" data-field-id="scope_controlled">ⓘ</span></span>
+        <span class="score-badge score-exemplary">+4</span>
+        <span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●●<span style="opacity:0.2;"></span></span> 1.00</span><div class="field-reasoning">The question is tightly focused on whether the witness is following the page, preventing scope expansion.</div><div class="field-evidence">""Are you with me?""</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">assumes facts not in evidence<span class="info-icon" data-field-id="assumes_facts_not_in_evidence">ⓘ</span></span>
+        <span class="score-badge score-poor">-3</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●●<span style="opacity:0.2;"></span></span> 1.00</span><div class="field-reasoning">The question presumes the existence of Exhibit 1 and page 10 without establishing that fact within this exchange.</div><div class="field-evidence">""Back to your report, which is Exhibit 1, going to next page, page 10 of Exhibit 1.""</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">compound question<span class="info-icon" data-field-id="compound_question">ⓘ</span></span>
+        <span class="score-badge score-exemplary">+4</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The inquiry is a single question about the witness’s attention; the preceding context is not a separate factual query.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">foundation established<span class="info-icon" data-field-id="foundation_established">ⓘ</span></span>
+        <span class="score-badge score-solid">+3</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">No foundation for the reference to Exhibit 1 is provided in this pair, yet the witness answered the question without confusion.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">objectionable form<span class="info-icon" data-field-id="objectionable_form">ⓘ</span></span>
+        <span class="score-badge score-exemplary">+4</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The question is a simple, non-leading request for confirmation and does not violate evidentiary rules.</div></div></div>
+      </div>
+    </div>
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 2 · Answer Control</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−15</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+15</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+6</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">answer responsive<span class="info-icon" data-field-id="answer_responsive">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The witness directly answered the attorney's question, confirming he was following the exhibit.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">deflection present<span class="info-icon" data-field-id="deflection_present">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The witness did not divert from the question; he answered as asked.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">deflection addressed<span class="info-icon" data-field-id="deflection_addressed">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">objection valid<span class="info-icon" data-field-id="objection_valid">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">answer elicited<span class="info-icon" data-field-id="answer_elicited">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The attorney obtained the desired confirmation that the witness was following the exhibit.</div></div></div>
+      </div>
+    </div>
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 3 · Strategic Execution</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−25</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:var(--score-low);">◆</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+25</span><span style="font-size:9px;color:var(--score-low);font-weight:600;margin-left:10px;">-5</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">advances theory<span class="info-icon" data-field-id="advances_theory">ⓘ</span></span>
+        <span class="score-badge score-weak">-1</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The question merely confirms the witness’s understanding of the exhibit and does not advance any narrative or case theory.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">damages opposition<span class="info-icon" data-field-id="damages_opposition">ⓘ</span></span>
+        <span class="score-badge score-weak">-1</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The witness’s answer does not undermine the opposing side’s position or credibility.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">impeachment setup<span class="info-icon" data-field-id="impeachment_setup">ⓘ</span></span>
+        <span class="score-badge score-weak">-1</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">No foundation for later impeachment is established in this exchange.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">witness credibility challenged<span class="info-icon" data-field-id="witness_credibility_challenged">ⓘ</span></span>
+        <span class="score-badge score-weak">-1</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The question does not expose any weakness, bias, or unreliability in the witness.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">trial utility<span class="info-icon" data-field-id="trial_utility">ⓘ</span></span>
+        <span class="score-badge score-weak">-1</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">This procedural exchange yields no material that is directly useful for trial.</div></div></div>
+      </div>
+    </div>
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 4 · Technical Proficiency</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−15</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+15</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+4</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">counsel preparedness<span class="info-icon" data-field-id="counsel_preparedness">ⓘ</span></span>
+        <span class="score-badge score-solid">+3</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span><span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●●<span style="opacity:0.2;"></span></span> 1.00</span><div class="field-reasoning">The attorney precisely references the exhibit and directs the witness, indicating familiarity and control.</div><div class="field-evidence">"Going to the -- sorry. Back to your report, which is Exhibit 1, going to next page, page 10 of Exhibit 1. Are you with me?"</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">leading question appropriate<span class="info-icon" data-field-id="leading_question_appropriate">ⓘ</span></span>
+        <span class="score-badge score-weak">-2</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">No leading question was used; in an adversarial setting a leading question would have been expected to secure a specific answer.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">hearsay avoided<span class="info-icon" data-field-id="hearsay_avoided">ⓘ</span></span>
+        <span class="score-badge score-solid">+3</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●●<span style="opacity:0.2;"></span></span> 1.00</span><div class="field-reasoning">The question merely confirms witness comprehension and does not elicit hearsay.</div><div class="field-evidence">"Going to the -- sorry. Back to your report, which is Exhibit 1, going to next page, page 10 of Exhibit 1. Are you with me?"</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">expertise invoked<span class="info-icon" data-field-id="expertise_invoked">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span><span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">repair opportunity<span class="info-icon" data-field-id="repair_opportunity">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span><span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div>
+      </div>
+    </div>
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 5 · Delivery Effectiveness</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−25</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+25</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+10</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">speech fluency<span class="info-icon" data-field-id="speech_fluency">ⓘ</span></span>
+        <span class="score-badge score-weak">-2</span>
+        <span class="ftag" style="color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid rgba(168,110,138,0.20);">composure</span><span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The attorney's question contains a false start and self‑correction, indicating dysfluency that could give the witness an opening.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">clear delivery<span class="info-icon" data-field-id="clear_delivery">ⓘ</span></span>
+        <span class="score-badge score-solid">+3</span>
+        <span class="ftag" style="color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid rgba(168,110,138,0.20);">composure</span><span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The question, while containing a brief interruption, remains understandable and elicits a clear affirmative response.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">comportment<span class="info-icon" data-field-id="comportment">ⓘ</span></span>
+        <span class="score-badge score-exemplary">+4</span>
+        <span class="ftag" style="color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid rgba(168,110,138,0.20);">composure</span><span class="ftag" style="color:#7a9e6e;background:rgba(122,158,110,0.10);border:1px solid rgba(122,158,110,0.20);">technical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The attorney behaves within professional norms, showing no abusive or improper conduct.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">emotional valence<span class="info-icon" data-field-id="emotional_valence">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid rgba(168,110,138,0.20);">composure</span><span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The attorney uses a mild apology, indicating a neutral emotional register that neither aggresses nor concedes, appropriate for the moment.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">register calibration<span class="info-icon" data-field-id="register_calibration">ⓘ</span></span>
+        <span class="score-badge score-solid">+3</span>
+        <span class="ftag" style="color:#a86e8a;background:rgba(168,110,138,0.10);border:1px solid rgba(168,110,138,0.20);">composure</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The formal language and reference to exhibits match the expert witness's technical level, facilitating productive engagement.</div></div></div>
+      </div>
+    </div>
+    <div class="call-panel">
+      <div class="call-header">
+        <span class="call-label">Call 6 · Control And Dominance</span>
+        <div class="call-score-bar"><span style="font-size:8px;color:var(--text-dim);margin-right:4px;">−15</span><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0px;"><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--text-dim);">│</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:rgba(107,113,148,0.35);">─</span><span style="color:var(--score-strong);">◆</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span><span style="color:rgba(107,113,148,0.15);">─</span></span><span style="font-size:8px;color:var(--text-dim);margin-left:4px;">+15</span><span style="font-size:9px;color:var(--score-strong);font-weight:600;margin-left:10px;">+5</span></div>
+      </div>
+      <div class="call-fields" style="grid-template-columns:repeat(3,1fr);">
+        <div class="field-block">
+      <div class="field-header">
+        <span class="field-name">witness handling<span class="info-icon" data-field-id="witness_handling">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">The attorney asked a concise, focused question that confirmed the witness’s location in the record, preventing any diversion and keeping the witness on point. This demonstrates effective control in an adversarial setting.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">narrative control maintained<span class="info-icon" data-field-id="narrative_control_maintained">ⓘ</span></span>
+        <span class="score-badge score-solid">+2</span>
+        <span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span><span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-true">true</span><span style="font-size:7px;color:var(--text-dim);margin-left:6px;">conf <span style="color:var(--accent);">●●●●●●●●●<span style="opacity:0.2;">●</span></span> 0.90</span><div class="field-reasoning">By directing the witness back to a specific page of the exhibit, the attorney maintained narrative control and prevented the witness from steering the testimony toward unrelated topics.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">commitment solidified<span class="info-icon" data-field-id="commitment_solidified">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">evasion present<span class="info-icon" data-field-id="evasion_present">ⓘ</span></span>
+        <span class="score-badge score-adequate">+1</span>
+        <span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-false">false</span><div class="field-reasoning">The witness answered directly and unambiguously, showing no evasion or refusal to commit to a position.</div></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">evasion addressed<span class="info-icon" data-field-id="evasion_addressed">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#c97070;background:rgba(201,112,112,0.10);border:1px solid rgba(201,112,112,0.20);">control</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div><div class="field-block">
+      <div class="field-header">
+        <span class="field-name">implicit signaling<span class="info-icon" data-field-id="implicit_signaling">ⓘ</span></span>
+        <span style="color:var(--text-dim);">—</span>
+        <span class="ftag" style="color:#c8a96e;background:rgba(200,169,110,0.10);border:1px solid rgba(200,169,110,0.20);">strategic</span><span class="ftag" style="color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);">tactical</span>
+      </div>
+      <div class="field-body">
+        <span class="ans-null">null</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: attorney_performance · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>
