@@ -561,8 +561,13 @@ function selectStrategic(modifier) {
   // Toggle behavior: clicking same button deselects
   if (strategicModifier === modifier) {
     strategicModifier = null;
+    // ── SCHEMA WIRING: deselecting SI returns to the base battery schema ──
+    loadBatterySchema(currentBattery);
   } else {
     strategicModifier = modifier;
+    // ── SCHEMA WIRING: selecting SI loads the appropriate SI schema ──
+    const siSchemaKey = modifier === 'opposition' ? 'si_opp' : 'si';
+    loadBatterySchema(siSchemaKey);
   }
   
   updateStrategicButtons();
@@ -574,7 +579,6 @@ function loadCurrentView() {
   
   // Special case: JUR requires strategic modifier
   if (currentBattery === 'jsb' && !strategicModifier) {
-    // Show placeholder message instead of loading file
     iframe.srcdoc = `
       <!DOCTYPE html>
       <html>
@@ -606,13 +610,10 @@ function loadCurrentView() {
     return;
   }
   
-  // Get path for current battery, pair, and modifier
   const path = getBatteryPath(currentBattery, currentPair, strategicModifier);
   
   if (path) {
     iframe.src = path;
-    
-    // Attach ⓘ click handlers once iframe loads
     iframe.onload = function() {
       attachInfoIconHandlers();
     };
@@ -623,14 +624,17 @@ function loadCurrentView() {
 // SCHEMA LOADING AND DISPLAY
 // ============================================================================
 
+// Maps battery codes → schema file paths (relative to interface.html location)
 const batterySchemaMap = {
-  'em': 'schemas/em_schema.json',
-  'fa': 'schemas/fa_schema.json',
-  'sc': 'schemas/sc_schema.json',
-  'wpb': 'schemas/wpb_schema.json',
-  'apb': 'schemas/apb_schema.json',
-  'jsb': 'schemas/jsb_schema.json',
-  'eeb': 'schemas/eeb_schema.json'
+  'em':     'schemas/em_schema.json',
+  'fa':     'schemas/forensic_analysis_schema.json',
+  'sc':     'schemas/semantic_content_schema.json',
+  'si':     'schemas/strategic_interpretation_schema.json',
+  'si_opp': 'schemas/strategic_interpretation_opposition_schema.json',
+  'wpb':    'schemas/witness_posture_schema.json',
+  'apb':    'schemas/attorney_performance_schema.json',
+  'jsb':    'schemas/juror_profile_schema.json',
+  'eeb':    'schemas/entity_extraction_schema.json'
 };
 
 async function loadBatterySchema(batteryCode) {
@@ -641,7 +645,6 @@ async function loadBatterySchema(batteryCode) {
     return;
   }
   
-  // Load from JSON if file exists
   const schemaPath = batterySchemaMap[batteryCode];
   if (!schemaPath) {
     displaySchemaPlaceholder();
@@ -682,36 +685,75 @@ function displaySchemaOverview() {
   `;
 }
 
+// ── UPDATED: displayFieldSchema handles all schema field shapes ──
 function displayFieldSchema(fieldId) {
   const panel = document.querySelector('.bottom-panel .panel-content');
   if (!currentSchema) return;
   
-  // Find field in schema
   let field = null;
+
+  // 1. Check pattern_field (all batteries except EEB)
   if (currentSchema.pattern_field && currentSchema.pattern_field.id === fieldId) {
     field = currentSchema.pattern_field;
-  } else {
-    field = currentSchema.fields.find(f => f.id === fieldId);
   }
-  
+
+  // 2. Check standard fields[] array (EM, FA, SC, SI, SI_OPP, WPB, APB, EEB)
+  if (!field && Array.isArray(currentSchema.fields)) {
+    field = currentSchema.fields.find(f => f.id === fieldId) || null;
+  }
+
+  // 3. Check JPB demographic_fields dict — keys are field ids
+  if (!field && currentSchema.demographic_fields && currentSchema.demographic_fields[fieldId]) {
+    const raw = currentSchema.demographic_fields[fieldId];
+    field = {
+      id: fieldId,
+      label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      call: 'A',
+      definition: raw.description || '',
+      scale: raw.values ? raw.values.join(' · ') : (raw.format || ''),
+      why_it_matters: 'Demographic profile field used in voir dire strategy and juror activation mapping.',
+      parent_section: 'Demographic Profile'
+    };
+  }
+
+  // 4. Check JPB enrichment_fields dict
+  if (!field && currentSchema.enrichment_fields && currentSchema.enrichment_fields[fieldId]) {
+    const raw = currentSchema.enrichment_fields[fieldId];
+    field = {
+      id: fieldId,
+      label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      call: 'B',
+      definition: raw.description || '',
+      scale: raw.values ? raw.values.join(' · ') : (raw.format || raw.scale || ''),
+      why_it_matters: raw.note || 'Enrichment field used in psychological and strategic profiling of juror types.',
+      parent_section: 'Juror Enrichment'
+    };
+  }
+
   if (!field) {
-    console.log(`Field ${fieldId} not found in schema`);
+    console.log(`Field "${fieldId}" not found in schema for ${currentSchema.battery_code}`);
     return;
   }
-  
+
+  // Normalise EEB's "description" key → "definition" for unified rendering
+  const definition = field.definition || field.description || '—';
+  const scale      = field.scale || field.format || '—';
+  const callLabel  = field.call !== undefined ? `Call ${field.call}` : '';
+  const section    = field.parent_section || '';
+
   panel.innerHTML = `
     <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; height: 100%;">
       <div>
         <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">
           ${field.label}
-          <span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">Call ${field.call}</span>
+          ${callLabel ? `<span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">${callLabel}${section ? ' · ' + section : ''}</span>` : ''}
         </div>
         <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">What it measures:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.definition}</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${definition}</div>
       </div>
       <div>
-        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale/Range:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.scale}</div>
+        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale / Range:</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${scale}</div>
         ${field.examples ? `
         <div>
           <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Examples:</div>
@@ -721,7 +763,7 @@ function displayFieldSchema(fieldId) {
       </div>
       <div>
         <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Why it matters:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.why_it_matters}</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.why_it_matters || '—'}</div>
         <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
           ← Back to ${currentSchema.battery_name} overview
         </button>
@@ -760,7 +802,6 @@ function attachInfoIconHandlers() {
   
   // Click anywhere in iframe (except info icons) returns to overview
   iframeDoc.addEventListener('click', function(e) {
-    // If clicked element is not an info icon
     if (!e.target.classList.contains('info-icon')) {
       displaySchemaOverview();
     }
@@ -768,14 +809,12 @@ function attachInfoIconHandlers() {
 }
 
 function updateBatteryButtons() {
-  // Clear all battery button active states
   document.querySelectorAll('.battery-btn').forEach(btn => {
     if (!btn.id.startsWith('btn-client') && !btn.id.startsWith('btn-opposition')) {
       btn.classList.remove('active');
     }
   });
   
-  // Set active battery
   const batteryBtn = document.getElementById('btn-' + currentBattery);
   if (batteryBtn) {
     batteryBtn.classList.add('active');
@@ -786,7 +825,6 @@ function updateStrategicButtons() {
   const clientBtn = document.getElementById('btn-client');
   const oppBtn = document.getElementById('btn-opposition');
   
-  // Enable strategic buttons if on PRIMARY or JUR
   if (['em', 'fa', 'sc', 'jsb'].includes(currentBattery)) {
     clientBtn.classList.remove('disabled');
     oppBtn.classList.remove('disabled');
@@ -795,7 +833,6 @@ function updateStrategicButtons() {
     oppBtn.classList.add('disabled');
   }
   
-  // Update active states
   clientBtn.classList.remove('active');
   oppBtn.classList.remove('active');
   
@@ -809,7 +846,7 @@ function updateStrategicButtons() {
 // Load EM battery on page load
 window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
-  updatePairSummaries(); // Load pair summaries
+  updatePairSummaries();
   loadBatterySchema(currentBattery); // Load initial schema (EM)
 });
 
@@ -817,7 +854,6 @@ window.addEventListener('DOMContentLoaded', function() {
 async function updatePairSummaries() {
   const container = document.getElementById('pair-summaries-container');
   
-  // Check if JUR is selected without CL/OP
   if (filterState.evaluative === 'jur' && !filterState.si) {
     container.innerHTML = `
       <div class="placeholder">
@@ -829,7 +865,6 @@ async function updatePairSummaries() {
     return;
   }
   
-  // Load all 395 pairs with actual summary data
   try {
     let summariesHTML = '';
     for (let i = 1; i <= 395; i++) {
@@ -839,8 +874,6 @@ async function updatePairSummaries() {
       }
     }
     container.innerHTML = summariesHTML;
-    
-    // Highlight current pair
     highlightPair(currentPair);
   } catch (error) {
     console.error('Error rendering pair summaries:', error);
@@ -851,25 +884,20 @@ async function updatePairSummaries() {
 async function renderPairSummary(pairNum) {
   const pairStr = String(pairNum).padStart(4, '0');
   
-  // Determine which battery to extract based on filter state
   let summaryData;
   
   if (filterState.evaluative) {
-    // EVALUATIVE battery selected
     summaryData = await extractEvaluativeSummary(pairNum, filterState.evaluative, filterState.si);
   } else if (filterState.si) {
-    // STRATEGIC overlay selected
     summaryData = await extractStrategicSummary(pairNum, filterState.primary, filterState.si);
   } else if (filterState.primary) {
-    // PRIMARY battery selected
     summaryData = await extractPrimarySummary(pairNum, filterState.primary);
   }
   
   if (!summaryData) {
-    return ''; // No data
+    return '';
   }
   
-  // Render summary block
   return `
     <div class="pair-block" data-pair="${pairNum}" onclick="loadPairFromSummary(${pairNum})">
       <div class="pair-header">
@@ -897,11 +925,9 @@ async function extractPrimarySummary(pair, battery) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // Extract Call 6 pattern and reasoning
     const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
     const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
     
-    // Extract page/line from header
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -931,24 +957,21 @@ async function extractStrategicSummary(pair, primary, perspective) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // Extract signature
     const signature = doc.querySelector('.sig-declaration')?.textContent.trim();
     
-    // Extract summary
     const summaryLabel = Array.from(doc.querySelectorAll('.summary-label')).find(el => 
       el.textContent.includes('Strategic Summary')
     );
     const summary = summaryLabel?.nextElementSibling?.textContent.trim();
     
-    // Extract scores - parse the score-row divs
     const scoreRows = doc.querySelectorAll('.score-row');
     let clientScore = '?';
     let oppScore = '?';
     
     scoreRows.forEach(row => {
       const label = row.querySelector('.score-label')?.textContent;
-      const scoreTag = row.querySelector('.tag')?.textContent.trim(); // Gets "7/10" or "5/10"
-      const scoreValue = scoreTag?.split('/')[0]; // Just the number before /
+      const scoreTag = row.querySelector('.tag')?.textContent.trim();
+      const scoreValue = scoreTag?.split('/')[0];
       
       if (label?.includes('Client')) {
         clientScore = scoreValue || '?';
@@ -957,7 +980,6 @@ async function extractStrategicSummary(pair, primary, perspective) {
       }
     });
     
-    // Extract page/line
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -982,8 +1004,6 @@ async function extractStrategicSummary(pair, primary, perspective) {
 }
 
 async function extractEvaluativeSummary(pair, battery, perspective) {
-  const pairStr = String(pair).padStart(4, '0');
-  
   if (battery === 'wit') {
     return await extractWPBSummary(pair);
   } else if (battery === 'att') {
@@ -993,7 +1013,6 @@ async function extractEvaluativeSummary(pair, battery, perspective) {
   } else if (battery === 'ent') {
     return await extractENTSummary(pair);
   }
-  
   return null;
 }
 
@@ -1007,16 +1026,10 @@ async function extractWPBSummary(pair) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // Extract Call 7 pattern
     const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
-    
-    // Extract Call 7 reasoning (it's right after pattern declaration)
     const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
-    
-    // Extract grand total score
     const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
     
-    // Extract page/line
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -1042,7 +1055,6 @@ async function extractWPBSummary(pair) {
 }
 
 async function extractAPBSummary(pair) {
-  // Attorney Performance Battery - similar structure to WPB
   const pairStr = String(pair).padStart(4, '0');
   const path = `attorney_performance/pair_${pairStr}_apb.html`;
   
@@ -1082,9 +1094,6 @@ async function extractAPBSummary(pair) {
 
 async function extractJURSummary(pair, perspective) {
   const pairStr = String(pair).padStart(4, '0');
-  // File naming is opposite of perspective:
-  // - prosecution file = defense/client perspective (what hurts prosecution)
-  // - defense file = prosecution/opposition perspective (what hurts defense)
   const suffix = perspective === 'op' ? '_defense' : '_prosecution';
   const path = `juror_profiles/pair_${pairStr}_jpb${suffix}.html`;
   
@@ -1094,17 +1103,14 @@ async function extractJURSummary(pair, perspective) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // Extract wants pattern and reasoning from "tab-wants" section
     const wantsTab = doc.querySelector('#tab-wants');
     const wantsPattern = wantsTab?.querySelector('.pattern-declaration')?.textContent.trim();
     const wantsReasoning = wantsTab?.querySelector('.pattern-reasoning')?.textContent.trim();
     
-    // Extract don't wants pattern and reasoning from "tab-donts" section  
     const dontsTab = doc.querySelector('#tab-donts');
     const dontsPattern = dontsTab?.querySelector('.pattern-declaration')?.textContent.trim();
     const dontsReasoning = dontsTab?.querySelector('.pattern-reasoning')?.textContent.trim();
     
-    // Extract page/line
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -1142,8 +1148,6 @@ async function extractENTSummary(pair) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
     
-    // This will need inspection of actual ENT HTML structure
-    // For now, placeholder with example text
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
     const lineMatch = headerMeta?.match(/l\.(\d+)/);
@@ -1167,11 +1171,9 @@ async function extractENTSummary(pair) {
 function loadPairFromSummary(pairNum) {
   currentPair = pairNum;
   
-  // Determine which battery to load based on current filter state
   let batteryToLoad;
   
   if (filterState.evaluative) {
-    // EVALUATIVE battery selected - map to battery codes
     const evalMap = {
       'wit': 'wpb',
       'att': 'apb',
@@ -1182,25 +1184,18 @@ function loadPairFromSummary(pairNum) {
     currentBattery = batteryToLoad;
     strategicModifier = null;
   } else if (filterState.si) {
-    // STRATEGIC overlay selected
     batteryToLoad = filterState.primary;
     currentBattery = batteryToLoad;
     strategicModifier = filterState.si === 'cl' ? 'client' : 'opposition';
   } else {
-    // PRIMARY battery selected
     batteryToLoad = filterState.primary;
     currentBattery = batteryToLoad;
     strategicModifier = null;
   }
   
-  // Update left panel to match
   updateBatteryButtons();
   updateStrategicButtons();
-  
-  // Load the view
   loadCurrentView();
-  
-  // Highlight selected pair
   highlightPair(pairNum);
 }
 
@@ -1216,64 +1211,51 @@ function highlightPair(pairNum) {
 
 // Filter state management
 let filterState = {
-  primary: 'em',      // em, fa, sc
-  si: null,           // cl, op, or null
-  evaluative: null    // wit, att, jur, ent, or null
+  primary: 'em',
+  si: null,
+  evaluative: null
 };
 
 function selectFilter(group, value) {
   if (group === 'primary') {
-    // Selecting PRIMARY clears evaluative
     filterState.primary = value;
     filterState.evaluative = null;
     
-    // Update UI
     document.querySelectorAll('.filter-btn.primary').forEach(btn => btn.classList.remove('active'));
     document.getElementById('filter-' + value).classList.add('active');
-    
     document.querySelectorAll('.filter-btn.eval').forEach(btn => btn.classList.remove('active'));
     
-    // Enable SI buttons
     document.querySelectorAll('.filter-btn.si').forEach(btn => {
       btn.classList.remove('disabled');
       btn.disabled = false;
     });
     
   } else if (group === 'si') {
-    // SI can only be selected if primary is active OR if JUR is active
     if (!filterState.primary && filterState.evaluative !== 'jur') return;
     
-    // Toggle SI (can deselect)
     if (filterState.si === value) {
       filterState.si = null;
       document.getElementById('filter-' + value).classList.remove('active');
     } else {
-      // Deselect other SI, select this one
       filterState.si = value;
       document.querySelectorAll('.filter-btn.si').forEach(btn => btn.classList.remove('active'));
       document.getElementById('filter-' + value).classList.add('active');
     }
     
   } else if (group === 'eval') {
-    // Selecting EVALUATIVE clears primary and SI (except for JUR)
     filterState.primary = null;
     filterState.evaluative = value;
     
-    // Update UI
     document.querySelectorAll('.filter-btn.primary').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.filter-btn.eval').forEach(btn => btn.classList.remove('active'));
     document.getElementById('filter-' + value).classList.add('active');
     
-    // Enable/disable SI buttons based on evaluative selection
     if (value === 'jur') {
-      // JUR enables SI buttons
       document.querySelectorAll('.filter-btn.si').forEach(btn => {
         btn.classList.remove('disabled');
         btn.disabled = false;
       });
-      // Don't clear SI selection
     } else {
-      // Other evaluatives disable SI buttons
       filterState.si = null;
       document.querySelectorAll('.filter-btn.si').forEach(btn => {
         btn.classList.remove('active');
@@ -1284,7 +1266,7 @@ function selectFilter(group, value) {
   }
   
   console.log('Filter state:', filterState);
-  updatePairSummaries(); // Refresh summaries based on new filter
+  updatePairSummaries();
 }
 </script>
 
