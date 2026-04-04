@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · SI · Pair 059 · Epistemic Motion</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e100d;
+    --surface: #141710;
+    --surface2: #1b1f17;
+    --border: #272c22;
+    --accent: #a8c278;
+    --accent2: #c2a878;
+    --accent3: #78c2a0;
+    --text: #d8e4cc;
+    --text-dim: #6e7a62;
+    --text-bright: #eef4e8;
+    --red: #c97070;
+    --amber: #c8a96e;
+    --teal: #6ea898;
+    --green: #88c278;
+    --pattern-color: #a8c278;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page {
+    background: var(--surface);
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* INFO ICON */
+  .info-icon {
+    display: inline-block;
+    width: 14px; height: 14px; line-height: 14px;
+    text-align: center; border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent); font-size: 9px;
+    cursor: pointer; margin-left: 4px;
+    user-select: none; vertical-align: middle;
+    transition: all 0.15s;
+  }
+  .info-icon:active {
+    background: var(--accent); color: var(--bg);
+    transform: scale(0.95);
+  }
+
+  /* HEADER */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--text-bright);
+  }
+  .header-meta {
+    font-size: 9px; color: var(--text-dim);
+    text-align: right; line-height: 1.8; letter-spacing: 0.05em;
+  }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: var(--accent2); background: rgba(194,168,120,0.06); }
+  .turn.a { border-color: var(--accent3); background: rgba(120,194,160,0.06); }
+  .turn-speaker {
+    font-size: 8px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .turn.q .turn-speaker { color: var(--accent2); }
+  .turn.a .turn-speaker { color: var(--accent3); }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* SIGNATURE BAR */
+  .sig-bar {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 80px 1fr 220px;
+    gap: 20px;
+    align-items: center;
+    background: linear-gradient(90deg, rgba(168,194,120,0.08) 0%, transparent 60%);
+  }
+  .sig-label {
+    font-size: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-dim); white-space: nowrap;
+  }
+  .sig-declaration {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px; font-style: italic;
+    color: var(--pattern-color); letter-spacing: 0.02em;
+  }
+  .sig-scores { border-left: 1px solid var(--border); padding-left: 16px; }
+  .score-row { display: flex; gap: 8px; align-items: center; }
+  .score-label { font-size: 8px; color: var(--text-dim); min-width: 90px; }
+  .score-bar { font-size: 9px; }
+
+  /* SUMMARY */
+  .summary-block {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .summary-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 8px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .summary-text { font-size: 10px; color: var(--text); line-height: 1.75; }
+
+  /* PANELS */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  .panel { background: var(--surface); padding: 12px 14px; }
+  .panel-call {
+    font-size: 9px; color: var(--accent);
+    letter-spacing: 0.1em; margin-bottom: 8px;
+    font-weight: 600; text-transform: uppercase;
+  }
+
+  /* SI ITEMS */
+  .si-item {
+    margin-bottom: 10px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .si-item:last-child { border-bottom: none; margin-bottom: 0; }
+  .si-item-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .si-call-ref { font-size: 8px; color: var(--text-dim); letter-spacing: 0.05em; }
+  .si-item-body {
+    font-size: 9px; color: var(--text-dim);
+    line-height: 1.6; font-style: italic; padding-left: 4px;
+  }
+  .si-empty { font-size: 9px; color: var(--text-dim); font-style: italic; opacity: 0.7; }
+
+  /* CALL RANK */
+  .rank-row {
+    display: grid;
+    grid-template-columns: 28px 40px 1fr;
+    gap: 6px; align-items: flex-start;
+    margin-bottom: 7px; padding-bottom: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-row:last-child { border-bottom: none; margin-bottom: 0; }
+  .rank-num { padding-top: 1px; }
+  .rank-call { font-size: 9px; color: var(--text-dim); padding-top: 1px; white-space: nowrap; }
+  .rank-reason { font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic; }
+
+  /* TAGS */
+  .tag {
+    display: inline-block; font-size: 8px;
+    padding: 1px 6px; border-radius: 3px;
+    margin: 1px 2px 1px 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .tag-green  { background: rgba(136,194,120,0.12); color: var(--green);   border: 1px solid rgba(136,194,120,0.2); }
+  .tag-amber  { background: rgba(200,169,110,0.12); color: var(--amber);   border: 1px solid rgba(200,169,110,0.2); }
+  .tag-teal   { background: rgba(110,168,152,0.12); color: var(--teal);    border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
+  .tag-dim    { background: rgba(110,122,98,0.12);  color: var(--text-dim);border: 1px solid rgba(110,122,98,0.2); }
+
+  .scale-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .scale-box-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 7px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: var(--text-dim);
+    letter-spacing: 0.08em; background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Strategic Interpretation</span>
+      <span class="header-title">Pair 059 · gibson_sp059</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>source: Epistemic Motion</div>
+      <div>p.19 l.3</div>
+    </div>
+  </div>
+
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING · Defense</div>
+      <div class="turn-text">"Oh. Okay. Maybe that was it. Yeah, I can hear you. Are you good?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON · Witness</div>
+      <div class="turn-text">"No, not yet. Give me one second."</div>
+    </div>
+  </div>
+
+  <!-- SIGNATURE BAR -->
+  <div class="sig-bar">
+    <div class="sig-label">Strategic<br>Signature</div>
+    <div class="sig-declaration">Pause Tactic<span class="info-icon" data-field-id="pair_strategic_signature">ⓘ</span></div>
+    <div class="sig-scores">
+      <div class="score-row">
+        <div class="score-label">Client Value<span class="info-icon" data-field-id="client_value">ⓘ</span></div>
+        <div class="score-bar"><span style="color:var(--text-dim);letter-spacing:1px;">██<span style="color:var(--surface2);">██████████</span></span> <span class="tag tag-dim">2/10</span></div>
+      </div>
+      <div class="score-row" style="margin-top:6px;">
+        <div class="score-label">Opposition Value<span class="info-icon" data-field-id="opposition_value">ⓘ</span></div>
+        <div class="score-bar"><span style="color:var(--text-dim);letter-spacing:1px;">████<span style="color:var(--surface2);">████████</span></span> <span class="tag tag-dim">3/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-block">
+    <div class="summary-label">Strategic Summary<span class="info-icon" data-field-id="summary">ⓘ</span></div>
+    <div class="summary-text">Ms. Easterling’s readiness question was answered with a pause request, showing that Gibson was not yet prepared to answer.  The exchange creates a brief delay that could allow the defense to prepare follow‑up questions or strategy.  For the prosecution, this pair offers no direct evidence of safety failures; it merely signals a procedural pause.  The key takeaway is that the defense may use this pause to shape the narrative, so the prosecution should be ready to resume quickly and steer the questioning toward safety practices.</div>
+  </div>
+
+  <!-- PANELS -->
+  <div class="panels">
+
+    <!-- USE THIS -->
+    <div class="panel">
+      <div class="panel-call">Use This<span class="info-icon" data-field-id="use_this">ⓘ</span></div>
+      <div class="si-item">
+          <div class="si-item-header">
+            <span class="tag tag-teal">low</span>
+            <span class="si-call-ref">Call 3 · <span style="color:var(--text-bright);">enablements_created</span></span>
+          </div>
+          <div class="si-item-body">The pause request is a procedural artifact; it does not provide substantive evidence about safety compliance.</div>
+        </div>
+    </div>
+
+    <!-- WATCH THIS -->
+    <div class="panel">
+      <div class="panel-call">Watch This<span class="info-icon" data-field-id="watch_this">ⓘ</span></div>
+      <div class="si-item">
+          <div class="si-item-header">
+            <span class="tag tag-amber">medium</span>
+            <span class="si-call-ref">Call 3 · <span style="color:var(--text-bright);">enablements_created</span></span>
+          </div>
+          <div class="si-item-body">Immediately follow the pause with a focused question about the defendants’ safety protocols to prevent the defense from gaining narrative control.</div>
+        </div>
+    </div>
+
+    <!-- CALL RANK -->
+    <div class="panel">
+      <div class="panel-call">Call Rank<span class="info-icon" data-field-id="call_rank">ⓘ</span></div>
+      <div class="rank-row">
+          <div class="rank-num"><span class="tag tag-green">#1</span></div>
+          <div class="rank-call">Call 3</div>
+          <div class="rank-reason">Shows the pause that could be exploited by the defense; most actionable for the prosecution.</div>
+        </div><div class="rank-row">
+          <div class="rank-num"><span class="tag tag-amber">#2</span></div>
+          <div class="rank-call">Call 1</div>
+          <div class="rank-reason">Highlights Gibson’s readiness status, a baseline for timing future questions.</div>
+        </div><div class="rank-row">
+          <div class="rank-num"><span class="tag tag-amber">#3</span></div>
+          <div class="rank-call">Call 4</div>
+          <div class="rank-reason">Identifies divergence in frames, indicating potential miscommunication.</div>
+        </div><div class="rank-row">
+          <div class="rank-num"><span class="tag tag-dim">#4</span></div>
+          <div class="rank-call">Call 2</div>
+          <div class="rank-reason">Describes mechanics but offers limited strategic insight.</div>
+        </div><div class="rank-row">
+          <div class="rank-num"><span class="tag tag-dim">#5</span></div>
+          <div class="rank-call">Call 5</div>
+          <div class="rank-reason">Tracks mental model updates; not directly useful for evidence.</div>
+        </div><div class="rank-row">
+          <div class="rank-num"><span class="tag tag-dim">#6</span></div>
+          <div class="rank-call">Call 6</div>
+          <div class="rank-reason">Pattern label only; no actionable content.</div>
+        </div>
+      <div class="scale-box" style="margin-top:10px;">
+        <div class="scale-box-label">Value Score Scale</div>
+        0 = inert · 3 = low · 5 = moderate · 7 = significant · 9 = critical · 10 = ignore at your peril
+      </div>
+    </div>
+
+  </div><!-- end panels -->
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Strategic Interpretation · source: Epistemic Motion</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>
