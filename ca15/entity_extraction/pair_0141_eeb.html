@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EEB · Pair 141</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    line-height: 1.5; margin: 0; padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background: var(--surface); width: 100%; min-height: 100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display: inline-block; width: 14px; height: 14px; line-height: 14px;
+    text-align: center; border-radius: 50%;
+    border: 1px solid var(--accent); color: var(--accent); font-size: 9px;
+    cursor: pointer; margin-left: 4px; user-select: none; vertical-align: middle;
+    transition: all 0.15s;
+  }
+  .info-icon:active { background: var(--accent); color: var(--bg); transform: scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif; font-size: 18px;
+    font-style: italic; color: var(--text-bright);
+  }
+  .header-meta { font-size: 9px; color: var(--text-dim); text-align: right; line-height: 1.8; letter-spacing: 0.05em; }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface2); display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: #5b8fa8; background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: #6ea898; background: rgba(110,168,152,0.06); }
+  .turn-speaker { font-size: 8px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .turn.q .turn-speaker { color: #5b8fa8; }
+  .turn.a .turn-speaker { color: #6ea898; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    padding: 10px 20px; border-bottom: 1px solid var(--border);
+    background: var(--bg); display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .summary-counts { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+  .summary-total { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; color: var(--text-bright); }
+  .summary-sig { font-size: 8px; color: var(--text-dim); }
+  .summary-types { flex: 1; }
+
+  /* ENTITY LIST */
+  .entity-list {
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ENTITY CARD */
+  .entity-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px 14px;
+  }
+  .entity-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; margin-bottom: 6px;
+  }
+  .entity-text {
+    font-size: 10px; color: var(--text-bright);
+    font-style: italic; line-height: 1.5; flex: 1;
+  }
+  .entity-meta { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+  .entity-sec-types { margin-bottom: 5px; }
+  .entity-chars { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .entity-rels { margin-top: 6px; }
+  .entity-speaker { font-size: 7.5px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.05em; }
+
+  /* HOOVER BLOCK */
+  .hoover-block {
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .hoover-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  }
+  .hoover-title {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); flex-shrink: 0;
+  }
+  .hoover-density { font-size: 9px; }
+  .hoover-counts { font-size: 8px; color: var(--text-dim); margin-left: auto; }
+  .hoover-turns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hoover-turn {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 12px;
+  }
+  .hoover-turn-label {
+    font-size: 8px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .hoover-words { font-size: 8px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Entity Extraction Battery</span>
+      <span class="header-title">Pair 141 · gibson_sp141</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · claude-sonnet-4-6</div>
+      <div>corpus: direct · 20 entities</div>
+      <div>p.43 l.10 · 2026-03-27</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"Do you know whether or not it would have been a possible means of verification to use a reamer tool in this case?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"Yes. I mean, it's instructed by Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s own program that you can open the valve and there are -- we call them, like, rodders or wormers that you can open or you can blow through with a utility, like a nitrogen, to try to open that and push through different things that are hooked up to blow air into that valve, different things to the line, to free it and see if there's a blockage or not or do you actually have isolation. So I do think it's feasible as a possibility, yes, it just wasn't done."</div>
+    </div>
+  </div>
+
+  <!-- ENTITY SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-counts">
+      <span class="summary-total">20 entities<span class="info-icon" data-field-id="entity_text">ⓘ</span></span>
+      <span class="summary-sig" style="color:#c97070;">● 13 high</span>
+      <span class="summary-sig" style="color:#c8a96e;">● 7 medium</span>
+      <span class="summary-sig" style="color:#6b7194;">● 0 low</span>
+    </div>
+    <div class="summary-types"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);margin:2px 2px 2px 0;">tools <span style="opacity:0.7;">×6</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);margin:2px 2px 2px 0;">procedures <span style="opacity:0.7;">×4</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);margin:2px 2px 2px 0;">companies <span style="opacity:0.7;">×2</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);margin:2px 2px 2px 0;">persons <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);margin:2px 2px 2px 0;">documents <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.12);border:1px solid rgba(122,110,158,0.25);margin:2px 2px 2px 0;">other#observed_condition <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.12);border:1px solid rgba(122,110,158,0.25);margin:2px 2px 2px 0;">other#energy_state <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);margin:2px 2px 2px 0;">thoughts <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);margin:2px 2px 2px 0;">failures <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);margin:2px 2px 2px 0;">attributions <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);margin:2px 2px 2px 0;">memories <span style="opacity:0.7;">×1</span></span></div>
+  </div>
+
+  <!-- ENTITY CARDS -->
+  <div class="entity-list">
+    <div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"reamer tool"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#observed_condition</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">whether or not it would have been a possible means of verification to use a reamer tool in this case</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">possible means of verification</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">MS. EASTERLING</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"possible means of verification"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">procedures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">actions</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">obligations</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">whether or not it would have been a possible means of verification to use a reamer tool in this case</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">feasible as a possibility</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">negative_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">it just wasn't done</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">MS. EASTERLING</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"BENJAMIN GIBSON"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">certainty:medium</span>
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">thoughts</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">attributions</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">BENJAMIN GIBSON: Yes. I mean, it's instructed by Shell's own program</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">I do think it's feasible as a possibility</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ SHELL USA, INC. and SHELL CHEMICAL, L.P.</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(200,169,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"Shell"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">companies</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">relationships</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">obligations</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(200,169,110,0.25);padding-left:8px;margin-top:6px;">it's instructed by Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s own program</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">Shell's own program</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ SHELL USA, INC. and SHELL CHEMICAL, L.P.</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(200,169,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"SHELL USA, INC. and SHELL CHEMICAL, L.P."</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">companies</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">relationships</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">obligations</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(200,169,110,0.25);padding-left:8px;margin-top:6px;">instructed by Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s own program</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">Shell's own program</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"Shell's own program"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">documents</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">policies</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">standards</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">it's instructed by Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s own program that you can open the valve</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">Shell's own program</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.12);border:1px solid rgba(122,110,158,0.25);font-family:'DM Mono',monospace;">other</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">instructed by Shell's own program</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ SHELL USA, INC. and SHELL CHEMICAL, L.P.</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"open the valve"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">procedures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">actions</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">it's instructed by Shell's own program that you can open the valve and there are rodders or wormers</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">you can open the valve</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"rodders"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#role_designation</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">we call them, like, rodders or wormers that you can open or you can blow through with a utility</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">we call them, like, rodders</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"wormers"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">we call them, like, rodders or wormers that you can open or you can blow through with a utility</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">we call them, like, rodders or wormers</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow through with a utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"blow through with a utility"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">procedures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">actions</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#energy_state</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">rodders or wormers that you can open or you can blow through with a utility, like a nitrogen</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">blow through with a utility, like a nitrogen</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">to free it and see if there's a blockage or not or do you actually have isolation</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ rodders</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ wormers</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ open the valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ possible means of verification</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"nitrogen"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">procedures</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">you can blow through with a utility, like a nitrogen, to try to open that and push through different things</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">utility</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">like a nitrogen</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">blow through with a utility, like a nitrogen, to try to open that and push through</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ the line</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow air into that valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ reamer tool</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"blow air into that valve"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">procedures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">actions</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">tools</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">different things that are hooked up to blow air into that valve, different things to the line, to free it</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">hooked up to blow air into that valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">to free it and see if there's a blockage or not</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">different things that are hooked up to blow air into that valve</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ nitrogen</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"valve"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#observed_condition</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">hooked up to blow air into that valve, different things to the line, to free it and see if there's a blockage</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">open the valve</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">to free it and see if there's a blockage or not or do you actually have isolation</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow air into that valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ the line</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"the line"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">places</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">blow air into that valve, different things to the line, to free it and see if there's a blockage or not</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">different things to the line</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">to free it and see if there's a blockage or not or do you actually have isolation</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow air into that valve</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,110,158,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"blockage"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.12);border:1px solid rgba(122,110,158,0.25);font-family:'DM Mono',monospace;">other#observed_condition</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">causation</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#energy_state</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,110,158,0.25);padding-left:8px;margin-top:6px;">to free it and see if there's a blockage or not or do you actually have isolation</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">see if there's a blockage or not</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">free it and see if there's a blockage</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ the line</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow air into that valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ it just wasn't done</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,110,158,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"isolation"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a6e9e;background:rgba(122,110,158,0.12);border:1px solid rgba(122,110,158,0.25);font-family:'DM Mono',monospace;">other#energy_state</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">procedures</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">obligations</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,110,158,0.25);padding-left:8px;margin-top:6px;">see if there's a blockage or not or do you actually have isolation</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">do you actually have isolation</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">see if there's a blockage or not or do you actually have isolation</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ the line</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ it just wasn't done</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(168,110,138,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"feasible as a possibility"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">thoughts</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">certainty:medium</span>
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">adjectives</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">perspectives</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(168,110,138,0.25);padding-left:8px;margin-top:6px;">So I do think it's feasible as a possibility, yes, it just wasn't done</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">I do think it's feasible as a possibility, yes</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">positive_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">feasible as a possibility</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ it just wasn't done</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ I do think it's feasible</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"it just wasn't done"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">failures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">actions</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">causation</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">So I do think it's feasible as a possibility, yes, it just wasn't done</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">negative_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">it just wasn't done</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">it just wasn't done</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ feasible as a possibility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ I do think it's feasible</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"instructed by Shell's own program"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">attributions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">policies</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">documents</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">obligations</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">it's instructed by Shell (SHELL USA, INC. and SHELL CHEMICAL, L.P.)'s own program that you can open the valve</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">instructed by Shell's own program</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">positive_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">it's instructed by Shell's own program</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blow air into that valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ isolation</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ blockage</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ it just wasn't done</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ feasible as a possibility</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(168,110,138,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"I do think it's feasible"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">memories</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">certainty:medium</span>
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">thoughts</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">perspectives</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(168,110,138,0.25);padding-left:8px;margin-top:6px;">So I do think it's feasible as a possibility, yes, it just wasn't done</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">I do think it's feasible as a possibility, yes</span></div>
+        </div><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">positive_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">I do think it's feasible</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ feasible as a possibility</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ it just wasn't done</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ instructed by Shell's own program</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">BENJAMIN GIBSON</span></div>
+    </div>
+  </div>
+
+  <!-- HOOVER BLOCK -->
+  <div class="hoover-block">
+    <div class="hoover-header">
+      <span class="hoover-title">Hoover Maneuver<span class="info-icon" data-field-id="combined_filler_density">ⓘ</span></span>
+      <div class="hoover-density"><span style="color:#c8a96e;letter-spacing:1px;font-size:9px;">████████<span style="opacity:0.15;">████████████████</span></span> <span style="font-size:8px;color:#c8a96e;font-weight:600;">33.1%</span></div>
+      <span class="hoover-counts">42 / 127 words unclaimed</span>
+    </div>
+    <div class="hoover-turns">
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#5b8fa8;">
+          Question<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c97070;letter-spacing:1px;font-size:9px;">███████████<span style="opacity:0.15;">█████</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">69.6%</span>
+        </div>
+        <div class="hoover-words">Do · you · know · whether · or · not · would · have · been · a · to · use · a · in · this · case?</div>
+      </div>
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#6ea898;">
+          Answer<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c8a96e;letter-spacing:1px;font-size:9px;">████<span style="opacity:0.15;">████████████</span></span> <span style="font-size:8px;color:#c8a96e;font-weight:600;">25.0%</span>
+        </div>
+        <div class="hoover-words">Yes. · I · mean, · by · (SHELL · USA, · INC. · and · SHELL · CHEMICAL, · L.P.)'s · own · program · that · and · there · are · -- · that · you · can · open · or · you · can · So</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: entity_extraction · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EEB · Pair 301</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    line-height: 1.5; margin: 0; padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background: var(--surface); width: 100%; min-height: 100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display: inline-block; width: 14px; height: 14px; line-height: 14px;
+    text-align: center; border-radius: 50%;
+    border: 1px solid var(--accent); color: var(--accent); font-size: 9px;
+    cursor: pointer; margin-left: 4px; user-select: none; vertical-align: middle;
+    transition: all 0.15s;
+  }
+  .info-icon:active { background: var(--accent); color: var(--bg); transform: scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif; font-size: 18px;
+    font-style: italic; color: var(--text-bright);
+  }
+  .header-meta { font-size: 9px; color: var(--text-dim); text-align: right; line-height: 1.8; letter-spacing: 0.05em; }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface2); display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: #5b8fa8; background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: #6ea898; background: rgba(110,168,152,0.06); }
+  .turn-speaker { font-size: 8px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .turn.q .turn-speaker { color: #5b8fa8; }
+  .turn.a .turn-speaker { color: #6ea898; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    padding: 10px 20px; border-bottom: 1px solid var(--border);
+    background: var(--bg); display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .summary-counts { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+  .summary-total { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; color: var(--text-bright); }
+  .summary-sig { font-size: 8px; color: var(--text-dim); }
+  .summary-types { flex: 1; }
+
+  /* ENTITY LIST */
+  .entity-list {
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ENTITY CARD */
+  .entity-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px 14px;
+  }
+  .entity-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; margin-bottom: 6px;
+  }
+  .entity-text {
+    font-size: 10px; color: var(--text-bright);
+    font-style: italic; line-height: 1.5; flex: 1;
+  }
+  .entity-meta { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+  .entity-sec-types { margin-bottom: 5px; }
+  .entity-chars { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .entity-rels { margin-top: 6px; }
+  .entity-speaker { font-size: 7.5px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.05em; }
+
+  /* HOOVER BLOCK */
+  .hoover-block {
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .hoover-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  }
+  .hoover-title {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); flex-shrink: 0;
+  }
+  .hoover-density { font-size: 9px; }
+  .hoover-counts { font-size: 8px; color: var(--text-dim); margin-left: auto; }
+  .hoover-turns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hoover-turn {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 12px;
+  }
+  .hoover-turn-label {
+    font-size: 8px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .hoover-words { font-size: 8px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Entity Extraction Battery</span>
+      <span class="header-title">Pair 301 · gibson_sp301</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>corpus: direct · 6 entities</div>
+      <div>p.107 l.5 · 2026-03-27</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"I want to move to unlocking and energizing the breaker for MOV-2516."</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"Yeah."</div>
+    </div>
+  </div>
+
+  <!-- ENTITY SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-counts">
+      <span class="summary-total">6 entities<span class="info-icon" data-field-id="entity_text">ⓘ</span></span>
+      <span class="summary-sig" style="color:#c97070;">● 3 high</span>
+      <span class="summary-sig" style="color:#c8a96e;">● 3 medium</span>
+      <span class="summary-sig" style="color:#6b7194;">● 0 low</span>
+    </div>
+    <div class="summary-types"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);margin:2px 2px 2px 0;">actions <span style="opacity:0.7;">×3</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);margin:2px 2px 2px 0;">tools <span style="opacity:0.7;">×2</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);margin:2px 2px 2px 0;">persons <span style="opacity:0.7;">×1</span></span></div>
+  </div>
+
+  <!-- ENTITY CARDS -->
+  <div class="entity-list">
+    <div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"MS. EASTERLING"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">MS. EASTERLING: I want to move to unlocking and energizing the breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"move"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">I want to move to unlocking and energizing the breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"unlocking"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">unlocking and energizing the breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"energizing"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">unlocking and energizing the breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"breaker"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">the breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"MOV-2516"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">breaker for MOV-2516.</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div>
+  </div>
+
+  <!-- HOOVER BLOCK -->
+  <div class="hoover-block">
+    <div class="hoover-header">
+      <span class="hoover-title">Hoover Maneuver<span class="info-icon" data-field-id="combined_filler_density">ⓘ</span></span>
+      <div class="hoover-density"><span style="color:#c97070;letter-spacing:1px;font-size:9px;">███████████████<span style="opacity:0.15;">█████████</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">61.5%</span></div>
+      <span class="hoover-counts">8 / 13 words unclaimed</span>
+    </div>
+    <div class="hoover-turns">
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#5b8fa8;">
+          Question<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c97070;letter-spacing:1px;font-size:9px;">█████████<span style="opacity:0.15;">███████</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">58.3%</span>
+        </div>
+        <div class="hoover-words">I · want · to · to · and · the · for</div>
+      </div>
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#6ea898;">
+          Answer<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c97070;letter-spacing:1px;font-size:9px;">████████████████<span style="opacity:0.15;"></span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">100.0%</span>
+        </div>
+        <div class="hoover-words">Yeah.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: entity_extraction · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>

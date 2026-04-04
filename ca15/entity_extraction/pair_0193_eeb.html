@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA_15 · EEB · Pair 193</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252936;
+    --accent: #7a6e9e;
+    --text: #d4d8e8;
+    --text-dim: #6b7194;
+    --text-bright: #eef0f8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    line-height: 1.5; margin: 0; padding: 0;
+  }
+
+  /* REMOVED max-width constraint - fixes zoom scaling */
+  .page { background: var(--surface); width: 100%; min-height: 100vh; }
+
+  /* INFO ICON */
+  .info-icon {
+    display: inline-block; width: 14px; height: 14px; line-height: 14px;
+    text-align: center; border-radius: 50%;
+    border: 1px solid var(--accent); color: var(--accent); font-size: 9px;
+    cursor: pointer; margin-left: 4px; user-select: none; vertical-align: middle;
+    transition: all 0.15s;
+  }
+  .info-icon:active { background: var(--accent); color: var(--bg); transform: scale(0.95); }
+
+  /* HEADER */
+  .header {
+    display: grid; grid-template-columns: 1fr auto; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg);
+  }
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+  .battery-label {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  }
+  .header-title {
+    font-family: 'Instrument Serif', serif; font-size: 18px;
+    font-style: italic; color: var(--text-bright);
+  }
+  .header-meta { font-size: 9px; color: var(--text-dim); text-align: right; line-height: 1.8; letter-spacing: 0.05em; }
+
+  /* EXCHANGE */
+  .exchange {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface2); display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
+  .turn.q { border-color: #5b8fa8; background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: #6ea898; background: rgba(110,168,152,0.06); }
+  .turn-speaker { font-size: 8px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .turn.q .turn-speaker { color: #5b8fa8; }
+  .turn.a .turn-speaker { color: #6ea898; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    padding: 10px 20px; border-bottom: 1px solid var(--border);
+    background: var(--bg); display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .summary-counts { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+  .summary-total { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; color: var(--text-bright); }
+  .summary-sig { font-size: 8px; color: var(--text-dim); }
+  .summary-types { flex: 1; }
+
+  /* ENTITY LIST */
+  .entity-list {
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ENTITY CARD */
+  .entity-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 10px 14px;
+  }
+  .entity-card-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; margin-bottom: 6px;
+  }
+  .entity-text {
+    font-size: 10px; color: var(--text-bright);
+    font-style: italic; line-height: 1.5; flex: 1;
+  }
+  .entity-meta { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+  .entity-sec-types { margin-bottom: 5px; }
+  .entity-chars { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .entity-rels { margin-top: 6px; }
+  .entity-speaker { font-size: 7.5px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.05em; }
+
+  /* HOOVER BLOCK */
+  .hoover-block {
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .hoover-header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  }
+  .hoover-title {
+    font-family: 'Syne', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); flex-shrink: 0;
+  }
+  .hoover-density { font-size: 9px; }
+  .hoover-counts { font-size: 8px; color: var(--text-dim); margin-left: auto; }
+  .hoover-turns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hoover-turn {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 12px;
+  }
+  .hoover-turn-label {
+    font-size: 8px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+  }
+  .hoover-words { font-size: 8px; color: var(--text-dim); line-height: 1.7; font-style: italic; }
+
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: var(--text-dim); letter-spacing: 0.08em; background: var(--bg);
+  }
+  .footer-left { display: flex; gap: 16px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <span class="battery-label">Entity Extraction Battery</span>
+      <span class="header-title">Pair 193 · gibson_sp193</span>
+    </div>
+    <div class="header-meta">
+      <div>CA_15 · v1.0 · gpt-oss:20b</div>
+      <div>corpus: direct · 31 entities</div>
+      <div>p.67 l.3 · 2026-03-27</div>
+    </div>
+  </div>
+
+  <!-- EXCHANGE -->
+  <div class="exchange">
+    <div class="turn q">
+      <div class="turn-speaker">MS. EASTERLING</div>
+      <div class="turn-text">"Is that what you were saying?"</div>
+    </div>
+    <div class="turn a">
+      <div class="turn-speaker">BENJAMIN GIBSON</div>
+      <div class="turn-text">"Correct. Before -- because what happened is Mr. Ferrell had them working up top. His statement says they worked up top because it would keep them busier longer, I guess, not having as many guys standing around. But by doing so, instead of working from below and isolating from the process flow direction first, they opened downstream, the outlet. And that allowed, when the valve is -- you know, the buttons are opened, instead of -- if they had done what I am saying, come from the bottom and only isolated there and not opened up top yet, then it goes in the vessel, goes into the piping, continues on. It's still contained. But what's happened here is, they don't have containment at MOV-2516, and upstream from that -- or downstream on the outlet is opened to where it can come spewing out. That's created this open -- allows it to be released."</div>
+    </div>
+  </div>
+
+  <!-- ENTITY SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-counts">
+      <span class="summary-total">31 entities<span class="info-icon" data-field-id="entity_text">ⓘ</span></span>
+      <span class="summary-sig" style="color:#c97070;">● 13 high</span>
+      <span class="summary-sig" style="color:#c8a96e;">● 16 medium</span>
+      <span class="summary-sig" style="color:#6b7194;">● 2 low</span>
+    </div>
+    <div class="summary-types"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);margin:2px 2px 2px 0;">actions <span style="opacity:0.7;">×12</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);margin:2px 2px 2px 0;">places <span style="opacity:0.7;">×6</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);margin:2px 2px 2px 0;">persons <span style="opacity:0.7;">×4</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);margin:2px 2px 2px 0;">tools <span style="opacity:0.7;">×4</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);margin:2px 2px 2px 0;">principles <span style="opacity:0.7;">×2</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);margin:2px 2px 2px 0;">adjectives <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);margin:2px 2px 2px 0;">thoughts <span style="opacity:0.7;">×1</span></span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);margin:2px 2px 2px 0;">failures <span style="opacity:0.7;">×1</span></span></div>
+  </div>
+
+  <!-- ENTITY CARDS -->
+  <div class="entity-list">
+    <div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"Ms. Easterling"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#role_designation</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">Ms. Easterling</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Benjamin Gibson</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"you"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.10);border:1px solid rgba(91,143,168,0.20);font-family:'DM Mono',monospace;">question</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">low</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">you were saying</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Benjamin Gibson</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Ms. Easterling</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Ms. Easterling</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"Benjamin Gibson"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#role_designation</span><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#expert_designation</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">Benjamin Gibson</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Ms. Easterling</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ you</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Mr. Ferrell</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(91,143,168,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"Mr. Ferrell"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">persons</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#role_designation</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(91,143,168,0.25);padding-left:8px;margin-top:6px;">Mr. Ferrell had them working up top</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Benjamin Gibson</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ up top</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"up top"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">working up top</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ Mr. Ferrell</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ below</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"below"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">working from below</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ up top</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ process flow direction</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"process flow direction"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">principles</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">isolating from the process flow direction first</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ below</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"downstream"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">opened downstream</div>
+      
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ up top</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ below</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"outlet"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process_stream</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">the outlet</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">downstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">opened downstream</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">downstream on the outlet</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ MOV-2516</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"valve"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">the valve is</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">buttons are opened</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ buttons</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ outlet</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ vessel</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"buttons"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">the buttons are opened</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">buttons are opened</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"vessel"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">goes in the vessel</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">goes in the vessel</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">goes into the vessel</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ valve</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ piping</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(138,126,200,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"piping"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#8a7ec8;background:rgba(138,126,200,0.12);border:1px solid rgba(138,126,200,0.25);font-family:'DM Mono',monospace;">tools</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process_stream</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(138,126,200,0.25);padding-left:8px;margin-top:6px;">goes into the piping</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">goes into the piping</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">continues on</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ vessel</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ outlet</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"MOV-2516"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process_stream</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">containment at MOV-2516</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">negative_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">containment at MOV-2516</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">upstream from that</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ outlet</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ containment</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"containment"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">principles</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">don't have containment</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">negative_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">they don't have containment</span><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">still contained</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ MOV-2516</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ outlet</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(110,168,152,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"upstream"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.12);border:1px solid rgba(110,168,152,0.25);font-family:'DM Mono',monospace;">places</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      <div class="entity-sec-types"><span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.08);border:1px solid rgba(107,113,148,0.18);font-family:'DM Mono',monospace;">other#process_stream</span></div>
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(110,168,152,0.25);padding-left:8px;margin-top:6px;">upstream from that</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#5b8fa8;background:rgba(91,143,168,0.12);border:1px solid rgba(91,143,168,0.25);font-family:'DM Mono',monospace;">relational_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">upstream from that</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ MOV-2516</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(168,110,138,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"open"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">adjectives</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(168,110,138,0.25);padding-left:8px;margin-top:6px;">this open</div>
+      
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"released"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">released</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">released</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ spewing out</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(168,110,138,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"I guess"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">thoughts</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">low</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">certainty:low</span>
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(168,110,138,0.25);padding-left:8px;margin-top:6px;">I guess</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#a86e8a;background:rgba(168,110,138,0.12);border:1px solid rgba(168,110,138,0.25);font-family:'DM Mono',monospace;">epistemic_qualifier</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">I guess</span></div>
+        </div></div>
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"spewing out"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">spewing out</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">spewing out</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ released</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"allowed"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">allowed</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">allowed</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ opened downstream</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"opened downstream"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">opened downstream</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">opened downstream</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ allowed</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"opened up top"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">opened up top</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">opened up top</span></div>
+        </div></div>
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"opened to where it can come spewing out"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">opened to where it can come spewing out</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">opened to where it can come spewing out</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ spewing out</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(201,112,112,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"don't have containment"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">failures</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(201,112,112,0.25);padding-left:8px;margin-top:6px;">don't have containment</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">negative_attribution</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">don't have containment</span></div>
+        </div></div>
+      
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"worked up top"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">worked up top</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">worked up top</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ worked from below</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"worked from below"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">worked from below</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">worked from below</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ worked up top</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"buttons are opened"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">buttons are opened</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6b7194;background:rgba(107,113,148,0.12);border:1px solid rgba(107,113,148,0.25);font-family:'DM Mono',monospace;">neutral_descriptor</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">buttons are opened</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ allows it to be released</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"outlet is opened"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">outlet is opened</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">outlet is opened</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ allows it to be released</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"created this open"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">medium</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">created this open</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">created this open</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ allows it to be released</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div><div class="entity-card" style="border-left:3px solid rgba(122,158,110,0.25);">
+      <div class="entity-card-header">
+        <div class="entity-text">"allows it to be released"</div>
+        <div class="entity-meta">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#7a9e6e;background:rgba(122,158,110,0.12);border:1px solid rgba(122,158,110,0.25);font-family:'DM Mono',monospace;">actions</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#6ea898;background:rgba(110,168,152,0.10);border:1px solid rgba(110,168,152,0.20);font-family:'DM Mono',monospace;">answer</span>
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c97070;background:rgba(201,112,112,0.12);border:1px solid rgba(201,112,112,0.25);font-family:'DM Mono',monospace;">high</span>
+          
+        </div>
+      </div>
+      
+      <div style="font-size:8px;color:#6b7194;font-style:italic;line-height:1.5;border-left:2px solid rgba(122,158,110,0.25);padding-left:8px;margin-top:6px;">allows it to be released</div>
+      <div class="entity-chars"><div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:3px;">
+          <span style="display:inline-block;font-size:8px;padding:1px 6px;border-radius:3px;color:#c8a96e;background:rgba(200,169,110,0.12);border:1px solid rgba(200,169,110,0.25);font-family:'DM Mono',monospace;">causal_framing</span>
+          <div style="font-size:8px;color:#6b7194;line-height:1.5;padding-top:2px;"><span style="display:inline-block;font-size:7.5px;padding:1px 5px;border-radius:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin:1px 2px 1px 0;color:#d4d8e8;font-style:italic;">allows it to be released</span></div>
+        </div></div>
+      <div class="entity-rels"><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ buttons are opened</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ outlet is opened</span><span style="display:inline-block;font-size:7.5px;padding:1px 6px;border-radius:2px;background:rgba(91,143,168,0.08);border:1px solid rgba(91,143,168,0.18);color:#5b8fa8;margin:1px 2px 1px 0;">→ created this open</span></div>
+      <div class="entity-speaker">speaker: <span style="color:#d4d8e8;">Benjamin Gibson</span></div>
+    </div>
+  </div>
+
+  <!-- HOOVER BLOCK -->
+  <div class="hoover-block">
+    <div class="hoover-header">
+      <span class="hoover-title">Hoover Maneuver<span class="info-icon" data-field-id="combined_filler_density">ⓘ</span></span>
+      <div class="hoover-density"><span style="color:#c97070;letter-spacing:1px;font-size:9px;">██████████████<span style="opacity:0.15;">██████████</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">57.9%</span></div>
+      <span class="hoover-counts">92 / 159 words unclaimed</span>
+    </div>
+    <div class="hoover-turns">
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#5b8fa8;">
+          Question<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c97070;letter-spacing:1px;font-size:9px;">█████████████<span style="opacity:0.15;">███</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">83.3%</span>
+        </div>
+        <div class="hoover-words">Is · that · what · were · saying?</div>
+      </div>
+      <div class="hoover-turn">
+        <div class="hoover-turn-label" style="color:#6ea898;">
+          Answer<span class="info-icon" data-field-id="filler_density">ⓘ</span> <span style="color:#c97070;letter-spacing:1px;font-size:9px;">█████████<span style="opacity:0.15;">███████</span></span> <span style="font-size:8px;color:#c97070;font-weight:600;">56.9%</span>
+        </div>
+        <div class="hoover-words">Correct. · Before · -- · because · what · happened · is · had · them · working · His · statement · says · they · because · it · would · keep · them · busier · longer, · not · having · as · many · guys · standing · around. · But · by · doing · so, · instead · of · working · from · and · isolating · from · the · first, · they · the · And · that · when · the · is · -- · you · know, · the · instead · of · -- · if · they · had · done · what · I · am · saying, · come · from · the · bottom · and · only · isolated · there · and · not · yet, · then · it · It's · But · what's · happened · here · is, · and · -- · or · That's · --</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>CA_15 Instrument Suite</span>
+      <span>Jasso v. Shell (filed 2023) · Gibson Deposition Feb. 2025</span>
+      <span>Battery: entity_extraction · v1.0</span>
+    </div>
+    <span>Artfu Research · Independent · Dallas TX</span>
+  </div>
+
+</div><!-- end page -->
+
+</body>
+</html>
