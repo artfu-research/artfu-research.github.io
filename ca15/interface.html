@@ -626,8 +626,10 @@ function loadCurrentView() {
 
         /* All clickable elements */
         .col-card,
+        .field-block,
         .pattern-bar,
         .sig-bar,
+        .score-row,
         .summary-block,
         .panel-call {
           cursor: pointer;
@@ -636,8 +638,10 @@ function loadCurrentView() {
 
         /* Hover */
         .col-card:hover { border-color: var(--accent) !important; }
+        .field-block:hover { outline: 1px solid var(--accent); }
         .pattern-bar:hover,
         .sig-bar:hover,
+        .score-row:hover,
         .summary-block:hover,
         .panel-call:hover { outline: 1px solid var(--accent); }
 
@@ -646,8 +650,13 @@ function loadCurrentView() {
           background: #000000 !important;
           border-color: var(--accent) !important;
         }
+        .field-block.ca-selected {
+          background: #000000 !important;
+          outline: 1px solid var(--accent);
+        }
         .pattern-bar.ca-selected,
         .sig-bar.ca-selected,
+        .score-row.ca-selected,
         .summary-block.ca-selected,
         .panel-call.ca-selected {
           background: #000000 !important;
@@ -662,7 +671,7 @@ function loadCurrentView() {
       }
 
       // ── Generic click wiring for any element with a [data-field-id] ─────
-      const CLICKABLE = '.col-card, .pattern-bar, .sig-bar, .summary-block, .panel-call';
+      const CLICKABLE = '.col-card, .field-block, .pattern-bar, .sig-bar, .score-row, .summary-block, .panel-call';
 
       iframeDoc.querySelectorAll(CLICKABLE).forEach(el => {
         const fieldId = el.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
