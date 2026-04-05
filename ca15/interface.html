@@ -624,63 +624,63 @@ function loadCurrentView() {
       baseStyle.textContent = `
         .footer { background: #000000 !important; }
 
-        /* Card base */
-        .col-card {
+        /* All clickable elements */
+        .col-card,
+        .pattern-bar,
+        .sig-bar,
+        .summary-block,
+        .panel-call {
           cursor: pointer;
-          transition: border-color 0.15s, background 0.15s;
+          transition: background 0.15s, border-color 0.15s, outline 0.15s;
         }
-        .col-card:hover {
-          border-color: var(--accent) !important;
-        }
-        .col-card.selected {
+
+        /* Hover */
+        .col-card:hover { border-color: var(--accent) !important; }
+        .pattern-bar:hover,
+        .sig-bar:hover,
+        .summary-block:hover,
+        .panel-call:hover { outline: 1px solid var(--accent); }
+
+        /* Selected */
+        .col-card.ca-selected {
           background: #000000 !important;
           border-color: var(--accent) !important;
         }
-        .pattern-bar {
-          transition: background 0.15s;
-        }
-        .pattern-bar.pattern-selected {
+        .pattern-bar.ca-selected,
+        .sig-bar.ca-selected,
+        .summary-block.ca-selected,
+        .panel-call.ca-selected {
           background: #000000 !important;
           outline: 1px solid var(--accent);
         }
       `;
       iframeDoc.head.appendChild(baseStyle);
 
-      // ── Card click handlers ──────────────────────────────────────────────
-      iframeDoc.querySelectorAll('.col-card').forEach(card => {
-        const fieldId = card.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
+      // ── Generic deselect helper ──────────────────────────────────────────
+      function deselectAll() {
+        iframeDoc.querySelectorAll('.ca-selected').forEach(el => el.classList.remove('ca-selected'));
+      }
 
-        card.addEventListener('click', function(e) {
+      // ── Generic click wiring for any element with a [data-field-id] ─────
+      const CLICKABLE = '.col-card, .pattern-bar, .sig-bar, .summary-block, .panel-call';
+
+      iframeDoc.querySelectorAll(CLICKABLE).forEach(el => {
+        const fieldId = el.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
+
+        el.addEventListener('click', function(e) {
           e.stopPropagation();
-          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
-          iframeDoc.querySelector('.pattern-bar')?.classList.remove('pattern-selected');
-          card.classList.add('selected');
+          deselectAll();
+          el.classList.add('ca-selected');
           if (fieldId) {
             window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
           }
         });
       });
 
-      // ── Pattern bar click handler ────────────────────────────────────────
-      const patternBar = iframeDoc.querySelector('.pattern-bar');
-      if (patternBar) {
-        const patternFieldId = patternBar.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
-        patternBar.style.cursor = 'pointer';
-        patternBar.addEventListener('click', function(e) {
-          e.stopPropagation();
-          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
-          patternBar.classList.add('pattern-selected');
-          if (patternFieldId) {
-            window.parent.postMessage({ type: 'fieldClick', fieldId: patternFieldId }, '*');
-          }
-        });
-      }
-
-      // ── Click outside cards → deselect all, reset to overview ───────────
+      // ── Click outside → deselect all, reset to overview ─────────────────
       iframeDoc.addEventListener('click', function(e) {
-        if (!e.target.closest('.col-card') && !e.target.closest('.pattern-bar')) {
-          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
-          iframeDoc.querySelector('.pattern-bar')?.classList.remove('pattern-selected');
+        if (!e.target.closest(CLICKABLE)) {
+          deselectAll();
           if (currentSchema) displaySchemaOverview();
         }
       });
