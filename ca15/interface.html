@@ -976,7 +976,9 @@ async function extractPrimarySummary(pair, battery) {
     const text = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
-    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const patternEl = doc.querySelector('.pattern-declaration');
+    if (patternEl) { patternEl.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(el => el.remove()); }
+    const pattern = patternEl?.textContent.trim();
     const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
     const pageMatch = headerMeta?.match(/p\.(\d+)/);
@@ -1003,7 +1005,9 @@ async function extractStrategicSummary(pair, primary, perspective) {
     const text = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(text, 'text/html');
-    const signature = doc.querySelector('.sig-declaration')?.textContent.trim();
+    const sigEl = doc.querySelector('.sig-declaration');
+    if (sigEl) { sigEl.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(el => el.remove()); }
+    const signature = sigEl?.textContent.trim();
     const summaryLabel = Array.from(doc.querySelectorAll('.summary-label')).find(el => el.textContent.includes('Strategic Summary'));
     const summary = summaryLabel?.nextElementSibling?.textContent.trim();
     const scoreRows = doc.querySelectorAll('.score-row');
@@ -1046,7 +1050,9 @@ async function extractWPBSummary(pair) {
     const response = await fetch(`witness_posture/pair_${pairStr}_wpb.html`);
     const text = await response.text();
     const doc = new DOMParser().parseFromString(text, 'text/html');
-    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const patternEl = doc.querySelector('.pattern-declaration');
+    if (patternEl) { patternEl.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(el => el.remove()); }
+    const pattern = patternEl?.textContent.trim();
     const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
     const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
@@ -1066,7 +1072,9 @@ async function extractAPBSummary(pair) {
     const response = await fetch(`attorney_performance/pair_${pairStr}_apb.html`);
     const text = await response.text();
     const doc = new DOMParser().parseFromString(text, 'text/html');
-    const pattern = doc.querySelector('.pattern-declaration')?.textContent.trim();
+    const patternEl = doc.querySelector('.pattern-declaration');
+    if (patternEl) { patternEl.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(el => el.remove()); }
+    const pattern = patternEl?.textContent.trim();
     const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
     const grandTotal = doc.querySelector('.grand-total-score')?.textContent.trim();
     const headerMeta = doc.querySelector('.header-meta')?.textContent;
