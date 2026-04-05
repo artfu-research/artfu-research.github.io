@@ -668,41 +668,108 @@ async function loadBatterySchema(batteryCode) {
 
 function displaySchemaOverview() {
   const panel = document.querySelector('.bottom-panel .panel-content');
-  if (!currentSchema) {
-    displaySchemaPlaceholder();
-    return;
-  }
-  
+  if (!currentSchema) { displaySchemaPlaceholder(); return; }
+
   panel.innerHTML = `
     <div style="padding: 10px 16px;">
       <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px;">
         ${currentSchema.battery_name} · Overview
       </div>
-      <div style="font-size: 9px; color: var(--text-dim); line-height: 1.5;">
+      <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">
         ${currentSchema.battery_overview}
       </div>
     </div>
   `;
 }
 
-// ── UPDATED: displayFieldSchema handles all schema field shapes ──
+// ── Read the live displayed value from the iframe for a given field id ──
+function getLiveValue(fieldId) {
+  try {
+    const iframe = document.getElementById('main-content-frame');
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    // Find the element carrying data-field-value nearest to this field's icon
+    const el = iframeDoc.querySelector(`[data-field-value]`);
+    // More precise: find by proximity to the icon
+    const icon = iframeDoc.querySelector(`[data-field-id="${fieldId}"]`);
+    if (!icon) return null;
+    // Walk up to the containing field block, find first data-field-value inside it
+    const container = icon.closest('.field-block, .field-answer, .pattern-bar, .sig-bar, .score-row') || icon.parentElement;
+    const valueEl = container ? container.querySelector('[data-field-value]') : null;
+    return valueEl ? valueEl.getAttribute('data-field-value') : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ── Render the active-value block for the bottom panel ──
+function renderActiveValue(field, liveValue) {
+  if (!liveValue || liveValue === '' || liveValue === 'null') {
+    // Null state
+    const nullText = field.null_explanation || 'This field does not apply to this specific exchange.';
+    return `
+      <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--border);">
+        <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px;">This exchange</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic;">${nullText}</div>
+      </div>`;
+  }
+
+  // Try scale_values (numeric — exact integer key match)
+  if (field.scale_values) {
+    // Normalise: try exact, then rounded int
+    const tryKeys = [liveValue, String(Math.round(parseFloat(liveValue)))];
+    for (const k of tryKeys) {
+      if (field.scale_values[k]) {
+        return `
+          <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--accent);">
+            <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;">This exchange — ${liveValue}</div>
+            <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.scale_values[k]}</div>
+          </div>`;
+      }
+    }
+  }
+
+  // Try enum_values (boolean/categorical)
+  if (field.enum_values) {
+    const key = liveValue.toLowerCase();
+    if (field.enum_values[key]) {
+      return `
+        <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--accent);">
+          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;">This exchange — ${liveValue}</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.enum_values[key]}</div>
+        </div>`;
+    }
+  }
+
+  // Fallback: show value_description or scale_description
+  const desc = field.value_description || field.scale_description || null;
+  if (desc) {
+    return `
+      <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--border);">
+        <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px;">How to read this</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${desc}</div>
+      </div>`;
+  }
+
+  return '';
+}
+
 function displayFieldSchema(fieldId) {
   const panel = document.querySelector('.bottom-panel .panel-content');
   if (!currentSchema) return;
-  
+
   let field = null;
 
-  // 1. Check pattern_field (all batteries except EEB)
+  // 1. pattern_field
   if (currentSchema.pattern_field && currentSchema.pattern_field.id === fieldId) {
     field = currentSchema.pattern_field;
   }
 
-  // 2. Check standard fields[] array (EM, FA, SC, SI, SI_OPP, WPB, APB, EEB)
+  // 2. standard fields[] array
   if (!field && Array.isArray(currentSchema.fields)) {
     field = currentSchema.fields.find(f => f.id === fieldId) || null;
   }
 
-  // 3. Check JPB demographic_fields dict — keys are field ids
+  // 3. JPB demographic_fields dict
   if (!field && currentSchema.demographic_fields && currentSchema.demographic_fields[fieldId]) {
     const raw = currentSchema.demographic_fields[fieldId];
     field = {
@@ -710,13 +777,14 @@ function displayFieldSchema(fieldId) {
       label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
       call: 'A',
       definition: raw.description || '',
-      scale: raw.values ? raw.values.join(' · ') : (raw.format || ''),
       why_it_matters: 'Demographic profile field used in voir dire strategy and juror activation mapping.',
-      parent_section: 'Demographic Profile'
+      parent_section: 'Demographic Profile',
+      enum_values: raw.values ? Object.fromEntries(raw.values.map(v => [v.toLowerCase(), v])) : null,
+      value_description: raw.format || null
     };
   }
 
-  // 4. Check JPB enrichment_fields dict
+  // 4. JPB enrichment_fields dict
   if (!field && currentSchema.enrichment_fields && currentSchema.enrichment_fields[fieldId]) {
     const raw = currentSchema.enrichment_fields[fieldId];
     field = {
@@ -724,50 +792,79 @@ function displayFieldSchema(fieldId) {
       label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
       call: 'B',
       definition: raw.description || '',
-      scale: raw.values ? raw.values.join(' · ') : (raw.format || raw.scale || ''),
       why_it_matters: raw.note || 'Enrichment field used in psychological and strategic profiling of juror types.',
-      parent_section: 'Juror Enrichment'
+      parent_section: 'Juror Enrichment',
+      enum_values: raw.values ? Object.fromEntries(raw.values.map(v => [v.toLowerCase(), v])) : null,
+      value_description: raw.format || null
     };
   }
 
   if (!field) {
-    console.log(`Field "${fieldId}" not found in schema for ${currentSchema.battery_code}`);
+    console.log(`Field "${fieldId}" not found in schema`);
     return;
   }
 
-  // Normalise EEB's "description" key → "definition" for unified rendering
-  const definition = field.definition || field.description || '—';
-  const scale      = field.scale || field.format || '—';
-  const callLabel  = field.call !== undefined ? `Call ${field.call}` : '';
-  const section    = field.parent_section || '';
+  // Normalise keys across old and new schema shapes
+  const definition  = field.definition || field.description || '—';
+  const whyItMatters = field.why_it_matters || '—';
+  const callLabel   = field.call !== undefined ? `Call ${field.call}` : '';
+  const section     = field.parent_section || '';
+
+  // Get the live value from the iframe
+  const liveValue = getLiveValue(fieldId);
+  const activeValueHTML = renderActiveValue(field, liveValue);
 
   panel.innerHTML = `
-    <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; height: 100%;">
+    <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; height: 100%; overflow: auto;">
+
+      <!-- COL 1: What it is -->
       <div>
         <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">
           ${field.label}
           ${callLabel ? `<span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">${callLabel}${section ? ' · ' + section : ''}</span>` : ''}
         </div>
-        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">What it measures:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${definition}</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${definition}</div>
+        ${activeValueHTML}
       </div>
+
+      <!-- COL 2: Scale / how to read it -->
       <div>
-        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Scale / Range:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${scale}</div>
-        ${field.examples ? `
-        <div>
-          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Examples:</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic;">${field.examples}</div>
-        </div>
+        ${field.scale_description ? `
+          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How it's scored</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 10px;">${field.scale_description}</div>
         ` : ''}
+        ${field.value_description ? `
+          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How to read this</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${field.value_description}</div>
+        ` : ''}
+        ${field.value_type === 'numeric' && field.scale_values ? `
+          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 6px;">Score reference</div>
+          ${Object.entries(field.scale_values).map(([k, v]) => `
+            <div style="display:flex; gap:8px; margin-bottom:4px; align-items:flex-start;">
+              <div style="font-size:8px; color:var(--accent); min-width:24px; flex-shrink:0; font-weight:600;">${k}</div>
+              <div style="font-size:8px; color:var(--text-dim); line-height:1.4;">${v}</div>
+            </div>`).join('')}
+        ` : ''}
+        ${field.value_type === 'boolean' && field.enum_values ? `
+          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 6px;">Possible values</div>
+          ${Object.entries(field.enum_values).map(([k, v]) => `
+            <div style="display:flex; gap:8px; margin-bottom:6px; align-items:flex-start;">
+              <div style="font-size:8px; color:var(--accent); min-width:40px; flex-shrink:0; font-weight:600;">${k}</div>
+              <div style="font-size:8px; color:var(--text-dim); line-height:1.4;">${v}</div>
+            </div>`).join('')}
+        ` : ''}
+        ${field.value_description && !field.scale_description && !field.scale_values && !field.enum_values ? '' : ''}
       </div>
+
+      <!-- COL 3: Why it matters + back button -->
       <div>
-        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 2px;">Why it matters:</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px;">${field.why_it_matters || '—'}</div>
+        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">Why it matters</div>
+        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px;">${whyItMatters}</div>
         <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
           ← Back to ${currentSchema.battery_name} overview
         </button>
       </div>
+
     </div>
   `;
 }
@@ -784,23 +881,18 @@ function displaySchemaPlaceholder() {
 function attachInfoIconHandlers() {
   const iframe = document.getElementById('main-content-frame');
   const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  
   if (!iframeDoc) return;
-  
-  const infoIcons = iframeDoc.querySelectorAll('.info-icon');
-  
-  infoIcons.forEach(icon => {
+
+  iframeDoc.querySelectorAll('.info-icon').forEach(icon => {
     icon.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       const fieldId = this.getAttribute('data-field-id');
-      if (fieldId) {
-        displayFieldSchema(fieldId);
-      }
+      if (fieldId) displayFieldSchema(fieldId);
     });
   });
-  
-  // Click anywhere in iframe (except info icons) returns to overview
+
+  // Click anywhere outside an icon returns to overview
   iframeDoc.addEventListener('click', function(e) {
     if (!e.target.classList.contains('info-icon')) {
       displaySchemaOverview();
