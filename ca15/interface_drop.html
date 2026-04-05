@@ -39,11 +39,7 @@
   /* BODY */
   .body-row { flex:1; display:flex; overflow:hidden; }
 
-  /* ═══ LEFT SIDE — three columns ═══════════════════════════════════
-     Col 1: icon rail (always visible)
-     Col 2: pair list (slides out when battery selected)
-     Col 3: battery picker (slides out when toggled, only if pair list open)
-  ════════════════════════════════════════════════════════════════════ */
+  /* LEFT SIDE */
   .left-side { position:relative; flex-shrink:0; height:100%; display:flex; border-right:1px solid var(--border); }
 
   /* COL 1 — icon rail */
@@ -68,21 +64,16 @@
   .pair-col-header { height:34px; background:#000; border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 10px; flex-shrink:0; gap:6px; }
   .pair-col-bat { font-family:'Space Grotesk',sans-serif; font-size:9px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
   .pair-col-mod { font-size:8px; color:var(--text-dim); flex-shrink:0; }
-
-  /* picker toggle — right edge of pair col header */
   .pick-toggle { width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid var(--border); border-radius:2px; flex-shrink:0; transition:all .12s; }
   .pick-toggle:hover { border-color:var(--accent); }
   .pick-toggle.open { border-color:var(--accent); background:#0d0e0e; }
   .pick-toggle .mat { font-size:13px; color:var(--text-dim); transition:transform .2s; }
   .pick-toggle.open .mat { color:var(--accent); transform:rotate(180deg); }
-
   .pair-list { flex:1; overflow-y:auto; overflow-x:hidden; padding:6px; }
   .pair-list::-webkit-scrollbar { width:4px; }
   .pair-list::-webkit-scrollbar-track { background:var(--surface); }
   .pair-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
   .pair-list::-webkit-scrollbar-thumb:hover { background:var(--accent); }
-
-  /* PAIR CARDS — slim, pattern + score only */
   .pair-block { background:var(--surface2); border:1px solid var(--border); border-radius:2px; padding:6px 8px; margin-bottom:4px; cursor:pointer; transition:all .12s; }
   .pair-block:hover { background:var(--surface); border-color:var(--accent); }
   .pair-block.selected { border-color:var(--accent); background:#0a0b0b; box-shadow:0 0 0 1px var(--accent); }
@@ -103,65 +94,15 @@
   .pick-close { cursor:pointer; flex-shrink:0; }
   .pick-close .mat { font-size:14px; color:var(--text-dim); transition:color .12s; }
   .pick-close:hover .mat { color:var(--accent); }
-
   .pick-item { display:flex; align-items:center; gap:8px; padding:9px 12px; font-size:9px; color:var(--text-dim); border-bottom:1px solid #1a1b1b; cursor:pointer; transition:all .12s; user-select:none; }
   .pick-item:hover:not(.disabled) { background:#141515; color:var(--text); }
   .pick-item.active { background:#060707; color:var(--accent); }
   .pick-item.disabled { opacity:.22; cursor:default; pointer-events:none; }
   .pick-item .mat { font-size:13px; color:inherit; flex-shrink:0; }
-  .pick-dot { width:5px; height:5px; border-radius:50%; background:var(--border); flex-shrink:0; }
-  .pick-item.active .pick-dot { background:var(--accent); }
-  .pick-section { font-family:'Space Grotesk',sans-serif; font-size:7px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); padding:8px 12px 4px; border-bottom:1px solid var(--border); background:var(--bg); }
   .pick-divider { height:1px; background:var(--border); margin:3px 12px; opacity:.5; }
 
-  /* RIGHT WALL — vertical battery selector, parked out of the way */
-  .right-wall {
-    width: calc(var(--u)*3 + 4px);
-    height: 100%;
-    background: #000;
-    border-left: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 6px 2px;
-    gap: 4px;
-    flex-shrink: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .right-wall::-webkit-scrollbar { width: 3px; }
-  .right-wall::-webkit-scrollbar-thumb { background: var(--border); }
   /* CENTER */
   .center-area { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
-  .sh-divider-v { width:calc(var(--u)*3); height:1px; background:var(--border); flex-shrink:0; margin:2px 0; }
-
-  /* SUBHEADER */
-  .subheader { background:#000; border-bottom:1px solid var(--border); padding:5px 10px; display:flex; align-items:flex-end; gap:4px; flex-shrink:0; overflow-x:auto; overflow-y:hidden; }
-  .subheader::-webkit-scrollbar { height:2px; }
-  .subheader::-webkit-scrollbar-thumb { background:var(--border); }
-  .sh-divider { width:1px; height:calc(var(--u)*3 + 4px); background:var(--border); margin:0 3px; flex-shrink:0; align-self:flex-end; }
-  .bat-sq { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
-  .bat-main { width:calc(var(--u)*3); height:calc(var(--u)*2); background:var(--surface2); border:1px solid var(--border); border-radius:2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; transition:all .12s; user-select:none; }
-  .bat-main:hover { border-color:var(--accent); background:var(--surface); }
-  .bat-sq.active .bat-main { background:#000; border-color:var(--accent); }
-  .bat-main-icon { font-size:12px; color:var(--text-dim); }
-  .bat-sq.active .bat-main-icon { color:var(--accent); }
-  .bat-main:hover .bat-main-icon { color:var(--text); }
-  .bat-abbr { font-size:6px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); }
-  .bat-sq.active .bat-abbr { color:var(--accent); }
-  .bat-mods { display:grid; grid-template-columns:repeat(3,var(--u)); gap:2px; }
-  .mod-cell { width:var(--u); height:var(--u); background:var(--surface2); border:1px solid var(--border); border-radius:2px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .12s; user-select:none; }
-  .mod-cell:hover:not(.disabled) { border-color:var(--accent); background:var(--surface); }
-  .mod-cell.disabled { opacity:.18; cursor:default; pointer-events:none; }
-  .mod-cell .mat { font-size:9px; color:var(--text-dim); }
-  .mod-cell:hover:not(.disabled) .mat { color:var(--text); }
-  .mod-cell.active-cl { background:#0a140a; border-color:#4a7a4a; }
-  .mod-cell.active-cl .mat { color:#7ac47a; }
-  .mod-cell.active-op { background:#140a0a; border-color:#7a4a4a; }
-  .mod-cell.active-op .mat { color:#c47a7a; }
-  .mod-cell.active-gr { background:#0a0f1a; border-color:#4a6080; }
-  .mod-cell.active-gr .mat { color:#7a9fc4; }
-  .mod-soon { width:3px; height:3px; border-radius:50%; background:var(--border); }
 
   /* CONTENT */
   .content-area { flex:1; position:relative; overflow:hidden; }
@@ -176,7 +117,76 @@
   .welcome-hint { display:flex; align-items:center; gap:8px; font-size:9px; color:var(--text-dim); letter-spacing:.08em; border:1px solid var(--border); border-radius:3px; padding:8px 14px; }
   .welcome-hint .mat { font-size:13px; color:var(--accent); }
 
-  /* BOTTOM */
+  /* ═══ FOOTER BATTERY SELECTOR ═══════════════════════════════════════ */
+  .footer-battery-bar {
+    height: 44px;
+    background: #000;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    gap: 0;
+    flex-shrink: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .footer-battery-bar::-webkit-scrollbar { height: 2px; }
+  .footer-battery-bar::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* family card — visible bordered group, surface bg */
+  .fam-card {
+    display: flex;
+    align-items: stretch;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    height: 34px;
+    overflow: hidden;
+    margin: 0 3px;
+  }
+
+  .footer-divider {
+    width: 1px;
+    height: 34px;
+    background: var(--border);
+    flex-shrink: 0;
+    align-self: center;
+    margin: 0 4px;
+  }
+
+  /* every icon cell — uniform 17px, same as left rail */
+  .fam-btn {
+    width: var(--icon-w);
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .12s;
+    flex-shrink: 0;
+  }
+  .fam-btn:hover { background: #1a1b1b; }
+  .fam-btn .mat { font-size: 17px; color: var(--text-dim); transition: color .12s; }
+  .fam-btn:hover .mat { color: var(--text); }
+
+  /* modifier buttons — narrower, same icon size */
+  .fam-btn.mod { width: 30px; border-left: 1px solid var(--border); }
+  .fam-btn.disabled { opacity: .18; cursor: default; pointer-events: none; }
+
+  /* active — base */
+  .fam-btn.active-base { background: var(--bg); border-top: 2px solid var(--accent); }
+  .fam-btn.active-base .mat { color: var(--accent); }
+
+  /* active — client */
+  .fam-btn.active-cl { background: #0a140a; border-top: 2px solid #4a7a4a; }
+  .fam-btn.active-cl .mat { color: #7ac47a; }
+
+  /* active — opposition */
+  .fam-btn.active-op { background: #140a0a; border-top: 2px solid #7a4a4a; }
+  .fam-btn.active-op .mat { color: #c47a7a; }
+
+  /* BOTTOM SCHEMA BAR */
   .bottom-bar { height:32px; background:#000; border-top:1px solid var(--border); display:flex; align-items:center; padding:0 14px; gap:12px; cursor:pointer; flex-shrink:0; transition:background .12s; user-select:none; }
   .bottom-bar:hover { background:#0a0b0b; }
   .bottom-bar.open { border-top-color:var(--accent); }
@@ -261,16 +271,13 @@
           <span class="mat">chevron_left</span>
         </div>
       </div>
-      <div id="pick-items">
-        <!-- populated by buildPickerItems() -->
-      </div>
+      <div id="pick-items"></div>
     </div>
 
-  </div><!-- /left-side -->
+  </div>
 
   <!-- CENTER -->
   <div class="center-area">
-
     <div class="content-area">
       <div class="welcome" id="welcome-screen">
         <div class="welcome-firm">Artfu Research</div>
@@ -284,93 +291,81 @@
       <iframe id="main-content-frame"></iframe>
     </div>
 
+    <!-- FOOTER BATTERY SELECTOR -->
+    <div class="footer-battery-bar" id="footer-battery-bar">
+
+      <!-- EM family -->
+      <div class="fam-card" id="fam-em">
+        <div class="fam-btn" id="fbtn-em-base" onclick="footerSelectBase('em')" title="Epistemic Motion"><span class="mat">cognition</span></div>
+        <div class="fam-btn mod" id="fbtn-em-cl" onclick="footerSelectMod('em','client')" title="EM · Client"><span class="mat">person_add</span></div>
+        <div class="fam-btn mod" id="fbtn-em-op" onclick="footerSelectMod('em','opposition')" title="EM · Opposition"><span class="mat">person_remove</span></div>
+      </div>
+
+      <!-- FA family -->
+      <div class="fam-card" id="fam-fa">
+        <div class="fam-btn" id="fbtn-fa-base" onclick="footerSelectBase('fa')" title="Forensic Analysis"><span class="mat">biotech</span></div>
+        <div class="fam-btn mod" id="fbtn-fa-cl" onclick="footerSelectMod('fa','client')" title="FA · Client"><span class="mat">person_add</span></div>
+        <div class="fam-btn mod" id="fbtn-fa-op" onclick="footerSelectMod('fa','opposition')" title="FA · Opposition"><span class="mat">person_remove</span></div>
+      </div>
+
+      <!-- SC family -->
+      <div class="fam-card" id="fam-sc">
+        <div class="fam-btn" id="fbtn-sc-base" onclick="footerSelectBase('sc')" title="Semantic Content"><span class="mat">newspaper</span></div>
+        <div class="fam-btn mod" id="fbtn-sc-cl" onclick="footerSelectMod('sc','client')" title="SC · Client"><span class="mat">person_add</span></div>
+        <div class="fam-btn mod" id="fbtn-sc-op" onclick="footerSelectMod('sc','opposition')" title="SC · Opposition"><span class="mat">person_remove</span></div>
+      </div>
+
+      <div class="footer-divider"></div>
+
+      <!-- WPB -->
+      <div class="fam-card" id="fam-wpb">
+        <div class="fam-btn" id="fbtn-wpb-base" onclick="footerSelectBase('wpb')" title="Witness Posture"><span class="mat">account_box</span></div>
+      </div>
+
+      <!-- APB -->
+      <div class="fam-card" id="fam-apb">
+        <div class="fam-btn" id="fbtn-apb-base" onclick="footerSelectBase('apb')" title="Attorney Performance"><span class="mat">taunt</span></div>
+      </div>
+
+      <!-- JSB family — no base, sides only -->
+      <div class="fam-card" id="fam-jsb">
+        <div class="fam-btn disabled" title="JSB · select a side"><span class="mat">crowdsource</span></div>
+        <div class="fam-btn mod" id="fbtn-jsb-cl" onclick="footerSelectMod('jsb','client')" title="JSB · Client"><span class="mat">person_add</span></div>
+        <div class="fam-btn mod" id="fbtn-jsb-op" onclick="footerSelectMod('jsb','opposition')" title="JSB · Opposition"><span class="mat">person_remove</span></div>
+      </div>
+
+      <!-- EEB -->
+      <div class="fam-card" id="fam-eeb">
+        <div class="fam-btn" id="fbtn-eeb-base" onclick="footerSelectBase('eeb')" title="Entity Extraction"><span class="mat">scan</span></div>
+      </div>
+
+    </div>
+
+    <!-- SCHEMA BAR -->
+    <div class="bottom-bar" id="bottom-bar" onclick="toggleBottomDrawer()">
+      <div class="bottom-bar-tag">Schema</div>
+      <div class="bottom-bar-preview" id="bottom-bar-preview"><span>Select a battery to load schema</span></div>
+      <div class="bottom-bar-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M2 3l3 3 3-3"/></svg></div>
+    </div>
+    <div class="bottom-drawer" id="bottom-drawer">
+      <div class="bottom-drawer-inner" id="bottom-drawer-inner">
+        <div class="pair-placeholder" style="height:80px;">Select a battery to load schema overview.</div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- RIGHT WALL: battery subheader stored vertically, out of the way -->
-  <div class="right-wall">
-    <div class="bat-sq" id="sq-em">
-      <div class="bat-main" onclick="selectBatteryBase('em')"><span class="mat bat-main-icon">cognition</span><span class="bat-abbr">EM</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell" id="mod-em-cl" onclick="selectMod('em','cl')"><span class="mat">person_add</span></div>
-        <div class="mod-cell" id="mod-em-op" onclick="selectMod('em','op')"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="bat-sq" id="sq-fa">
-      <div class="bat-main" onclick="selectBatteryBase('fa')"><span class="mat bat-main-icon">biotech</span><span class="bat-abbr">FA</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell" id="mod-fa-cl" onclick="selectMod('fa','cl')"><span class="mat">person_add</span></div>
-        <div class="mod-cell" id="mod-fa-op" onclick="selectMod('fa','op')"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="bat-sq" id="sq-sc">
-      <div class="bat-main" onclick="selectBatteryBase('sc')"><span class="mat bat-main-icon">newspaper</span><span class="bat-abbr">SC</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell" id="mod-sc-cl" onclick="selectMod('sc','cl')"><span class="mat">person_add</span></div>
-        <div class="mod-cell" id="mod-sc-op" onclick="selectMod('sc','op')"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="sh-divider-v"></div>
-    <div class="bat-sq" id="sq-wpb">
-      <div class="bat-main" onclick="selectBatteryBase('wpb')"><span class="mat bat-main-icon">account_box</span><span class="bat-abbr">WPB</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell disabled"><span class="mat">person_add</span></div>
-        <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="bat-sq" id="sq-apb">
-      <div class="bat-main" onclick="selectBatteryBase('apb')"><span class="mat bat-main-icon">taunt</span><span class="bat-abbr">APB</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell disabled"><span class="mat">person_add</span></div>
-        <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="bat-sq" id="sq-jsb">
-      <div class="bat-main" onclick="selectBatteryBase('jsb')"><span class="mat bat-main-icon">crowdsource</span><span class="bat-abbr">JSB</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell" id="mod-jsb-cl" onclick="selectMod('jsb','cl')"><span class="mat">person_add</span></div>
-        <div class="mod-cell" id="mod-jsb-op" onclick="selectMod('jsb','op')"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-    <div class="bat-sq" id="sq-eeb">
-      <div class="bat-main" onclick="selectBatteryBase('eeb')"><span class="mat bat-main-icon">scan</span><span class="bat-abbr">EEB</span></div>
-      <div class="bat-mods">
-        <div class="mod-cell disabled"><span class="mat">person_add</span></div>
-        <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
-        <div class="mod-cell disabled"><div class="mod-soon"></div></div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- BOTTOM -->
-<div class="bottom-bar" id="bottom-bar" onclick="toggleBottomDrawer()">
-  <div class="bottom-bar-tag">Schema</div>
-  <div class="bottom-bar-preview" id="bottom-bar-preview"><span>Select a battery to load schema</span></div>
-  <div class="bottom-bar-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M2 3l3 3 3-3"/></svg></div>
-</div>
-<div class="bottom-drawer" id="bottom-drawer">
-  <div class="bottom-drawer-inner" id="bottom-drawer-inner">
-    <div class="pair-placeholder" style="height:80px;">Select a battery to load schema overview.</div>
-  </div>
 </div>
 
 <script>
 const BAT_LABELS = {em:'Epistemic Motion',fa:'Forensic Analysis',sc:'Semantic Content',wpb:'Witness Posture',apb:'Attorney Performance',jsb:'Jury Selection',eeb:'Entity Extraction'};
-const HAS_SI = ['em','fa','sc'];
+const HAS_SI    = ['em','fa','sc'];
 const HAS_SIDES = ['jsb'];
-const BAT_ICON = {em:'cognition',fa:'biotech',sc:'newspaper',wpb:'account_box',apb:'taunt',jsb:'crowdsource',eeb:'scan'};
 
-let currentBattery  = null;  // what's loaded in center
+let currentBattery  = null;
 let currentModifier = null;
 let currentPair     = null;
-let pairBattery     = null;  // what the pair list is showing
+let pairBattery     = null;
 let pairModifier    = null;
 let pairColOpen     = false;
 let pickColOpen     = false;
@@ -379,49 +374,63 @@ let currentSchema   = null;
 const schemaCache   = {};
 let _loadSession    = 0;
 
-// ── COL 1: select which battery the pair list shows ──────────────────
+/* ── FOOTER: select base battery ──────────────────────────────────── */
+function footerSelectBase(battery) {
+  currentBattery  = battery;
+  currentModifier = null;
+  if (!currentPair) currentPair = 1;
+  syncFooter();
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  loadBatterySchema(battery, null);
+}
+
+/* ── FOOTER: select modifier ──────────────────────────────────────── */
+function footerSelectMod(battery, modifier) {
+  currentBattery  = battery;
+  currentModifier = modifier;
+  if (!currentPair) currentPair = 1;
+  syncFooter();
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  const sk = modifier === 'client' ? 'si' : modifier === 'opposition' ? 'si_opp' : battery;
+  loadBatterySchema(sk, null);
+}
+
+/* ── Sync footer active states ────────────────────────────────────── */
+function syncFooter() {
+  document.querySelectorAll('.fam-btn').forEach(b => b.classList.remove('active-base','active-cl','active-op'));
+  if (!currentBattery) return;
+  if (!currentModifier) {
+    document.getElementById('fbtn-' + currentBattery + '-base')?.classList.add('active-base');
+  } else if (currentModifier === 'client') {
+    document.getElementById('fbtn-' + currentBattery + '-cl')?.classList.add('active-cl');
+  } else if (currentModifier === 'opposition') {
+    document.getElementById('fbtn-' + currentBattery + '-op')?.classList.add('active-op');
+  }
+}
+
+/* ── COL 1: pair list battery ─────────────────────────────────────── */
 function selectPairBattery(battery) {
   pairBattery = battery;
-
-  // Mark icon active
   document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active'));
   document.getElementById('ibtn-' + battery).classList.add('pair-active');
-
-  // Open pair col
   pairColOpen = true;
   document.getElementById('pair-col').classList.add('open');
   document.getElementById('collapse-btn').classList.add('open');
   document.getElementById('pair-col-bat').textContent = BAT_LABELS[battery] || battery;
-
-  // Default modifier for this battery
   pairModifier = null;
   document.getElementById('pair-col-mod').textContent = 'Base';
-
-  // Build picker items for this battery
   buildPickerItems(battery, null);
-
-  // If nothing loaded in center yet, auto-load base pair 1
-  if (!currentBattery) {
-    currentBattery  = battery;
-    currentModifier = null;
-    currentPair     = 1;
-    syncSubheader();
-    updateCrumbs();
-    showIframe();
-    loadCurrentView();
-    loadBatterySchema(battery, null);
-  }
-
-  // Load pair summaries
   loadPairSummaries(battery, null);
 }
 
-// ── COL 2: toggle pair column ────────────────────────────────────────
 function togglePairCol() {
   pairColOpen = !pairColOpen;
   document.getElementById('pair-col').classList.toggle('open', pairColOpen);
   document.getElementById('collapse-btn').classList.toggle('open', pairColOpen);
-  // If closing pair col, also close picker
   if (!pairColOpen) {
     pickColOpen = false;
     document.getElementById('pick-col').classList.remove('open');
@@ -429,38 +438,26 @@ function togglePairCol() {
   }
 }
 
-// ── COL 3: toggle battery picker ────────────────────────────────────
 function togglePickCol() {
-  if (!pairColOpen) return; // can't open picker without pair col
+  if (!pairColOpen) return;
   pickColOpen = !pickColOpen;
   document.getElementById('pick-col').classList.toggle('open', pickColOpen);
   document.getElementById('pick-toggle').classList.toggle('open', pickColOpen);
 }
 
-// ── Build picker items for a given battery ───────────────────────────
 function buildPickerItems(battery, activeModifier) {
-  const hasSI   = HAS_SI.includes(battery);
+  const hasSI    = HAS_SI.includes(battery);
   const hasSides = HAS_SIDES.includes(battery);
   document.getElementById('pick-col-label').textContent = BAT_LABELS[battery] || battery;
-
   let html = '';
-
-  // Base (not for JSB which requires a side)
-  if (!hasSides) {
-    html += pickItem('base', null, battery, activeModifier, 'adjust', 'Base');
-  }
-
-  // SI modifiers
+  if (!hasSides) html += pickItem('base', null, battery, activeModifier, 'adjust', 'Base');
   if (hasSI || hasSides) {
     html += `<div class="pick-divider"></div>`;
     html += pickItem('cl', 'client', battery, activeModifier, 'person_add', 'Client');
     html += pickItem('op', 'opposition', battery, activeModifier, 'person_remove', 'Opposition');
   }
-
-  // Graph
   html += `<div class="pick-divider"></div>`;
   html += `<div class="pick-item disabled"><span class="mat">bar_chart</span>Graph — soon</div>`;
-
   document.getElementById('pick-items').innerHTML = html;
 }
 
@@ -471,74 +468,27 @@ function pickItem(id, modifier, battery, activeModifier, icon, label) {
   </div>`;
 }
 
-// ── Select from picker column ────────────────────────────────────────
 function selectFromPicker(battery, modifierStr) {
   const modifier = modifierStr === 'null' || modifierStr === 'base' ? null : modifierStr;
   pairBattery  = battery;
   pairModifier = modifier;
-
-  // Update pair col header
   document.getElementById('pair-col-mod').textContent = modifier ? modLabel(modifier) : 'Base';
-
-  // Rebuild picker with new active state
   buildPickerItems(battery, modifier);
-
-  // Reload pair summaries for this modifier
   loadPairSummaries(battery, modifier);
-
-  // Also update center view to match
-  currentBattery  = battery;
-  currentModifier = modifier;
-  if (!currentPair) currentPair = 1;
-  syncSubheader();
-  updateCrumbs();
-  showIframe();
-  loadCurrentView();
-  loadBatterySchema(battery, modifier);
 }
 
 function modLabel(mod) {
-  const m = {client:'Client',opposition:'Opposition',graph1:'Graph'};
+  const m = {client:'Client',opposition:'Opposition'};
   return m[mod] || mod;
 }
 
-// ── SUBHEADER: base click ────────────────────────────────────────────
-function selectBatteryBase(battery) {
-  currentBattery  = battery;
-  currentModifier = null;
-  if (!currentPair) currentPair = 1;
-  syncSubheader(); updateCrumbs(); showIframe(); loadCurrentView();
-  loadBatterySchema(battery, null);
-  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active'));
-  document.getElementById('ibtn-' + battery)?.classList.add('pair-active');
-}
-
-// ── SUBHEADER: modifier click ────────────────────────────────────────
-function selectMod(battery, mod) {
-  currentBattery  = battery;
-  currentModifier = mod === 'cl' ? 'client' : mod === 'op' ? 'opposition' : 'graph1';
-  if (!currentPair) currentPair = 1;
-  syncSubheader(); updateCrumbs(); showIframe(); loadCurrentView();
-  const sk = mod === 'cl' ? 'si' : mod === 'op' ? 'si_opp' : battery;
-  loadBatterySchema(sk, null);
-  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active'));
-  document.getElementById('ibtn-' + battery)?.classList.add('pair-active');
-}
-
-function syncSubheader() {
-  document.querySelectorAll('.bat-sq').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.mod-cell').forEach(c => c.classList.remove('active-cl','active-op','active-gr'));
-  if (!currentBattery) return;
-  document.getElementById('sq-' + currentBattery)?.classList.add('active');
-  if (currentModifier === 'client')     document.getElementById('mod-' + currentBattery + '-cl')?.classList.add('active-cl');
-  else if (currentModifier === 'opposition') document.getElementById('mod-' + currentBattery + '-op')?.classList.add('active-op');
-  else if (currentModifier === 'graph1') document.getElementById('mod-' + currentBattery + '-gr')?.classList.add('active-gr');
-}
-
-// ── LOAD PAIR ────────────────────────────────────────────────────────
+/* ── Load pair into center ────────────────────────────────────────── */
 function loadPair(n) {
   currentPair = n;
-  updateCrumbs(); showIframe(); loadCurrentView(); highlightPair(n);
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  highlightPair(n);
 }
 
 function showIframe() {
@@ -573,10 +523,9 @@ function loadCurrentView() {
   if (!currentPair || !currentBattery) return;
   const iframe = document.getElementById('main-content-frame');
   if (currentBattery === 'jsb' && !currentModifier) {
-    iframe.removeAttribute('src'); iframe.srcdoc = blank('Select Client or Opposition to view Jury Selection.'); return;
-  }
-  if (currentModifier === 'graph1') {
-    iframe.removeAttribute('src'); iframe.srcdoc = blank(`${BAT_LABELS[currentBattery]} · Graph — coming soon.`); return;
+    iframe.removeAttribute('src');
+    iframe.srcdoc = blank('Select Client or Opposition to view Jury Selection.');
+    return;
   }
   const path = getBatteryPath(currentBattery, currentPair, currentModifier);
   if (!path) { iframe.removeAttribute('src'); iframe.srcdoc = blank('View not available.'); return; }
@@ -592,11 +541,13 @@ function loadCurrentView() {
 function blank(msg) {
   return `<!DOCTYPE html><html><head><style>body{background:#1F2020;color:#989A89;font-family:'DM Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:40px;line-height:1.7;}</style></head><body><div>${msg}</div></body></html>`;
 }
+
 function injectStyles(doc) {
   const s = doc.createElement('style');
   s.textContent = `.footer{background:#000!important;}.col-card,.field-block,.pattern-bar,.sig-bar,.score-row,.summary-block,.panel-call{cursor:pointer;transition:background .15s,border-color .15s,outline .15s;}.col-card:hover{border-color:var(--accent)!important;}.field-block:hover,.pattern-bar:hover,.sig-bar:hover,.score-row:hover,.summary-block:hover,.panel-call:hover{outline:1px solid var(--accent);}.col-card.ca-sel{background:#000!important;border-color:var(--accent)!important;}.field-block.ca-sel,.pattern-bar.ca-sel,.sig-bar.ca-sel,.score-row.ca-sel,.summary-block.ca-sel,.panel-call.ca-sel{background:#000!important;outline:1px solid var(--accent);}`;
   doc.head.appendChild(s);
 }
+
 function wireClicks(doc) {
   const SEL = '.col-card,.field-block,.pattern-bar,.sig-bar,.score-row,.summary-block,.panel-call';
   const desel = () => doc.querySelectorAll('.ca-sel').forEach(e => e.classList.remove('ca-sel'));
@@ -619,13 +570,13 @@ function updateCrumbs() {
   const se = document.getElementById('crumb-sep');
   pe.textContent = currentPair ? `Pair ${String(currentPair).padStart(3,'0')}` : '';
   if (currentBattery) {
-    let l = BAT_LABELS[currentBattery]||currentBattery;
-    if (currentModifier) { const ml={client:'Client',opposition:'Opposition',graph1:'Graph'}; l += ' · '+(ml[currentModifier]||currentModifier); }
+    let l = BAT_LABELS[currentBattery] || currentBattery;
+    if (currentModifier) { const ml={client:'Client',opposition:'Opposition'}; l += ' · '+(ml[currentModifier]||currentModifier); }
     be.textContent = l; be.style.display=''; se.style.display='';
   } else { be.style.display='none'; se.style.display='none'; }
 }
 
-// ── PAIR SUMMARIES ────────────────────────────────────────────────────
+/* ── PAIR SUMMARIES ───────────────────────────────────────────────── */
 async function loadPairSummaries(battery, modifier) {
   const container = document.getElementById('pair-list');
   const session = ++_loadSession;
@@ -730,7 +681,7 @@ async function extractENT(pair) {
   } catch {return null;}
 }
 
-// ── BOTTOM / SCHEMA ────────────────────────────────────────────────────
+/* ── SCHEMA ───────────────────────────────────────────────────────── */
 function toggleBottomDrawer() {
   bottomOpen=!bottomOpen;
   document.getElementById('bottom-bar').classList.toggle('open',bottomOpen);
