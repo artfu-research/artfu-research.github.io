@@ -1,176 +1,222 @@
 {
   "battery_code": "em",
   "battery_name": "Epistemic Motion",
-  "battery_overview": "The Epistemic Motion Battery analyzes a question–answer turn-pair from a legal deposition. It measures how knowledge, belief, and responsibility move between the two speakers — what gets transformed, how the turns mechanically constrain each other, what new lines of inquiry open or close, what shape the exchange takes geometrically, and what meaning carries forward into the rest of the deposition. Six sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration.",
+  "battery_overview": "This page analyzes a single question-and-answer exchange from the deposition. Think of it as an X-ray of the conversation — not just what was said, but what actually happened beneath the surface. Did the witness accept the attorney's framing or push back against it? Did the question open new lines of inquiry or shut them down? Did something new emerge from the exchange that neither speaker brought in alone? Each section below examines a different dimension of that exchange, building toward the two-word Pattern Declaration at the top, which is the instrument's single summary judgment of what kind of moment this was.",
+
   "pattern_field": {
     "id": "pattern_declaration",
     "label": "Pattern Declaration",
     "call": 6,
-    "definition": "A two-word label that captures the dominant epistemic movement of the exchange. Derived after all five prior lenses are computed and represents the instrument's single synthesized judgment about what happened in this turn-pair.",
-    "scale": "Qualitative (2-word phrase)",
-    "why_it_matters": "Not a summary of content, but a label for the kind of transformation that occurred. When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how understanding moved through the entire conversation.",
-    "examples": "Blame Shift, Frame Capture, Evasion Loop, Anchor Drop"
+    "parent_section": "Pattern",
+    "definition": "The two-word summary of this entire exchange. After analyzing five separate dimensions of the question and answer, the instrument produces a single label that names the kind of moment this was — not what was talked about, but what structurally happened. Think of it as a diagnosis rather than a description.",
+    "why_it_matters": "When you read these two-word labels across dozens or hundreds of exchanges, patterns emerge. You start to see whether the deposition was mostly cooperative, mostly evasive, whether the witness was being led or resisting, whether the attorney was in control. A single label means little on its own — the value is in the sequence.",
+    "value_type": "qualitative",
+    "value_description": "The label shown is the instrument's judgment of this specific exchange. Examples of what these labels can look like: Identity Confirmation, Blame Shift, Frame Capture, Evasion Loop, Anchor Drop, Authority Press. Each one names a structural event, not a topic."
   },
+
   "fields": [
     {
       "id": "transformation",
       "label": "Transformation",
       "call": 1,
       "parent_section": "Epistemic Object",
-      "definition": "What changed at the level of understanding between Turn 1 and Turn 2. Not what was said, but what shifted in the epistemic state.",
-      "scale": "Qualitative (3-word maximum compressed label)",
-      "why_it_matters": "Identifies the fundamental shift in knowledge state that occurred in the exchange.",
-      "order": 1
+      "definition": "What actually changed between the question and the answer — not the words that were exchanged, but the shift in what is now known, established, or understood. Every question-answer pair moves something. This field names what moved.",
+      "why_it_matters": "Depositions are not just conversations — they are knowledge-building events. Every exchange either advances, retreats, or redirects what is known on the record. Understanding what transformed in each exchange tells you whether the deposition is moving toward or away from the facts that matter to the case.",
+      "value_type": "qualitative",
+      "value_description": "The value shown is a short label — usually two or three words — naming the shift that occurred. For example: 'identity formally confirmed' means the exchange moved from unknown to known on the question of who this person is. 'responsibility acknowledged' means the witness accepted some form of accountability. 'claim introduced' means a new factual assertion entered the record."
     },
     {
       "id": "object_of_transformation",
       "label": "Object Of Transformation",
       "call": 1,
       "parent_section": "Epistemic Object",
-      "definition": "The specific concept, framing, or confusion that was operated upon. The raw material before it was redefined, clarified, or reframed.",
-      "scale": "Qualitative (3-word maximum label)",
-      "why_it_matters": "Identifies what semantic content was the target of transformation.",
-      "order": 2
+      "definition": "The specific thing that was transformed — the subject matter that got moved, clarified, reframed, or established. If Transformation tells you what happened, Object Of Transformation tells you what it happened to.",
+      "why_it_matters": "Knowing what was transformed is only useful if you also know what it was transformed about. This field names the target — the specific concept, fact, or question at the center of the exchange.",
+      "value_type": "qualitative",
+      "value_description": "A short label naming the thing at the center of the exchange. Examples: 'witness identity verification' means the exchange was about establishing who this person is. 'safety protocol compliance' means the exchange was about whether proper procedures were followed. 'causation of injury' means the exchange was about what caused the harm."
     },
     {
       "id": "scaffolding",
       "label": "Scaffolding",
       "call": 1,
       "parent_section": "Epistemic Object",
-      "definition": "The structural support that held the exchange stable enough for transformation to occur. Three components: what scaffolded Turn 1, what scaffolded Turn 2, and what arose from the pair as a unit (emergent support).",
-      "scale": "Qualitative (3-word maximum label per component: turn_1_scaffolding, turn_2_scaffolding, emergent_support)",
-      "why_it_matters": "Shows what foundational structures made the epistemic transformation possible.",
-      "order": 3
+      "definition": "The underlying structure that made this exchange possible — what held the question up, what held the answer up, and what the two together created that neither had alone. Think of it like the frame of a building: you don't see it when everything is working, but it's what keeps the exchange from collapsing.",
+      "why_it_matters": "When scaffolding is solid, the exchange produces reliable information. When it is weak — when the question rests on an assumption that isn't established, or the answer doesn't connect to anything real — the exchange may look productive while actually building nothing. Spotting weak scaffolding is how you find the vulnerabilities in testimony.",
+      "value_type": "structured",
+      "value_description": "Three components are shown: Turn 1 scaffolding (what held the question up — for example 'formal identification request' means the question was grounded in standard legal procedure), Turn 2 scaffolding (what held the answer up — for example 'affirmative identity statement' means the witness's answer was grounded in a direct, first-person claim), and Emergent support (what the pair produced together — for example 'identity confirmation process' means the two turns together created a completed verification event that neither turn accomplished alone)."
     },
     {
       "id": "t1_to_t2_relationship",
-      "label": "T1 To T2 Relationship",
+      "label": "Question → Answer Relationship",
       "call": 2,
       "parent_section": "Bidirectional Relationship",
-      "definition": "How Turn 1 constrained and enabled Turn 2. What did the question make necessary, possible, or impossible for the answer?",
-      "scale": "Paragraph-length analysis",
-      "why_it_matters": "Reveals how the question shaped the answer's possibility space.",
-      "order": 4
+      "definition": "How the question shaped the answer. Every question constrains what a witness can reasonably say in response — it opens some doors and closes others. This field describes exactly how the question did that: what it made necessary, what it made possible, and what it made difficult or impossible.",
+      "why_it_matters": "Attorneys design questions strategically. A well-constructed question boxes the witness in — it forces a useful answer or makes evasion visible. A poorly constructed question gives the witness room to wander. Reading this field tells you how much control the question actually exercised over what followed.",
+      "value_type": "narrative",
+      "value_description": "A paragraph written in plain English describing the relationship. Read it as an explanation of the leverage the question had — or didn't have — over the answer."
     },
     {
       "id": "t2_to_t1_relationship",
-      "label": "T2 To T1 Relationship",
+      "label": "Answer → Question Relationship",
       "call": 2,
       "parent_section": "Bidirectional Relationship",
-      "definition": "How Turn 2 reframed or recontextualized Turn 1. What does the answer reveal about what the question was actually doing?",
-      "scale": "Paragraph-length analysis",
-      "why_it_matters": "Shows how the answer retrospectively changed the meaning of the question.",
-      "order": 5
+      "definition": "How the answer changed the meaning of the question in retrospect. Once a witness responds, that response reframes what the question was really doing. Sometimes an answer reveals the question was more powerful than it appeared. Sometimes it reveals the question was weaker — or was being used for something other than its surface meaning.",
+      "why_it_matters": "Questions don't have fixed meanings — their meaning is completed by the answers they receive. This field captures that retrospective reframing. It can reveal when a witness has subtly repositioned what was being asked, or when an attorney's question succeeded in ways that weren't immediately obvious.",
+      "value_type": "narrative",
+      "value_description": "A paragraph describing what the answer revealed about the question. Look for language about reframing, confirmation, repositioning, or exposure — these signal whether the answer strengthened or complicated the question's original intent."
     },
     {
       "id": "alignment_bidirectional_q_to_a",
-      "label": "Alignment Bidirectional (Q→A)",
+      "label": "Alignment: Question → Answer",
       "call": 2,
       "parent_section": "Bidirectional Relationship",
-      "definition": "How faithfully Turn 2 received the frame established by Turn 1.",
-      "scale": "-5 to +5 (negative = misalignment/frame rejection, positive = alignment/reception, zero = neutral/even)",
-      "why_it_matters": "Measures whether the witness accepted or resisted the attorney's framing.",
-      "order": 6
+      "definition": "A score measuring how fully the witness accepted the attorney's framing. When an attorney asks a question, they are doing more than requesting information — they are proposing a frame, a way of seeing the situation. This score measures whether the witness stepped into that frame or stepped away from it.",
+      "why_it_matters": "A witness who consistently accepts the attorney's framing is either cooperative or being controlled — both are significant. A witness who consistently rejects the framing is either evasive or genuinely disagreeing. Tracking this score across exchanges reveals the overall dynamics of control in the deposition.",
+      "value_type": "numeric",
+      "scale_description": "Scored from −5 to +5. Positive scores mean the witness accepted the attorney's framing. Negative scores mean the witness resisted or rejected it. The further from zero in either direction, the stronger the effect.",
+      "scale_values": {
+        "-5": "The witness completely rejected the attorney's framing — not just declining to answer, but actively countering the premise of the question. This is a significant adversarial moment.",
+        "-4": "The witness strongly pushed back against the question's framing. The attorney's intended structure did not hold.",
+        "-3": "The witness clearly resisted the framing. The answer went in a noticeably different direction than the question was pointing.",
+        "-2": "The witness partially deflected from the question's frame — answered, but on slightly different terms than the attorney set up.",
+        "-1": "Minor drift from the question's framing. The witness mostly stayed within it but introduced a small reorientation.",
+        "0": "Neutral — the exchange neither reinforced nor resisted the attorney's framing.",
+        "1": "The witness slightly accepted the attorney's framing — went along with it without any notable resistance.",
+        "2": "The witness accepted the framing and answered within it. A functional, cooperative exchange.",
+        "3": "The witness clearly received the attorney's framing and built their answer directly within it.",
+        "4": "The witness strongly accepted the attorney's framing — the answer reinforced and extended the structure the question created.",
+        "5": "Complete alignment. The witness fully stepped into the attorney's frame and answered exactly within it. The attorney had total framing control in this exchange."
+      },
+      "null_explanation": "This field does not apply to this exchange."
     },
     {
       "id": "alignment_bidirectional_a_to_q",
-      "label": "Alignment Bidirectional (A→Q)",
+      "label": "Alignment: Answer → Question",
       "call": 2,
       "parent_section": "Bidirectional Relationship",
-      "definition": "How faithfully Turn 1's frame holds after Turn 2's response.",
-      "scale": "-5 to +5 (negative = frame undermined, positive = frame validated)",
-      "why_it_matters": "Measures whether the answer validated or undermined the question's premise.",
-      "order": 7
+      "definition": "A score measuring whether the answer validated or undermined the premise of the question. Every question rests on assumptions — that certain things are true, that certain framings are appropriate. This score measures how well those assumptions held up once the witness responded.",
+      "why_it_matters": "An attorney builds a line of questioning on premises they believe to be solid. If witnesses consistently undermine those premises — even subtly — the attorney's strategy can erode over time. This score tracks whether the question's foundation held.",
+      "value_type": "numeric",
+      "scale_description": "Scored from −5 to +5. Positive scores mean the answer validated the question's premise — the assumptions held. Negative scores mean the answer undermined it — the assumptions were exposed as wrong, incomplete, or contested.",
+      "scale_values": {
+        "-5": "The answer completely demolished the premise of the question. Whatever the attorney assumed to be true, the witness's answer made clear it was not.",
+        "-4": "The answer strongly undermined the question's premise. The foundation the attorney built the question on did not hold.",
+        "-3": "The answer clearly weakened the question's premise. The attorney's assumptions were visibly challenged.",
+        "-2": "The answer partially undermined the premise. The question's foundation held somewhat but showed cracks.",
+        "-1": "Minor erosion of the question's premise. The answer was mostly on-frame but introduced a small complication.",
+        "0": "Neutral — the answer neither confirmed nor undermined the question's premise.",
+        "1": "The answer slightly validated the question's premise — went along with the attorney's assumptions without friction.",
+        "2": "The answer accepted the question's premise and confirmed its underlying assumptions.",
+        "3": "The answer clearly validated the question's foundation. The attorney's framing was confirmed.",
+        "4": "The answer strongly reinforced the premise of the question. The attorney's assumptions were explicitly confirmed.",
+        "5": "Complete validation. The answer fully confirmed every assumption built into the question. The attorney's framing was proven correct."
+      },
+      "null_explanation": "This field does not apply to this exchange."
     },
     {
       "id": "constraints_operationalized",
       "label": "Constraints Operationalized",
       "call": 3,
       "parent_section": "Epistemic Consequences",
-      "definition": "Limits that became active as a result of this exchange. Definitions, boundaries, or framings that now reduce the viable space of what can coherently follow.",
-      "scale": "Structured list (constraint_class: 1-2 words, constraint_type: 1-2 words, constrained: 2 words max)",
-      "why_it_matters": "Identifies what new boundaries were established that restrict future moves.",
-      "order": 8
+      "definition": "The new limits this exchange placed on what can be said going forward. Once something is established on the record, certain things become harder to say, deny, or reframe. This field identifies what boundaries were created by this exchange — what is now locked in.",
+      "why_it_matters": "Depositions build a record that is difficult to walk back. Every constraint created in one exchange becomes a wall the witness has to navigate in future exchanges. Understanding what got locked in helps you see what lines of questioning become available — or unavailable — as a result.",
+      "value_type": "structured",
+      "value_description": "A list of constraints, each described by what kind of constraint it is, what type of thing it constrains, and what specifically got constrained. For example: a 'Name Disclosure' constraint on 'Identity' means the witness has now committed to their name being on the record — they cannot later claim they were misidentified. Each constraint listed is something that would be difficult to undo or contradict."
     },
     {
       "id": "enablements_created",
       "label": "Enablements Created",
       "call": 3,
       "parent_section": "Epistemic Consequences",
-      "definition": "New directions that became possible that were not possible before this exchange. What has been opened up, unlocked, or made available.",
-      "scale": "Structured list (enablement_class: 1-2 words, enablement_type: 1-2 words, enabled: 2 words max)",
-      "why_it_matters": "Identifies what new possibilities were created for future moves.",
-      "order": 9
+      "definition": "The new possibilities this exchange opened up. Just as constraints close doors, enablements open them. This field identifies what became available — what lines of inquiry, what future questions, what arguments — that could not have been pursued before this exchange happened.",
+      "why_it_matters": "Good deposition strategy is about creating opportunities. An attorney who asks the right questions early opens doors they can walk through later. This field shows what doors just opened — for either side.",
+      "value_type": "structured",
+      "value_description": "A list of enablements, each described by what kind of opportunity it is, what type of action it enables, and what specifically became possible. For example: an 'Identification' enablement on 'Witness ID' means the deposition can now proceed with confidence about who is testifying — other questions that depend on knowing the witness's identity are now unlocked."
     },
     {
       "id": "epistemic_encoding",
       "label": "Epistemic Encoding",
       "call": 3,
       "parent_section": "Epistemic Consequences",
-      "definition": "How meaning was distributed across explicit and implicit channels in this exchange. For each turn, identifies which semantic objects were carried implicitly (requiring inference) and which were carried explicitly (directly stated).",
-      "scale": "Structured objects (turn_1: {explicit: [], implicit: []}, turn_2: {explicit: [], implicit: []}), each object name 2-3 words max",
-      "why_it_matters": "Shows what was said versus what was meant, revealing the information architecture of the exchange.",
-      "order": 10
+      "definition": "The difference between what was said out loud and what was communicated. Every exchange carries two layers: the explicit layer — the words actually spoken — and the implicit layer — the meanings, assumptions, and signals those words carried beneath the surface. This field maps both layers for each turn.",
+      "why_it_matters": "In legal proceedings, what is implied can be as significant as what is stated. An attorney who implies a fact without stating it creates a different kind of record than one who states it directly. A witness who accepts an implied premise without challenging it has effectively confirmed it. Seeing both layers helps you understand what was actually communicated — and what was not.",
+      "value_type": "structured",
+      "value_description": "Four categories are shown — explicit and implicit for each turn. Explicit items are things directly stated in the words of the exchange. Implicit items are meanings that were communicated without being said — premises assumed, signals sent, or conclusions invited. For example: a question may explicitly request a name, while implicitly signaling that the witness is under formal scrutiny. An answer may explicitly provide a name, while implicitly expressing compliance and deference to the process."
     },
     {
       "id": "convergence",
       "label": "Convergence",
       "call": 4,
       "parent_section": "Epistemic Shape",
-      "definition": "Did the two turns move toward shared structure, closing distance between frames?",
-      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max per item when partial)",
-      "why_it_matters": "Indicates whether the exchange created alignment or maintained separation.",
-      "order": 11
+      "definition": "Whether the question and answer moved toward each other — toward shared understanding, agreement, or a common frame. Convergence happens when an exchange ends with both parties more aligned than when it started.",
+      "why_it_matters": "Convergence is not always good for one side or the other — it depends on what they converged on. If the witness converges onto the attorney's framing, that is control. If they converge onto a neutral fact, that is information. If they fail to converge, the exchange produced friction rather than clarity.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The exchange converged — the question and answer moved toward shared structure. By the end, both turns were pointing in the same direction. The mechanism shown describes how this happened.",
+        "false": "The exchange did not converge. The question and answer remained in separate frames — they did not move toward a shared understanding.",
+        "partial": "The exchange partially converged. Some alignment occurred, but something prevented full convergence. The 'prevented by' note describes what got in the way."
+      },
+      "null_explanation": "Convergence could not be assessed for this exchange."
     },
     {
       "id": "divergence",
       "label": "Divergence",
       "call": 4,
       "parent_section": "Epistemic Shape",
-      "definition": "Did the two turns move away from shared structure, increasing distance between frames?",
-      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max per item when partial)",
-      "why_it_matters": "Indicates whether the exchange created separation or maintained alignment.",
-      "order": 12
+      "definition": "Whether the question and answer moved away from each other — increasing the distance between their frames rather than closing it. Divergence happens when an exchange ends with both parties further apart than when it started.",
+      "why_it_matters": "Divergence is a signal that something went wrong — or was made to go wrong. It can mean the witness is evading, the question was poorly constructed, or both parties are operating from fundamentally different understandings of the situation. Repeated divergence across exchanges is a significant finding.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The exchange diverged — the question and answer moved apart rather than toward each other. The frames separated. The mechanism shown describes how this happened.",
+        "false": "The exchange did not diverge. The question and answer remained in compatible frames — they did not pull away from each other.",
+        "partial": "The exchange partially diverged. Some separation occurred, but something prevented full divergence. The 'prevented by' note describes what limited the separation."
+      },
+      "null_explanation": "Divergence could not be assessed for this exchange."
     },
     {
       "id": "emergence",
       "label": "Emergence",
       "call": 4,
       "parent_section": "Epistemic Shape",
-      "definition": "Did the two turns produce something neither contained independently, a structure that arose from the interaction itself?",
-      "scale": "Boolean + mechanisms (present: true/false/partial, mechanism: 2 words max per item, prevented_by: 2 words max when partial only — false has no prevented_by)",
-      "why_it_matters": "Identifies whether new understanding emerged from the interaction that neither speaker brought independently.",
-      "order": 13
+      "definition": "Whether this exchange produced something that neither the question nor the answer contained alone — a new meaning, a new structure, a new understanding that only exists because these two turns happened together in this sequence.",
+      "why_it_matters": "Emergence is rare and significant. When it occurs, the exchange did more than transfer information — it created something. This can be a new vulnerability, a new line of inquiry, a new admission, or a new shared understanding. These moments often become pivotal points in the deposition.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "Something new emerged from this exchange that neither turn contained independently. The mechanism shown describes what was created and how.",
+        "false": "No emergence occurred. The exchange produced exactly what its parts contained — nothing more arose from the combination.",
+        "partial": "Something partially emerged. A new structure began to form but was not fully realized. The 'prevented by' note describes what blocked complete emergence."
+      },
+      "null_explanation": "Emergence could not be assessed for this exchange."
     },
     {
       "id": "change_in_understanding",
       "label": "Change In Understanding",
       "call": 5,
       "parent_section": "What Now Matters",
-      "definition": "What each speaker now understands as a result of the exchange.",
-      "scale": "Structured arrays (turn_1_now_understands: [], turn_2_now_understands: []), each item 2-3 words representing new knowledge",
-      "why_it_matters": "Tracks what was actually learned by each party in the exchange.",
-      "order": 14
+      "definition": "What each person in the exchange knows now that they did not know — or could not claim to know — before this exchange happened. This is a record of the learning that occurred, on both sides.",
+      "why_it_matters": "Depositions are information events. Tracking what each party learned from each exchange tells you whether the deposition is functioning as it should — producing real information — or whether exchanges are being used to perform rather than to discover.",
+      "value_type": "structured",
+      "value_description": "Two lists are shown: what the attorney now knows, and what the witness now knows. Items are short labels describing new knowledge. For the attorney, this might include 'witness identity' or 'safety protocol awareness.' For the witness, this might include 'scope of questioning' or 'record purpose.' Each item represents something that entered the record through this specific exchange."
     },
     {
       "id": "what_matters",
       "label": "What Matters",
       "call": 5,
       "parent_section": "What Now Matters",
-      "definition": "What in this exchange is relevant to the trajectory of the conversation. Semantic objects that carry forward, will shape what comes next, or would be a loss if forgotten.",
-      "scale": "Structured list (object: 2-3 words, trajectory: -1/0/+1 where -1=degrading, 0=stable, +1=enhancing)",
-      "why_it_matters": "Identifies which content from this exchange has forward momentum in the deposition.",
-      "order": 15
+      "definition": "The content from this exchange that has forward momentum — the things said or established here that will continue to shape what happens later in the deposition. Not everything in an exchange matters equally. This field identifies what does.",
+      "why_it_matters": "A deposition is a long document. Not every exchange carries equal weight. The things that matter are the ones that will be referenced, built upon, or challenged later. Identifying them early helps you know where to focus attention when reviewing the full record.",
+      "value_type": "structured",
+      "value_description": "A list of items with trajectory scores. Each item names something from the exchange that carries forward, along with a trajectory indicator: +1 means it is gaining in importance as the deposition continues, 0 means it is stable and established but not growing, −1 means it is fading in relevance. For example: 'witness identity' with a trajectory of +1 means that the fact of who this witness is will become increasingly important as the deposition develops."
     },
     {
       "id": "meaning_generated",
       "label": "Meaning Generated",
       "call": 5,
       "parent_section": "What Now Matters",
-      "definition": "The effect of this exchange on the future possibility space. What can now be thought, said, or built that the conversation is pointed toward.",
-      "scale": "Structured list (meaning_object: 1 word naming concept, now_possible: 2 words describing what became possible)",
-      "why_it_matters": "Shows what new conceptual territory became accessible as a result of this exchange.",
-      "order": 16
+      "definition": "What this exchange made possible that was not possible before it happened. Every exchange changes the conversational landscape slightly — it opens certain future moves and closes others. This field captures what became available.",
+      "why_it_matters": "Strategy in a deposition is about creating and using opportunities. This field tells you what opportunities this exchange created. For attorneys, it reveals what new questions become possible. For analysts, it reveals how the deposition's trajectory shifted.",
+      "value_type": "structured",
+      "value_description": "A list of meaning objects, each with a concept name and a description of what became possible. For example: 'identification → name given' means that by providing their name, the witness made the concept of identification real and usable for the rest of the deposition. 'recording → official record' means this exchange activated the formal record-keeping function of the proceeding."
     }
   ]
 }
