@@ -1,15 +1,17 @@
 {
   "battery_code": "sc",
   "battery_name": "Semantic Content",
-  "battery_overview": "The Semantic Content Battery analyzes a question–answer turn-pair from a legal deposition for what semantic content is present and how it behaves. It examines what is being talked about and how specifically, what entities and targets anchor the exchange, what domain class the content belongs to, what the content is functionally trying to do and in what direction, and how structurally complex the concept layer is. Five sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration — identical in structure to all other CA_15 batteries.",
+  "battery_overview": "This page analyzes a single question-and-answer exchange from the deposition for what its semantic content is and what it is doing. Where the Epistemic Motion battery asks what changed in the conversation and the Forensic Language Analysis battery asks how power and distortion shaped it, this battery asks what the exchange is actually about and how that content behaves. It examines five dimensions in sequence: what subject matter is present and how specifically and stably it is held (Call 1), what entities and targets anchor the exchange (Call 2), what ontological domain the content belongs to and how intense it is (Call 3), what the content is functionally trying to do and in what direction (Call 4), and how structurally complex the concept layer is — whether concepts are single, layered, or competing, whether meaning drifted across the exchange, and how tightly the concepts are coupled (Call 5). Call 6 distills all of that into the two-word Pattern Declaration at the top — the instrument's single summary judgment of what kind of semantic event this exchange was.",
   "pattern_field": {
     "id": "pattern_declaration",
     "label": "Pattern Declaration",
     "call": 6,
-    "definition": "A two-word label capturing the dominant semantic event of the exchange. Derived after all five analytical calls are computed and represents the instrument's single synthesized judgment about what the semantic content was doing. Not a description of topic — a label for the kind of semantic movement or function that defined the exchange.",
-    "scale": "Qualitative (2-word phrase)",
-    "why_it_matters": "When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how semantic content moved, shifted, and functioned across the entire deposition.",
-    "examples": "Blame Redirect, Frame Lock, Concept Split, Domain Collapse"
+    "parent_section": "Pattern",
+    "definition": "The two-word summary of this entire exchange from a semantic standpoint. After analyzing five separate dimensions of what the content is and what it is doing, the instrument produces a single label that names the dominant semantic event. It is not a description of the topic. It is a label for the kind of semantic movement or function that defined the exchange.",
+    "why_it_matters": "Reading these two-word labels in sequence across hundreds of exchanges reveals the higher-order structure of how semantic content moved, shifted, and functioned across the deposition as a whole. A single label means little on its own. The value is in the pattern across the full record.",
+    "value_type": "qualitative",
+    "value_description": "The two-word label shown is the instrument's single synthesized judgment of what semantic event occurred in this exchange — the kind of content movement or functional moment it was, not the topic it covered.",
+    "null_explanation": "A pattern declaration could not be produced for this exchange."
   },
   "fields": [
     {
@@ -17,150 +19,274 @@
       "label": "Topic Presence",
       "call": 1,
       "parent_section": "Semantic Presence",
-      "definition": "What subject matter is explicitly present in the exchange — what is being talked about, named, or referred to. Rendered as an open narrative description, not a label. This captures the raw semantic surface of the pair: what a neutral observer would say the conversation is about.",
-      "scale": "Narrative description (open text)",
-      "why_it_matters": "Establishes the baseline semantic surface of the exchange before any structural analysis — the literal subject matter being addressed.",
-      "order": 1
+      "definition": "What subject matter is explicitly present in this exchange — what is being talked about, named, or referred to. This is a neutral description of the raw semantic surface of the pair: what a neutral observer would say the conversation is about, before any structural analysis is applied.",
+      "why_it_matters": "Establishes the baseline semantic surface of the exchange. Everything else in this battery is built on top of what is actually being talked about — this field grounds the analysis in the literal content of the exchange.",
+      "value_type": "narrative",
+      "value_description": "Written as a short narrative description of what the exchange is about at its surface — the subject matter being addressed, as a neutral observer would describe it.",
+      "null_explanation": "Topic presence could not be determined for this exchange."
     },
     {
       "id": "topic_specificity",
       "label": "Topic Specificity",
       "call": 1,
       "parent_section": "Semantic Presence",
-      "definition": "How broad or narrow the topic is, scored on an integer scale of 1–10. A score of 5 represents ordinary conversational specificity. Scores above 5 indicate increasing precision and narrowness toward a singular semantic target. Scores below 5 indicate increasing generality. The score captures topical resolution, not importance or intensity.",
-      "scale": "Integer 1–10: 1 = maximally broad · 5 = ordinary specificity · 10 = singular semantic target",
-      "why_it_matters": "Quantifies how precisely targeted the exchange is — whether it is establishing broad context or closing in on a specific semantic object.",
-      "order": 2
+      "definition": "How broad or narrow the topic is — scored on a scale of 1 to 10. A score of 5 represents ordinary conversational specificity. Scores above 5 indicate increasing precision and narrowness toward a singular semantic target. Scores below 5 indicate increasing generality. This measures topical resolution, not importance or intensity.",
+      "why_it_matters": "Quantifies how precisely targeted the exchange is — whether it is establishing broad context or closing in on a specific semantic object. Attorneys use highly specific questions to pin down details. Witnesses who generalize are often increasing specificity resistance. Tracking specificity across exchanges reveals these strategic moves.",
+      "value_type": "numeric",
+      "scale_description": "Scored from 1 to 10. A score of 5 is ordinary conversational specificity — the level of focus you would expect in a normal exchange. Below 5 is increasingly broad and general. Above 5 is increasingly precise and narrow, toward a single specific semantic target at 10.",
+      "scale_values": {
+        "1": "Maximally broad — the topic is so general it could apply to almost any situation. No specific subject is being targeted.",
+        "1_to_2": "Extremely broad. The topic is highly general with almost no specific focus.",
+        "2": "Very broad — the topic covers a wide domain without narrowing toward any specific element.",
+        "2_to_3": "Broad, with only the faintest suggestion of a target. The exchange is establishing general territory.",
+        "3": "Broad — the topic has some shape but remains far from specific. Context-setting rather than targeting.",
+        "3_to_4": "Below average specificity. The topic is somewhat defined but still substantially general.",
+        "4": "Slightly below ordinary specificity — the topic has a direction but remains open and non-precise.",
+        "4_to_5": "Near ordinary specificity, slightly on the general side.",
+        "5": "Ordinary conversational specificity — the level of focus typical in a functional exchange.",
+        "5_to_6": "Slightly above ordinary specificity — the topic is becoming more focused than typical.",
+        "6": "Above average specificity — the topic is clearly aimed at a defined subject area.",
+        "6_to_7": "Meaningfully specific. The topic is targeted and not easily redirected.",
+        "7": "Specific — the topic is focused on a particular element with clear precision.",
+        "7_to_8": "Highly specific. The exchange is closing in on a narrow semantic target.",
+        "8": "Very specific — the topic is tightly focused on a particular fact, event, or concept.",
+        "8_to_9": "Near-maximal specificity. The topic is aimed at an extremely precise semantic target.",
+        "9": "Extremely specific — the topic is nearly singular, aimed at one particular thing.",
+        "9_to_10": "Approaching the maximum. Only the very edge of the possible remains.",
+        "10": "Maximally specific — the topic is a singular semantic target with no generality remaining."
+      },
+      "null_explanation": "Topic specificity could not be scored for this exchange."
     },
     {
       "id": "topic_stability",
       "label": "Topic Stability",
       "call": 1,
       "parent_section": "Semantic Presence",
-      "definition": "Whether the topic remains the same across both turns or shifts between them. Three components: state classifies the overall condition as stable or unstable; result names what the stability state produced in 2–4 words; mechanism names what caused that result in 2–4 words. Together these identify not just whether the topic held, but why and with what effect.",
-      "scale": "state: 'stable' | 'unstable' · result: text (2–4 words) · mechanism: text (2–4 words)",
-      "why_it_matters": "Identifies whether the exchange stayed on topic or drifted, and explains the mechanism by which stability was maintained or lost.",
-      "order": 3
+      "definition": "Whether the topic remained the same across both turns or shifted between them. The state field classifies the overall condition. The result field names what the stability or instability produced. The mechanism field names what caused that result. Together these identify not just whether the topic held, but why and with what effect.",
+      "why_it_matters": "Identifies whether the exchange stayed on topic or drifted, and explains the mechanism. Topic instability in a deposition can signal evasion, poor question design, or a witness successfully redirecting the conversation. Repeated instability across exchanges is a significant strategic finding.",
+      "value_type": "structured",
+      "value_description": "Three components are shown: the stability state (stable or unstable), the result it produced in a few words, and the mechanism that caused it. Together they describe not just what happened to the topic but how and why.",
+      "enum_values": {
+        "stable": "The topic remained the same across both turns. The witness's answer addressed the same subject matter the attorney's question targeted — no drift occurred.",
+        "unstable": "The topic shifted between turns. The subject matter of the answer was meaningfully different from the subject matter of the question — the topic moved."
+      },
+      "null_explanation": "Topic stability could not be assessed for this exchange."
     },
     {
       "id": "referential_target",
       "label": "Referential Target",
       "call": 2,
       "parent_section": "Semantic Anchor",
-      "definition": "Whether both turns point to the same semantic target, different targets, only one turn has an identifiable target (asymmetric), or neither does. State classifies the alignment. Conditional keys carry the target content: if_same holds the shared target (2–4 words); if_different holds turn_1_target and turn_2_target separately; if_asymmetric identifies which_turn has the target and what it is. Absent targets are null — not inferred.",
-      "scale": "state: 'same' | 'different' | 'asymmetric' | 'none' · conditional target fields depending on state",
-      "why_it_matters": "Determines whether the two turns are semantically co-oriented — pointing at the same thing — or operating on different referential objects.",
-      "order": 4
+      "definition": "Whether both turns point to the same semantic target, different targets, or only one turn has an identifiable target. Same means both turns are oriented toward one shared referential object. Different means each turn has its own target. Asymmetric means only one turn has a locatable target. None means neither turn has an identifiable referential target.",
+      "why_it_matters": "Determines whether the two turns are semantically co-oriented — pointing at the same thing — or operating on different referential objects. When an attorney and witness are pointing at different targets, the exchange is not a true dialogue — they are talking past each other, either accidentally or deliberately.",
+      "value_type": "structured",
+      "value_description": "The state field shows the alignment type. Additional fields appear depending on the state: a shared target when both turns point to the same thing, separate targets when they differ, or a single turn's target when the alignment is asymmetric.",
+      "enum_values": {
+        "same": "Both turns point to the same referential target — the attorney and witness are oriented toward the same semantic object. The exchange is co-referential.",
+        "different": "The two turns point to different referential targets — the attorney was asking about one thing and the witness answered about another. The exchange is cross-referential.",
+        "asymmetric": "Only one turn has an identifiable referential target. The other turn is not pointed at a locatable object — it is too general, implicit, or indirect to pin down.",
+        "none": "Neither turn has an identifiable referential target. The exchange is not anchored to a specific semantic object."
+      },
+      "null_explanation": "Referential target could not be assessed for this exchange."
     },
     {
       "id": "actor_presence",
       "label": "Actor Presence",
       "call": 2,
       "parent_section": "Semantic Anchor",
-      "definition": "Whether there is an identifiable non-participant entity being discussed, acted upon, or referenced in the exchange. When present, five fields describe the actor: identity (2–4 words), type (what kind of thing it is), role (how it functions in the exchange), and action (what is being done to or by it, 2–4 words). Speakers themselves are never named as actors.",
-      "scale": "actor_present: boolean · type: 'person' | 'institution' | 'object' | 'concept' · role: 'subject' | 'target' | 'instrument' | 'reference' · identity: text · action: text (2–4 words)",
-      "why_it_matters": "Identifies the third-party entity at the center of the exchange — the person, institution, or concept that the exchange is about, as distinct from the speakers themselves.",
-      "order": 5
+      "definition": "Whether there is an identifiable non-participant entity being discussed, acted upon, or referenced in the exchange. When present, the instrument identifies who or what it is, what kind of thing it is, how it functions in the exchange, and what is being done to or by it. The speakers themselves are never named as actors — this field is about third-party entities.",
+      "why_it_matters": "Identifies the third-party entity at the center of the exchange — the person, institution, object, or concept that the conversation is about, as distinct from the speakers themselves. In depositions, the actor is often the company, the product, or the event at the heart of the litigation.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether an actor was present. When it was, four additional fields appear: who or what the actor is, what type of thing it is, what role it plays in the exchange, and what is being done to or by it.",
+      "enum_values": {
+        "true": "A non-participant actor was present — there is an identifiable entity being discussed, referenced, or acted upon in this exchange that is not one of the speakers.",
+        "false": "No non-participant actor was present. The exchange was oriented toward the speakers themselves or toward concepts without an identifiable third-party entity."
+      },
+      "null_explanation": "Actor presence could not be assessed for this exchange."
     },
     {
       "id": "object_focus",
       "label": "Object Focus",
       "call": 2,
       "parent_section": "Semantic Anchor",
-      "definition": "What object, entity, or concept sits at the semantic center of the exchange — the thing that both turns are most directly oriented toward, whether explicitly named or implied. This is a narrative description capturing the gravitational center of the pair's meaning, distinct from the topic (which is the surface subject) and the actor (which is a participant entity).",
-      "scale": "Narrative description (open text)",
-      "why_it_matters": "Names the semantic gravity point of the exchange — what everything else is oriented around, whether explicitly stated or only implied.",
-      "order": 6
+      "definition": "What object, entity, or concept sits at the semantic center of this exchange — the thing that both turns are most directly oriented toward, whether explicitly named or only implied. This is the gravitational center of the exchange's meaning, distinct from the topic (which is the surface subject) and the actor (which is a participant entity).",
+      "why_it_matters": "Names the semantic gravity point of the exchange — what everything else is oriented around. The object focus is often the key concept, fact, or event that the exchange is really about, even when the surface topic is something else.",
+      "value_type": "narrative",
+      "value_description": "Written as a short narrative description naming the semantic center of the exchange — the thing both turns are most directly oriented toward, whether it was explicitly named or only implied.",
+      "null_explanation": "Object focus could not be determined for this exchange."
     },
     {
       "id": "domain_type",
       "label": "Domain Type",
       "call": 3,
       "parent_section": "Semantic Class",
-      "definition": "What kind of world the semantic content belongs to — the ontological register of the exchange. Returned as an ordered array of class objects, from most to least dominant. Each class has a one-word class_name and a domains array of 1–2 word domain names (up to 5), also ordered most to least dominant. Domain types within a class must be of the same kind and not mixed across categories.",
-      "scale": "Ordered array of {class_name: text, domains: [text × 1–5]}. Example classes: legal · factual · technical · interpersonal · institutional · normative",
-      "why_it_matters": "Classifies the ontological register of the exchange — what kind of world the content inhabits, which determines what norms, standards, and interpretive frameworks apply.",
-      "order": 7
+      "definition": "What kind of world the semantic content belongs to — the ontological register of the exchange. The instrument identifies one or more domain classes, ordered from most to least dominant, and within each class identifies the specific domains present.",
+      "why_it_matters": "Classifies the ontological register of the exchange — what kind of world the content inhabits. Legal content operates under different norms than technical content, which operates differently than interpersonal content. The domain type determines what standards, interpretive frameworks, and expectations apply to what is said.",
+      "value_type": "structured",
+      "value_description": "One or more domain classes are shown, ordered from most to least dominant. Each class contains one or more specific domain names. Common classes include legal, factual, technical, interpersonal, institutional, and normative.",
+      "null_explanation": "Domain type could not be classified for this exchange."
     },
     {
       "id": "emotional_presence",
       "label": "Emotional Presence",
       "call": 3,
       "parent_section": "Semantic Class",
-      "definition": "Whether explicit emotional content is present in the exchange. When present, source identifies which turn carries the emotion ('turn_1', 'turn_2', or 'both'). Emotion_array lists the emotion names ordered from most to least prominent. When absent, source is null and emotion_array is empty. Implicit or inferable emotion does not qualify — the emotion must be explicitly registered in the language.",
-      "scale": "present: 'yes' | 'no' · source: 'turn_1' | 'turn_2' | 'both' | null · emotion_array: [text] ordered most to least prominent",
-      "why_it_matters": "Identifies explicit affective content in the exchange — distinguishing emotionally charged testimony from neutral declarative statements.",
-      "order": 8
+      "definition": "Whether explicit emotional content is present in this exchange. Only explicit emotional registration qualifies — emotion that is directly present in the language, not inferred or implied. When present, the instrument identifies which turn carried it and what emotions were expressed, ordered from most to least prominent.",
+      "why_it_matters": "Identifies explicit affective content in the exchange — distinguishing emotionally charged testimony from neutral declarative statements. Emotional content in a deposition is significant because it can signal stress, investment, or strategic performance. It also affects how testimony is received by a jury.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether emotional content was present. When it was, two additional fields appear: which turn carried the emotion, and an ordered list of the emotions expressed.",
+      "enum_values": {
+        "yes": "Explicit emotional content was present in this exchange — one or both speakers expressed emotion directly in the language of their turn.",
+        "no": "No explicit emotional content was present. The exchange was emotionally neutral at the surface level — no emotion was directly registered in the language of either turn."
+      },
+      "null_explanation": "Emotional presence could not be assessed for this exchange."
     },
     {
       "id": "intensity_scale",
       "label": "Intensity Scale",
       "call": 3,
       "parent_section": "Semantic Class",
-      "definition": "How semantically intense the exchange is, scored independently in each direction. Turn_1_to_turn_2 scores the intensity of what Turn 1 exerts on Turn 2 (how forcefully the question acts on the answer). Turn_2_to_turn_1 scores the intensity of what Turn 2 exerts back on Turn 1 (how forcefully the answer responds to or reframes the question). Both are integer scores 1–10.",
-      "scale": "turn_1_to_turn_2.score: 1–10 · turn_2_to_turn_1.score: 1–10. 1 = no detectable intensity · 5 = moderate/clearly active · 10 = maximum/defining feature",
-      "why_it_matters": "Measures the semantic force of each turn on the other — how hard the question is pushing and how hard the answer is pushing back.",
-      "order": 9
+      "definition": "How semantically intense the exchange is, measured independently in each direction. The T1 to T2 score measures the intensity of what the question exerts on the answer — how forcefully the question acts on what follows. The T2 to T1 score measures the intensity of what the answer exerts back on the question — how forcefully the answer responds to or reframes what came before. Both are scored 1 to 10.",
+      "why_it_matters": "Measures the semantic force of each turn on the other — how hard the question is pushing and how hard the answer is pushing back. High T1-to-T2 intensity with low T2-to-T1 intensity means the attorney is exerting strong force and the witness is not pushing back. The reverse means the witness is pushing back harder than the question pushed.",
+      "value_type": "numeric",
+      "scale_description": "Two scores are shown, each from 1 to 10. A score of 1 means no detectable intensity — the turn exerts almost no semantic force on the other. A score of 5 means moderate and clearly active intensity. A score of 10 means maximum intensity — the turn's force is the defining feature of the exchange.",
+      "scale_values": {
+        "1": "No detectable intensity. This turn exerts almost no semantic force on the other.",
+        "1_to_2": "Minimal intensity. The turn is present but exerts very little force.",
+        "2": "Very low intensity. The turn makes contact but barely pushes.",
+        "2_to_3": "Low intensity. Some force is present but it is weak.",
+        "3": "Weak intensity. The turn exerts a small but detectable amount of force on the other.",
+        "3_to_4": "Below moderate. The force is present and real but not yet clearly active.",
+        "4": "Low-moderate intensity. The turn is clearly doing something but not with great force.",
+        "4_to_5": "Approaching moderate. The force is becoming clearly noticeable.",
+        "5": "Moderate intensity — the turn is clearly and actively exerting force on the other.",
+        "5_to_6": "Above moderate. The force is stronger than typical.",
+        "6": "Moderately strong intensity. The turn is pressing with clear and consistent force.",
+        "6_to_7": "Strong intensity. The force is substantial and hard to ignore.",
+        "7": "Strong intensity. The turn is exerting meaningful force that shapes what the other turn can do.",
+        "7_to_8": "Very strong. The force of this turn dominates much of the exchange.",
+        "8": "Very strong intensity. The turn's force is a major feature of the exchange.",
+        "8_to_9": "Near-maximum intensity. The turn is pressing with almost the greatest possible force.",
+        "9": "Extremely intense. The turn exerts near-maximum semantic force on the other.",
+        "9_to_10": "Approaching maximum. The force of this turn defines almost everything about the exchange.",
+        "10": "Maximum intensity — the turn's semantic force is the defining feature of the entire exchange."
+      },
+      "null_explanation": "Intensity could not be scored for this exchange."
     },
     {
       "id": "semantic_intent",
       "label": "Semantic Intent",
       "call": 4,
       "parent_section": "Semantic Function",
-      "definition": "What the semantic content is functionally trying to do — not what it says, but what it is doing. Returned as an ordered array of up to five intent objects, from most obvious to most obscure. Each item has an intent_name of exactly three words (capturing the functional orientation) and an importance rating. This is not a summary of content; it is an analysis of function.",
-      "scale": "Ordered array of {intent_name: text (exactly 3 words), importance: 'small' | 'medium' | 'large'} up to 5 items",
-      "why_it_matters": "Identifies what the exchange is actually doing at the functional level — the strategic or communicative goals being pursued through the semantic content.",
-      "order": 10
+      "definition": "What the semantic content is functionally trying to do — not what it says, but what it is doing. The instrument identifies up to five intent objects, ordered from most obvious to most obscure, each named with exactly three words and rated by importance. This is an analysis of function, not a summary of content.",
+      "why_it_matters": "Identifies what the exchange is actually doing at the functional level — the strategic or communicative goals being pursued through the semantic content. The surface topic and the functional intent are often different things. An exchange about chemical safety standards may be functionally trying to establish prior knowledge, limit liability, or shift responsibility.",
+      "value_type": "structured",
+      "value_description": "Up to five intent items are shown, ordered from most obvious to most obscure. Each names a three-word functional orientation and rates its importance as small, medium, or large.",
+      "null_explanation": "Semantic intent could not be determined for this exchange."
     },
     {
       "id": "direction_of_force",
       "label": "Direction Of Force",
       "call": 4,
       "parent_section": "Semantic Function",
-      "definition": "What directional force the semantic content exerts. Five components: origin names the source of the force; name labels the force itself; magnitude_and_direction is an integer from -5 to +5 capturing both strength and directionality (negative values indicate force oriented against a target, positive toward); target names what the force is exerted upon; description is a one-sentence summary of what the force is doing.",
-      "scale": "magnitude_and_direction: integer −5 to +5 (negative = against target · positive = toward target). −5 = maximum negative · 0 = neutral · +5 = maximum positive",
-      "why_it_matters": "Maps the directional force vector of the exchange — where the semantic energy is coming from, what it is aimed at, and how strongly it is pushing.",
-      "order": 11
+      "definition": "What directional force the semantic content exerts — where it comes from, what it is aimed at, how strongly it pushes, and in which direction. The magnitude score runs from -5 to +5: negative values indicate force oriented against a target, positive values indicate force oriented toward a target. Zero is neutral.",
+      "why_it_matters": "Maps the directional force vector of the exchange — where the semantic energy is coming from, what it is aimed at, and how strongly it is pushing. This is distinct from intensity, which measures raw force. Direction of force tells you where that force is pointed and whether it is constructive or adversarial.",
+      "value_type": "numeric",
+      "scale_description": "Scored from -5 to +5. Negative scores indicate force directed against a target — opposition, challenge, or negation. Positive scores indicate force directed toward a target — support, confirmation, or advancement. Zero is neutral — no directional force.",
+      "scale_values": {
+        "-5": "Maximum negative force. The semantic content is exerting the strongest possible opposition, challenge, or negation against its target.",
+        "-5_to_-4": "Near-maximum negative force. The content is pushing very hard against its target.",
+        "-4": "Very strong negative force. The content is strongly oriented against its target.",
+        "-4_to_-3": "Strong negative force with high intensity directed against the target.",
+        "-3": "Strong negative force. The content is clearly and forcefully oriented against its target.",
+        "-3_to_-2": "Moderately strong negative force. Clear opposition with meaningful intensity.",
+        "-2": "Moderate negative force. The content is pushing against its target with clear but not overwhelming force.",
+        "-2_to_-1": "Weak-to-moderate negative force. Some opposition is present.",
+        "-1": "Weak negative force. The content leans against its target but without great strength.",
+        "-1_to_0": "Very slight negative lean. Nearly neutral with a minor adversarial tilt.",
+        "0": "Neutral — no directional force. The semantic content is not pushing toward or against anything.",
+        "0_to_1": "Very slight positive lean. Nearly neutral with a minor constructive tilt.",
+        "1": "Weak positive force. The content leans toward its target but without great strength.",
+        "1_to_2": "Weak-to-moderate positive force. Some constructive orientation is present.",
+        "2": "Moderate positive force. The content is pushing toward its target with clear but not overwhelming force.",
+        "2_to_3": "Moderately strong positive force. Clear orientation toward the target with meaningful intensity.",
+        "3": "Strong positive force. The content is clearly and forcefully oriented toward its target.",
+        "3_to_4": "Strong positive force with high intensity directed toward the target.",
+        "4": "Very strong positive force. The content is strongly oriented toward its target.",
+        "4_to_5": "Near-maximum positive force. The content is pushing very hard toward its target.",
+        "5": "Maximum positive force. The semantic content is exerting the strongest possible orientation, support, or advancement toward its target."
+      },
+      "null_explanation": "Direction of force could not be assessed for this exchange."
     },
     {
       "id": "resolution_state",
       "label": "Resolution State",
       "call": 4,
       "parent_section": "Semantic Function",
-      "definition": "What the semantic movement of the pair does to the possibility space of the conversation. Open means new possibilities emerge from this exchange. Continue means the existing trajectory carries forward unchanged. Narrow means the exchange reduces the viable possibility space toward a specific point. Close means a line of inquiry or action is terminated by this exchange.",
-      "scale": "state: 'open' | 'continue' | 'narrow' | 'close'",
-      "why_it_matters": "Classifies what the exchange does to future conversational possibility — whether it expands, maintains, contracts, or terminates a line of inquiry.",
-      "order": 12
+      "definition": "What the semantic movement of this exchange does to the possibility space of the conversation going forward. Open means new possibilities emerge from this exchange. Continue means the existing trajectory carries forward unchanged. Narrow means the exchange reduces the viable possibility space toward a specific point. Close means a line of inquiry or action is terminated by this exchange.",
+      "why_it_matters": "Classifies what the exchange does to future conversational possibility — whether it expands, maintains, contracts, or terminates a line of inquiry. Attorneys use narrowing and closing exchanges strategically to reduce the witness's room to maneuver. Opening exchanges create new territory. Understanding resolution state tells you whether the deposition is opening up or closing down.",
+      "value_type": "qualitative",
+      "value_description": "One of four states is shown, classifying what this exchange did to the conversation's future possibility space.",
+      "enum_values": {
+        "open": "This exchange opened new possibilities — it created territory that did not exist before, expanding what the conversation can now move into.",
+        "continue": "This exchange maintained the existing trajectory without significantly expanding or contracting the possibility space. The conversation is proceeding as it was.",
+        "narrow": "This exchange reduced the viable possibility space — it contracted what can be said or pursued going forward, moving the conversation toward a more constrained set of options.",
+        "close": "This exchange terminated a line of inquiry or action. Something that was open before this exchange is now closed — a path has been shut down."
+      },
+      "null_explanation": "Resolution state could not be determined for this exchange."
     },
     {
       "id": "concept_density",
       "label": "Concept Density",
       "call": 5,
       "parent_section": "Semantic Complexity",
-      "definition": "Whether the semantic content is built around a single concept, layered across multiple concepts that coexist, or multiple concepts that compete for dominance. State classifies the condition. Conditional keys carry the concept content: if_single holds the one concept (2–4 words); if_layered is an array of concept names; if_competing is an object with side_a and side_b arrays naming the competing concept clusters. Concepts are named abstractly, not quoted from the text.",
-      "scale": "state: 'single' | 'layered' | 'competing' | 'none' · if_single: text (2–4 words) · if_layered: [text] · if_competing: {side_a: [text], side_b: [text]}",
-      "why_it_matters": "Measures how semantically complex the exchange is at the concept layer — whether one idea dominates, multiple ideas coexist, or competing ideas are in tension.",
-      "order": 13
+      "definition": "Whether the semantic content is built around a single concept, layered across multiple concepts that coexist, or multiple concepts that compete for dominance. The state field classifies the condition. The conditional content fields name the concepts abstractly rather than quoting the text directly.",
+      "why_it_matters": "Measures how semantically complex the exchange is at the concept layer — whether one idea dominates, multiple ideas coexist, or competing ideas are in tension. High concept density with competition between ideas can signal a contested frame or a witness who is introducing alternative conceptual structures.",
+      "value_type": "structured",
+      "value_description": "The top field shows the density state. Depending on the state, concept names are shown: a single concept, a list of layered concepts, or two competing clusters with their opposing sides named.",
+      "enum_values": {
+        "single": "The semantic content is organized around one dominant concept. One idea structures everything in this exchange.",
+        "layered": "The semantic content contains multiple concepts that coexist without competing — they are stacked or nested, each adding a layer to the overall meaning.",
+        "competing": "The semantic content contains multiple concepts that are in tension with each other — two or more conceptual frames are pulling in different directions within the same exchange.",
+        "none": "No identifiable concept structure was present. The exchange lacked a clear conceptual organization."
+      },
+      "null_explanation": "Concept density could not be assessed for this exchange."
     },
     {
       "id": "semantic_drift",
       "label": "Semantic Drift",
       "call": 5,
       "parent_section": "Semantic Complexity",
-      "definition": "Whether the semantic content remains stable across the pair or changes form. State classifies the type of change. When drift is present, from names the starting semantic pattern (2 words) and to names the ending semantic pattern (2 words). When state is stable, both from and to are null. This captures the directional shape of semantic movement within the pair, not content change but structural transformation.",
-      "scale": "state: 'stable' | 'narrowing' | 'broadening' | 'shifting' | 'splitting' | 'inversion' · from: text (2 words) or null · to: text (2 words) or null",
-      "why_it_matters": "Tracks whether the semantic content transformed across the exchange — and if so, in which structural direction (narrowing, broadening, shifting, splitting, or inverting).",
-      "order": 14
+      "definition": "Whether the semantic content remained stable across this exchange or changed structural form. When drift occurred, the instrument names the starting semantic pattern and the ending semantic pattern — capturing the direction of the transformation, not just whether it happened. Stable means no transformation occurred.",
+      "why_it_matters": "Tracks whether the semantic content transformed across the exchange — and if so, in which structural direction. Narrowing means the exchange compressed meaning toward a point. Broadening means it expanded. Shifting means it moved laterally to a different frame. Splitting means one concept became two. Inversion means the meaning reversed. These patterns are forensically significant.",
+      "value_type": "structured",
+      "value_description": "The top field shows the drift state. When drift occurred, two additional fields show the starting and ending semantic pattern — what the content looked like at the beginning and what it became by the end.",
+      "enum_values": {
+        "stable": "The semantic content did not change structural form across this exchange. The meaning of the exchange held the same shape from beginning to end.",
+        "narrowing": "The semantic content compressed across this exchange — it moved from a broader frame toward a more specific, constrained meaning by the end.",
+        "broadening": "The semantic content expanded across this exchange — it moved from a more specific frame toward a broader, more general meaning by the end.",
+        "shifting": "The semantic content moved laterally across this exchange — it changed frame without compressing or expanding, ending up in a different conceptual territory than where it started.",
+        "splitting": "The semantic content divided across this exchange — what started as one conceptual unit became two distinct lines by the end.",
+        "inversion": "The semantic content reversed across this exchange — the meaning at the end is in fundamental tension with or opposition to the meaning at the beginning."
+      },
+      "null_explanation": "Semantic drift could not be assessed for this exchange."
     },
     {
       "id": "concept_coupling",
       "label": "Concept Coupling",
       "call": 5,
       "parent_section": "Semantic Complexity",
-      "definition": "How the concepts in the exchange are structurally related to each other. State classifies the coupling strength. Side_a and side_b each hold arrays of concept names (2–4 words each) identifying the two sides of the coupling relationship. Concepts are named abstractly, not quoted. When no coupling is present, state is 'none' and both arrays are empty.",
-      "scale": "state: 'loosely_adjacent' | 'tightly_linked' | 'causally_fused' | 'none' · side_a: [text (2–4 words)] · side_b: [text (2–4 words)]",
-      "why_it_matters": "Identifies how tightly the concepts in the exchange are bound together — whether they sit near each other, depend on each other, or are causally fused into a single semantic unit.",
-      "order": 15
+      "definition": "How the concepts in this exchange are structurally related to each other — how tightly bound they are. Loosely adjacent means the concepts sit near each other without depending on each other. Tightly linked means they depend on each other but remain distinguishable. Causally fused means they are inseparable — the truth of one requires the truth of the other. None means no meaningful coupling was present.",
+      "why_it_matters": "Identifies how tightly the concepts in the exchange are bound together. When concepts are causally fused, attacking one attacks both — this is a significant vulnerability and a significant opportunity. When concepts are only loosely adjacent, they can be separated and addressed independently.",
+      "value_type": "structured",
+      "value_description": "The coupling state is shown first. When coupling was present, two sides are identified — the concepts on each side of the coupling relationship, named abstractly.",
+      "enum_values": {
+        "loosely_adjacent": "The concepts in this exchange sit near each other but do not depend on each other. They share the same semantic neighborhood without being structurally bound.",
+        "tightly_linked": "The concepts in this exchange depend on each other — they are connected strongly enough that what happens to one affects the other, but they remain distinguishable as separate ideas.",
+        "causally_fused": "The concepts in this exchange are inseparable — they are bound together in a causal or logical relationship so tight that the truth of one requires the truth of the other. Attacking one is attacking both.",
+        "none": "No meaningful coupling was present between the concepts in this exchange. The concepts were independent of each other."
+      },
+      "null_explanation": "Concept coupling could not be assessed for this exchange."
     }
   ]
 }
