@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · FA · Pair 125</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,36 +35,26 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
     min-height: 100vh;
   }
 
-  /* INFO ICON STYLES */
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -76,18 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
-    font-style: italic;
-    color: var(--text-bright);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -127,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -139,11 +132,12 @@
     white-space: nowrap;
   }
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--pattern-color);
-    letter-spacing: 0.02em;
   }
   .pattern-reasoning {
     font-size: 10px;
@@ -161,17 +155,33 @@
     gap: 1px;
     background: var(--border);
   }
-  .panel { background: var(--surface); padding: 12px 14px; }
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
   }
 
-  /* FIELDS */
+  /* COLUMN CARDS */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  /* FIELD STYLES */
   .field-block { margin-bottom: 8px; }
   .field-label {
     font-size: 8px;
@@ -181,11 +191,37 @@
     letter-spacing: 0.12em;
     margin-bottom: 4px;
   }
-  .field-answer { font-size: 10px; color: var(--text-bright); line-height: 1.6; margin-bottom: 3px; }
-  .field-reasoning { font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic; opacity: 0.8; }
-  .field-row { display: flex; gap: 6px; margin-bottom: 4px; align-items: flex-start; }
-  .field-key { font-size: 9px; color: var(--text-dim); min-width: 90px; flex-shrink: 0; padding-top: 1px; }
-  .field-val { font-size: 9px; color: var(--text-bright); line-height: 1.5; }
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
 
   /* TAGS */
   .tag {
@@ -197,32 +233,13 @@
     font-family: 'DM Mono', monospace;
   }
   .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold   { background: rgba(200,169,110,0.12); color: var(--accent);  border: 1px solid rgba(200,169,110,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
   .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
   .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
-
-  .scale-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 8px 12px;
-    margin-top: 10px;
-    font-size: 8px;
-    color: var(--text-dim);
-    line-height: 1.8;
-  }
-  .scale-box-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 7px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
 
   /* FOOTER */
   .footer {
@@ -237,11 +254,9 @@
     background: var(--bg);
   }
   .footer-left { display: flex; gap: 16px; }
-
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -272,24 +287,23 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Deflective Vague<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Deflective Vague<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">Across all lenses the witness shifts blame and deflects by using vague, non‑specific language, while the questioner applies authoritative, epistemic pressure. This two‑word signature captures the dynamic of evasive, obfuscated testimony that resists precise understanding.</div>
   </div>
 
-  <!-- PANELS GRID -->
+  <!-- PANELS -->
   <div class="panels">
 
     <!-- CALL 1: FORENSIC POSITIONING -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 1 · Forensic Positioning</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <!-- Agency Distribution -->
-        <div class="field-block">
-          <div class="field-label">Agency Distribution<span class="info-icon" data-field-id="agency_distribution">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Agency Distribution<span class="material-symbols-outlined info-icon" data-field-id="agency_distribution">live_help</span></div>
           <div class="field-row">
             <div class="field-key">Turn 1</div>
-            <div class="field-val"><span class="tag tag-blue">55%</span></div>
+            <div class="field-val" data-field-value="55"><span class="tag tag-blue">55%</span></div>
           </div>
           <div class="field-row">
             <div class="field-key">Turn 2</div>
@@ -306,29 +320,18 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling initiates the exchange with a question, exercising the most agency. Gibson responds, exercising significant but lesser agency. The external objection by Mr. Grinnan provides a small but distinct agency influence.</div>
         </div>
 
-        <!-- Power Alignment -->
-        <div class="field-block">
-          <div class="field-label">Power Alignment<span class="info-icon" data-field-id="power_alignment">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Power Alignment<span class="material-symbols-outlined info-icon" data-field-id="power_alignment">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1:</div>
-          <div class="field-row">
-              <div class="field-key">authoritative</div>
-              <div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div>
-            </div><div class="field-row">
-              <div class="field-key">directive</div>
-              <div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div>
-            </div><div class="field-row">
-              <div class="field-key">inquisitive</div>
-              <div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div>
-            </div>
+          <div class="field-row"><div class="field-key">authoritative</div><div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div></div><div class="field-row"><div class="field-key">directive</div><div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div></div><div class="field-row"><div class="field-key">inquisitive</div><div class="field-val" style="color:var(--text-dim);">→ Benjamin Gibson</div></div>
           <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2:</div>
           <div style="font-size:9px;color:var(--text-dim);">—</div>
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling’s question asserts control and seeks information, reflecting an authoritative and directive posture toward the witness. Gibson’s reply acknowledges the question and offers clarification, indicating a defensive and clarifying stance toward the questioner.</div>
         </div>
 
-        <!-- Blame Structure -->
-        <div class="field-block">
-          <div class="field-label">Blame Structure<span class="info-icon" data-field-id="blame_structure">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">absent</span></div>
+        <div class="col-card">
+          <div class="field-label">Blame Structure<span class="material-symbols-outlined info-icon" data-field-id="blame_structure">live_help</span></div>
+          <div class="field-answer" data-field-value="absent"><span class="tag tag-blue">absent</span></div>
           <div class="field-row" style="margin-top:6px;">
             <div class="field-key">Target</div>
             <div class="field-val">—</div>
@@ -348,59 +351,75 @@
     </div>
 
     <!-- CALL 2: FORENSIC PRESSURE -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 2 · Forensic Pressure</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <!-- Pressure Configuration -->
-        <div class="field-block">
-          <div class="field-label">Pressure Configuration<span class="info-icon" data-field-id="pressure_configuration">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-purple">epistemic</span></div></div>
-          <div class="field-row"><div class="field-key">Source</div><div class="field-val">Ms. Easterling</div></div>
-          <div class="field-row"><div class="field-key">Target</div><div class="field-val">Benjamin Gibson</div></div>
-          <div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-blue">5/10</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Pressure Configuration<span class="material-symbols-outlined info-icon" data-field-id="pressure_configuration">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Type</div>
+            <div class="field-val"><span class="tag tag-purple">epistemic</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Source</div>
+            <div class="field-val">Ms. Easterling</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Target</div>
+            <div class="field-val">Benjamin Gibson</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Intensity</div>
+            <div class="field-val"><span class="tag tag-blue">5/10</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The attorney’s question seeks to confirm the witness’s knowledge, applying epistemic pressure to elicit a factual admission. The witness’s tentative confirmation indicates a moderate level of pressure.</div>
         </div>
 
-        <!-- Leverage Pattern -->
-        <div class="field-block">
-          <div class="field-label">Leverage Pattern<span class="info-icon" data-field-id="leverage_pattern">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-red">authority</span></div></div>
-          <div class="field-row"><div class="field-key">Wielded by</div><div class="field-val">Ms. Easterling</div></div>
-          <div class="field-row"><div class="field-key">Applied to</div><div class="field-val">Benjamin Gibson</div></div>
-          <div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-blue">5/10</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Leverage Pattern<span class="material-symbols-outlined info-icon" data-field-id="leverage_pattern">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Type</div>
+            <div class="field-val"><span class="tag tag-red">authority</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Wielded by</div>
+            <div class="field-val">Ms. Easterling</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Applied to</div>
+            <div class="field-val">Benjamin Gibson</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Intensity</div>
+            <div class="field-val"><span class="tag tag-blue">5/10</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling, as the examining attorney, wields her legal authority to question the witness. The witness, being an expert, is the target of that authoritative leverage.</div>
         </div>
 
-        <!-- Accountability State -->
-        <div class="field-block">
-          <div class="field-label">Accountability State<span class="info-icon" data-field-id="accountability_state">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">distributed</span></div>
-          <div style="margin-top:6px;">
-            <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Ms. Easterling</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">Benjamin Gibson</div>
-          </div>
+        <div class="col-card">
+          <div class="field-label">Accountability State<span class="material-symbols-outlined info-icon" data-field-id="accountability_state">live_help</span></div>
+          <div class="field-answer" data-field-value="distributed"><span class="tag tag-blue">distributed</span></div>
+          <div style="margin-top:6px;"><div class="tag tag-blue" style="display:block;margin-bottom:3px;">Ms. Easterling</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">Benjamin Gibson</div></div>
           
           <div class="field-reasoning" style="margin-top:6px;">Accountability is shared: the attorney is accountable for framing the question and ensuring procedural compliance, while the witness is accountable for truthful testimony.</div>
         </div>
 
       </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Intensity Scale (pressure_configuration · leverage_pattern)</div>
-        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
-      </div>
     </div>
 
     <!-- CALL 3: TRUTH GROUND -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 3 · Truth Ground</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <!-- Evidential Basis -->
-        <div class="field-block">
-          <div class="field-label">Evidential Basis<span class="info-icon" data-field-id="evidential_basis">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">testimonial</span></div>
+        <div class="col-card">
+          <div class="field-label">Evidential Basis<span class="material-symbols-outlined info-icon" data-field-id="evidential_basis">live_help</span></div>
+          <div class="field-answer" data-field-value="testimonial"><span class="tag tag-blue">testimonial</span></div>
           <div class="field-row" style="margin-top:4px;">
             <div class="field-key">Strength</div>
             <div class="field-val"><span class="tag tag-gold">moderate</span></div>
@@ -413,13 +432,10 @@
           <div class="field-reasoning" style="margin-top:6px;">The witness explicitly states knowledge of inspections, indicating testimonial evidence. The claim is not backed by direct documentation, so the strength is moderate.</div>
         </div>
 
-        <!-- Source Position -->
-        <div class="field-block">
-          <div class="field-label">Source Position<span class="info-icon" data-field-id="source_position">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">first_person</span></div>
-          <div style="margin-top:6px;">
-            <div style="font-size:9px;color:var(--text-dim);">no credibility markers</div>
-          </div>
+        <div class="col-card">
+          <div class="field-label">Source Position<span class="material-symbols-outlined info-icon" data-field-id="source_position">live_help</span></div>
+          <div class="field-answer" data-field-value="first_person"><span class="tag tag-blue">first_person</span></div>
+          <div style="margin-top:6px;"><div style="font-size:9px;color:var(--text-dim);">no credibility markers</div></div>
           <div class="field-row" style="margin-top:6px;">
             <div class="field-key">Distance</div>
             <div class="field-val"><span class="tag tag-gold">one_remove</span></div>
@@ -427,14 +443,23 @@
           <div class="field-reasoning" style="margin-top:6px;">Benjamin Gibson speaks in first person, but he is not the inspector; he is one step removed from the event.</div>
         </div>
 
-        <!-- Inferential Structure -->
-        <div class="field-block">
-          <div class="field-label">Inferential Structure<span class="info-icon" data-field-id="inferential_structure">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-purple">inductive</span></div></div>
-          <div class="field-row"><div class="field-key">Steps explicit</div><div class="field-val"><span class="tag tag-red">false</span></div></div>
-          <div class="field-row"><div class="field-key">Missing steps</div><div class="field-val" style="font-style:italic;color:var(--text-dim);">direct evidence</div></div>
-          <div class="field-row"><div class="field-key">Strength</div><div class="field-val"><span class="tag tag-red">weak</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Inferential Structure<span class="material-symbols-outlined info-icon" data-field-id="inferential_structure">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Type</div>
+            <div class="field-val"><span class="tag tag-purple">inductive</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Steps explicit</div>
+            <div class="field-val"><span class="tag tag-red">false</span></div>
+          </div>
+          <div class="field-row"><div class="field-key">Missing steps</div><div class="field-val" style="color:var(--text-dim);font-style:italic;">direct evidence</div></div>
+          <div class="field-row">
+            <div class="field-key">Strength</div>
+            <div class="field-val"><span class="tag tag-red">weak</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The witness infers that the inspection occurred based on his understanding, without laying out explicit steps, indicating an inductive inference of weak strength.</div>
         </div>
 
@@ -442,14 +467,13 @@
     </div>
 
     <!-- CALL 4: TRUTH STABILITY -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 4 · Truth Stability</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <!-- Epistemic Reliability -->
-        <div class="field-block">
-          <div class="field-label">Epistemic Reliability<span class="info-icon" data-field-id="epistemic_reliability">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">stable</span></div>
+        <div class="col-card">
+          <div class="field-label">Epistemic Reliability<span class="material-symbols-outlined info-icon" data-field-id="epistemic_reliability">live_help</span></div>
+          <div class="field-answer" data-field-value="stable"><span class="tag tag-green">stable</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Support:</div>
           <div class="tag tag-green" style="display:block;margin-bottom:2px;">acknowledges inspections</div><div class="tag tag-green" style="display:block;margin-bottom:2px;">doesn't dispute</div><div class="tag tag-green" style="display:block;margin-bottom:2px;">understood it was done</div>
           <div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Vulnerabilities:</div>
@@ -457,71 +481,83 @@
           <div class="field-reasoning" style="margin-top:6px;">The witness explicitly affirms that inspections were conducted, showing a stable claim. He adds that conditions were missed, which introduces a conditional nuance but does not undermine the basic assertion. The reliability is therefore stable with identified vulnerabilities.</div>
         </div>
 
-        <!-- Contestability -->
-        <div class="field-block">
-          <div class="field-label">Contestability<span class="info-icon" data-field-id="contestability">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-gold">procedural</span></div></div>
-          <div class="field-row"><div class="field-key">Contested by</div><div class="field-val">Mr. Grinnan</div></div>
-          <div class="field-row"><div class="field-key">Strength</div><div class="field-val"><span class="tag tag-gold">4/10</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Contestability<span class="material-symbols-outlined info-icon" data-field-id="contestability">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Type</div>
+            <div class="field-val"><span class="tag tag-gold">procedural</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Contested by</div>
+            <div class="field-val">Mr. Grinnan</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Strength</div>
+            <div class="field-val"><span class="tag tag-gold">4/10</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The objection by Mr. Grinnan is directed at the form of the question, not its factual content. This indicates a procedural contest rather than a substantive challenge, yielding a moderate contest strength.</div>
         </div>
 
-        <!-- Distortion Pattern -->
-        <div class="field-block">
-          <div class="field-label">Distortion Pattern<span class="info-icon" data-field-id="distortion_pattern">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-red">false</span></div>
+        <div class="col-card">
+          <div class="field-label">Distortion Pattern<span class="material-symbols-outlined info-icon" data-field-id="distortion_pattern">live_help</span></div>
+          <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div>
           
           <div class="field-reasoning" style="margin-top:6px;">The witness does not alter the truth of the inspections; he merely adds context about missed conditions. No distortion of the factual claim is evident.</div>
         </div>
 
       </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Intensity Scale (contestability · distortion_pattern)</div>
-        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
-      </div>
     </div>
 
     <!-- CALL 5: STRATEGIC EXPOSURE -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 5 · Strategic Exposure</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <!-- Concealment State -->
-        <div class="field-block">
-          <div class="field-label">Concealment State<span class="info-icon" data-field-id="concealment_state">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Mechanism</div><div class="field-val"><span class="tag tag-gold">vagueness</span></div></div>
-          <div class="field-row"><div class="field-key">What concealed</div><div class="field-val">inspection details</div></div>
-          <div class="field-row"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-gold">4/10</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Concealment State<span class="material-symbols-outlined info-icon" data-field-id="concealment_state">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Mechanism</div>
+            <div class="field-val"><span class="tag tag-gold">vagueness</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">What concealed</div>
+            <div class="field-val">inspection details</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Intensity</div>
+            <div class="field-val"><span class="tag tag-gold">4/10</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The witness acknowledges inspections occurred but avoids specifying what was missed, using vague phrasing that obscures the details of the inspection.</div>
         </div>
 
-        <!-- Framing Bias -->
-        <div class="field-block">
-          <div class="field-label">Framing Bias<span class="info-icon" data-field-id="framing_bias">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Direction</div><div class="field-val"><span class="tag tag-gold">blame_shifting</span></div></div>
+        <div class="col-card">
+          <div class="field-label">Framing Bias<span class="material-symbols-outlined info-icon" data-field-id="framing_bias">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Direction</div>
+            <div class="field-val"><span class="tag tag-gold">blame_shifting</span></div>
+          </div>
           <div class="tag tag-gold" style="display:block;margin-bottom:2px;">missed conditions</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">permit still issued</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">not dispute</div>
-          <div class="field-row" style="margin-top:4px;"><div class="field-key">Intensity</div><div class="field-val"><span class="tag tag-gold">3/10</span></div></div>
+          <div class="field-row" style="margin-top:4px;">
+            <div class="field-key">Intensity</div>
+            <div class="field-val"><span class="tag tag-gold">3/10</span></div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The witness frames the situation to suggest the permit was issued despite missed conditions, subtly shifting responsibility away from the defendants.</div>
         </div>
 
-        <!-- Adversarial Posture -->
-        <div class="field-block">
-          <div class="field-label">Adversarial Posture<span class="info-icon" data-field-id="adversarial_posture">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-gold">defensive</span></div>
-          <div style="margin-top:6px;">
-            <div class="tag tag-red" style="display:inline-block;margin-bottom:3px;">deflection</div> 
-          </div>
+        <div class="col-card">
+          <div class="field-label">Adversarial Posture<span class="material-symbols-outlined info-icon" data-field-id="adversarial_posture">live_help</span></div>
+          <div class="field-answer" data-field-value="defensive"><span class="tag tag-gold">defensive</span></div>
+          <div style="margin-top:6px;"><div class="tag tag-red" style="display:inline-block;margin-bottom:3px;">deflection</div> </div>
           <div class="field-row" style="margin-top:6px;"><div class="field-key">Target</div><div class="field-val">defendants</div></div>
           <div class="field-reasoning" style="margin-top:6px;">The witness deflects by acknowledging the inspection but withholding specifics, adopting a defensive stance aimed at protecting the defendants.</div>
         </div>
 
-      </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Intensity Scale (concealment_state · framing_bias)</div>
-        1 — Minimal · 2 — Very weak · 3 — Weak · 4 — Low-moderate · 5 — Moderate · 6 — Moderately strong · 7 — Strong · 8 — Very strong · 9 — Near-saturating · 10 — Maximum observable
       </div>
     </div>
 
@@ -537,6 +573,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>
