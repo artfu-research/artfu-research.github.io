@@ -699,9 +699,7 @@ function displaySchemaOverview() {
         <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; overflow: hidden;">
           <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px;">Why it matters</div>
           <div style="font-size: 8px; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px;">${whyItMatters}</div>
-          <button onclick="displaySchemaOverview()" style="background: var(--bg); color: var(--accent); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
-            ← Battery overview
-          </button>
+
         </div>
 
       </div>
@@ -854,9 +852,7 @@ function displayFieldSchema(fieldId) {
         <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; overflow: hidden;">
           <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px;">Why it matters</div>
           <div style="font-size: 8px; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px;">${whyItMatters}</div>
-          <button onclick="displaySchemaOverview()" style="background: var(--bg); color: var(--accent); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
-            ← Battery overview
-          </button>
+
         </div>
 
       </div>
@@ -887,12 +883,15 @@ function attachInfoIconHandlers() {
     });
   });
 
+  // Click anywhere in iframe that is NOT an info icon resets to overview
   iframeDoc.addEventListener('click', function(e) {
-    if (!e.target.classList.contains('info-icon')) {
-      displaySchemaOverview();
-    }
+    const isIcon = e.target.classList.contains('info-icon') ||
+                   e.target.classList.contains('material-symbols-outlined');
+    if (!isIcon) displaySchemaOverview();
   });
 }
+
+
 
 function updateBatteryButtons() {
   document.querySelectorAll('.battery-btn').forEach(btn => {
@@ -931,6 +930,11 @@ window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
   updatePairSummaries();
   loadBatterySchema(currentBattery);
+
+  // Clicking the bottom panel resets to overview
+  document.querySelector('.bottom-panel').addEventListener('click', function() {
+    displaySchemaOverview();
+  });
 });
 
 async function updatePairSummaries() {
