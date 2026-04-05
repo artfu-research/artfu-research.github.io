@@ -675,11 +675,9 @@ function displaySchemaOverview() {
     <div style="display: grid; grid-template-rows: auto 1fr; height: 100%; overflow: hidden;">
 
       <!-- BANNER: centered, two lines -->
-      <div style="text-align: center; padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--border);">
-        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 9px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px;">
-          ${callLabel}${section ? ' · ' + section : ''} · ${field.label}
-        </div>
-        ${activeValueHTML ? `<div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-bright); letter-spacing: 0.03em;">${activeValueHTML}</div>` : ''}
+      <div style="text-align: center; padding: 7px 16px; background: var(--bg); border-bottom: 1px solid var(--border);">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 8px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: ${activeValueHTML ? '3px' : '0'};">${callLabel}${section ? ' · ' + section : ''} · ${field.label}</div>
+        ${activeValueHTML ? `<div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-bright); letter-spacing: 0.02em;">${activeValueHTML}</div>` : ''}
       </div>
 
       <!-- THREE COLUMN CARDS -->
@@ -887,7 +885,7 @@ function attachInfoIconHandlers() {
   iframeDoc.addEventListener('click', function(e) {
     const isIcon = e.target.classList.contains('info-icon') ||
                    e.target.classList.contains('material-symbols-outlined');
-    if (!isIcon) displaySchemaOverview();
+    if (!isIcon && currentSchema) displaySchemaOverview();
   });
 }
 
@@ -929,11 +927,11 @@ function updateStrategicButtons() {
 window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
   updatePairSummaries();
-  loadBatterySchema(currentBattery);
+  loadBatterySchema(currentBattery); // loads schema then calls displaySchemaOverview
 
   // Clicking the bottom panel resets to overview
   document.querySelector('.bottom-panel').addEventListener('click', function() {
-    displaySchemaOverview();
+    if (currentSchema) displaySchemaOverview();
   });
 });
 
