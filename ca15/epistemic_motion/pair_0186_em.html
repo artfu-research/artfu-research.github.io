@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · EM · Pair 186</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #454538;
+    --surface: #3d3e33;
+    --surface2: #363729;
+    --border: #555748;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,36 +35,26 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
     min-height: 100vh;
   }
 
-  /* INFO ICON STYLES */
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -74,9 +65,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--bg);
   }
-
   .header-left { display: flex; align-items: baseline; gap: 12px; }
-
   .battery-label {
     font-family: 'Syne', sans-serif;
     font-size: 9px;
@@ -85,14 +74,14 @@
     text-transform: uppercase;
     color: var(--accent);
   }
-
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--text-bright);
   }
-
   .header-meta {
     font-size: 9px;
     color: var(--text-dim);
@@ -110,15 +99,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-
-  .turn {
-    padding: 10px 12px;
-    border-radius: 4px;
-    border-left: 2px solid;
-  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
   .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
   .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
-
   .turn-speaker {
     font-size: 8px;
     font-weight: 500;
@@ -128,18 +111,17 @@
   }
   .turn.q .turn-speaker { color: var(--accent2); }
   .turn.a .turn-speaker { color: var(--green); }
-  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
-  /* PATTERN DECLARATION */
+  /* PATTERN BAR */
   .pattern-bar {
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
   }
-
   .pattern-label {
     font-size: 8px;
     font-family: 'Syne', sans-serif;
@@ -149,15 +131,14 @@
     color: var(--text-dim);
     white-space: nowrap;
   }
-
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--pattern-color);
-    letter-spacing: 0.02em;
   }
-
   .pattern-reasoning {
     font-size: 10px;
     color: var(--text-dim);
@@ -166,7 +147,7 @@
     padding-left: 16px;
   }
 
-  /* PANELS GRID */
+  /* PANELS */
   .panels {
     display: grid;
     grid-template-columns: 1fr;
@@ -174,12 +155,10 @@
     gap: 1px;
     background: var(--border);
   }
-
   .panel {
     background: var(--surface);
     padding: 12px 14px;
   }
-
   .panel-call {
     font-size: 9px;
     color: var(--accent);
@@ -189,31 +168,8 @@
     text-transform: uppercase;
   }
 
-  .field-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-    align-items: flex-start;
-  }
-
-  .field-key {
-    font-size: 9px;
-    color: var(--text-dim);
-    min-width: 90px;
-    flex-shrink: 0;
-    padding-top: 1px;
-  }
-
-  .field-val {
-    font-size: 9px;
-    color: var(--text-bright);
-    line-height: 1.5;
-  }
-
-  .field-block {
-    margin-bottom: 8px;
-  }
-
+  /* FIELD STYLES */
+  .field-block { margin-bottom: 8px; }
   .field-label {
     font-size: 8px;
     font-weight: 600;
@@ -222,14 +178,12 @@
     letter-spacing: 0.12em;
     margin-bottom: 4px;
   }
-
   .field-answer {
     font-size: 10px;
     color: var(--text-bright);
     line-height: 1.6;
     margin-bottom: 3px;
   }
-
   .field-reasoning {
     font-size: 8px;
     color: var(--text-dim);
@@ -237,14 +191,51 @@
     font-style: italic;
     opacity: 0.8;
   }
-
   .field-note {
     font-size: 8px;
     color: var(--text-dim);
     line-height: 1.4;
     margin-top: 2px;
   }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+  .empty-state {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
 
+  /* ENCODING HELPERS */
+  .encoding-turn-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+  }
+  .encoding-implicit-label {
+    font-size: 7px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+    font-style: italic;
+  }
+  .encoding-tag { margin-bottom: 2px; }
+
+  /* TAGS */
   .tag {
     display: inline-block;
     font-size: 8px;
@@ -253,12 +244,12 @@
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
-
-  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
-  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
-  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
 
@@ -269,7 +260,6 @@
     margin: 6px 0;
     font-size: 9px;
   }
-
   .data-table th {
     text-align: left;
     padding: 4px 6px;
@@ -280,16 +270,12 @@
     border-bottom: 1px solid var(--border);
     font-weight: 600;
   }
-
   .data-table td {
     padding: 4px 6px;
     color: var(--text);
-    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+    border-bottom: 1px solid rgba(85,87,72,0.3);
   }
-
-  .data-table tbody tr:last-child td {
-    border-bottom: none;
-  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
 
   /* FOOTER */
   .footer {
@@ -303,13 +289,11 @@
     letter-spacing: 0.08em;
     background: var(--bg);
   }
-
   .footer-left { display: flex; gap: 16px; }
 
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -340,32 +324,32 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Evidence Challenge<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Evidence Challenge<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">The two turns show a witness moving from doubt to certainty about a knowledge claim by introducing visual evidence that directly challenges the prior testimony. Across the five lenses, this shift is captured as a transformation (doubt → certainty), a mechanical reframing (question → evidence‑based answer), an emergent constraint (evidence admissibility), and a new meaning (knowledge, evidence, implausibility). The concise signature "Evidence Challenge" encapsulates this dynamic of using evidence to contest and reshape understanding.</div>
   </div>
 
-  <!-- PANELS GRID -->
+  <!-- PANELS -->
   <div class="panels">
 
-    <!-- CALL 1: TRANSFORMATION -->
+    <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
-          <div class="field-answer">doubt to certainty</div>
+          <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="doubt to certainty">doubt to certainty</div>
           <div class="field-reasoning">The witness shifts from acknowledging uncertainty about Mr. Ferrell's knowledge to asserting that it is implausible he could have been unaware, thereby moving from doubt to certainty.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
-          <div class="field-answer">Ferrell's awareness</div>
+          <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="Ferrell's awareness">Ferrell's awareness</div>
           <div class="field-reasoning">The focus of the epistemic shift is whether Mr. Ferrell knew about the outlet opening, i.e., his awareness.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
             <div class="field-val">questioning knowledge</div>
@@ -380,229 +364,179 @@
           </div>
           <div class="field-reasoning" style="margin-top:4px;">Turn 1 provides a question that frames the issue around knowledge; Turn 2 supplies visual evidence that grounds the claim; together they create a supportive structure of confidence in the claim.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 2: MECHANICS -->
+    <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 constrained Turn 2 to address the issue of Mr. Ferrell’s knowledge, framing it as either testimony or opinion, and set the context for Gibson to provide an opinion that directly responds to that framing.</div>
           <div class="field-reasoning">The question explicitly asks whether the witness’s view is based on testimony or opinion, thereby directing the answer toward a knowledge claim. Gibson’s reply supplies an opinion that directly engages with that knowledge question, fulfilling the constraint imposed by the question.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1 by offering an opinion that counters Mr. Ferrell’s testimony, revealing that the knowledge claim is implausible and thereby recontextualizing the original question about knowledge.</div>
           <div class="field-reasoning">Gibson’s answer not only addresses the knowledge question but also challenges the testimony, adding nuance that the original question had not anticipated. This reframing shifts the focus from a simple factual answer to a critique of the witness’s alleged ignorance.</div>
         </div>
+
       </div>
-      
       <hr class="divider">
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.0</div>
+          <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.0">3.0</div>
         </div>
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.0</div>
+          <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
+
       </div>
       <div class="field-reasoning">Turn 2 largely follows the frame set by Turn 1 by answering the knowledge question, yielding a strong alignment (+3.00). It also reframes the question with an opinion that is still within the frame, giving a moderate alignment (+2.00).</div>
     </div>
 
-    <!-- CALL 3: CONSEQUENCES -->
+    <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div>
-          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Constrained</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-red">Form</span></td>
-                <td>Objection</td>
-                <td>question</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Knowledge</span></td>
-                <td>Assertion</td>
-                <td>Ferrell</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Responsibility</span></td>
-                <td>Implied</td>
-                <td>Ferrell</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Evidence</span></td>
-                <td>Admissibility</td>
-                <td>pictures</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-red">Form</span></td>
+              <td>Objection</td>
+              <td>question</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Knowledge</span></td>
+              <td>Assertion</td>
+              <td>Ferrell</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Responsibility</span></td>
+              <td>Implied</td>
+              <td>Ferrell</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Evidence</span></td>
+              <td>Admissibility</td>
+              <td>pictures</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The objection introduces a form constraint on the question; Gibson’s answer frames a knowledge assertion about Ferrell and implies his responsibility; the reference to pictures brings an evidence admissibility constraint.</div>
         </div>
+
         <div>
-          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Enabled</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-green">Visual</span></td>
-                <td>Evidence</td>
-                <td>pictures</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Implied</span></td>
-                <td>Responsibility</td>
-                <td>Ferrell</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Argument</span></td>
-                <td>Negligence</td>
-                <td>failure</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Follow-up</span></td>
-                <td>Question</td>
-                <td>knowledge</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-green">Visual</span></td>
+              <td>Evidence</td>
+              <td>pictures</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Implied</span></td>
+              <td>Responsibility</td>
+              <td>Ferrell</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Argument</span></td>
+              <td>Negligence</td>
+              <td>failure</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Follow-up</span></td>
+              <td>Question</td>
+              <td>knowledge</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">Gibson’s testimony opens visual evidence of the outlet, suggests Ferrell’s responsibility, frames negligence, and allows further questioning about knowledge.</div>
         </div>
+
         <div>
-          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">opinion or testimony</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">Mr. Ferrell</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">knew</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">opening outlet</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">heat exchanger</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">prior to his work</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">question permissible</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">objection relevance</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">didn't know</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">implausible</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">controls</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">14-inch open</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">pictures</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">stop open close buttons</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">failure on him</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">right there</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">responsibility</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">negligence</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">visual evidence</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">implied knowledge</div>
+          <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
+          <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">opinion or testimony</div><div class="tag tag-blue encoding-tag">Mr. Ferrell</div><div class="tag tag-blue encoding-tag">knew</div><div class="tag tag-blue encoding-tag">opening outlet</div><div class="tag tag-blue encoding-tag">heat exchanger</div><div class="tag tag-blue encoding-tag">prior to his work</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">question permissible</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">objection relevance</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">didn't know</div><div class="tag tag-green encoding-tag">implausible</div><div class="tag tag-green encoding-tag">controls</div><div class="tag tag-green encoding-tag">14-inch open</div><div class="tag tag-green encoding-tag">pictures</div><div class="tag tag-green encoding-tag">stop open close buttons</div><div class="tag tag-green encoding-tag">failure on him</div><div class="tag tag-green encoding-tag">right there</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">responsibility</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">negligence</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">visual evidence</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">implied knowledge</div>
           <div class="field-reasoning" style="margin-top:6px;">The question explicitly asks about Ferrell’s knowledge, implicitly raising admissibility concerns; Gibson’s answer explicitly states lack of knowledge and provides visual evidence, implicitly implying responsibility and negligence.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 4: GEOMETRY -->
+    <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: opinion alignment, knowledge focus</div>
-          <div class="field-reasoning" style="margin-top:4px;">The question explicitly asks about Mr. Ferrell’s knowledge, and the witness responds by evaluating that knowledge, thereby aligning their frames around the same issue.</div>
+          <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: opinion alignment, knowledge focus</div><div class="field-reasoning">The question explicitly asks about Mr. Ferrell’s knowledge, and the witness responds by evaluating that knowledge, thereby aligning their frames around the same issue.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-red">false</span></div>
-          <div class="field-note">Prevented by: objection</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness does not address the form objection raised by the opposing counsel, indicating a lack of engagement with that aspect of the interaction.</div>
+          <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
+          <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: objection</div><div class="field-reasoning">The witness does not address the form objection raised by the opposing counsel, indicating a lack of engagement with that aspect of the interaction.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: new evidence, visual support</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness introduces new material—pictures of the control panel—that was not present in the question, creating a structure that emerges only through the interaction.</div>
+          <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: new evidence, visual support</div><div class="field-reasoning">The witness introduces new material—pictures of the control panel—that was not present in the question, creating a structure that emerges only through the interaction.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 5: TRAJECTORY -->
+    <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">implausible ignorance</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">evidence of outlet</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">inconsistent testimony</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">visual evidence</div>
+          <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">implausible ignorance</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">evidence of outlet</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Witness now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">inconsistent testimony</div><div class="tag tag-green" style="display:block;margin-bottom:3px;">visual evidence</div>
           <div class="field-reasoning" style="margin-top:6px;">The witness’s assertion that Ferrell’s testimony is implausible and that pictures show the outlet shifts both parties’ understanding: Ms. Easterling now sees that the witness believes Ferrell likely knew, while Gibson now sees that Ferrell’s testimony is inconsistent with visual evidence.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">knowledge of outlet</div>
+            <div class="field-key">knowledge of outlet</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">visual evidence</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">visual evidence</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">failure on Ferrell</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">failure on Ferrell</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">objection to form</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">objection to form</div>
             <div class="field-val"><span class="tag-red">↓ degraded</span></div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The exchange highlights the outlet’s status, the visual proof, and the suggestion of Ferrell’s failure, while the objection to form slightly undermines procedural coherence.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">knowledge</div>
+            <div class="field-key">knowledge</div>
             <div class="field-val" style="color:var(--text);">→ question focus</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">evidence</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">evidence</div>
             <div class="field-val" style="color:var(--text);">→ visual proof</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">implausibility</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">implausibility</div>
             <div class="field-val" style="color:var(--text);">→ challenge testimony</div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The witness’s opinion introduces the concepts of knowledge, evidence, and implausibility, making it possible to focus questions, provide visual proof, and challenge testimony.</div>
         </div>
+
       </div>
     </div>
 
@@ -618,6 +552,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>

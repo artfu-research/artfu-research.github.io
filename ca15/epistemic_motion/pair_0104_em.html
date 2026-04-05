@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · EM · Pair 104</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #454538;
+    --surface: #3d3e33;
+    --surface2: #363729;
+    --border: #555748;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,36 +35,26 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
     min-height: 100vh;
   }
 
-  /* INFO ICON STYLES */
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -74,9 +65,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--bg);
   }
-
   .header-left { display: flex; align-items: baseline; gap: 12px; }
-
   .battery-label {
     font-family: 'Syne', sans-serif;
     font-size: 9px;
@@ -85,14 +74,14 @@
     text-transform: uppercase;
     color: var(--accent);
   }
-
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--text-bright);
   }
-
   .header-meta {
     font-size: 9px;
     color: var(--text-dim);
@@ -110,15 +99,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-
-  .turn {
-    padding: 10px 12px;
-    border-radius: 4px;
-    border-left: 2px solid;
-  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
   .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
   .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
-
   .turn-speaker {
     font-size: 8px;
     font-weight: 500;
@@ -128,18 +111,17 @@
   }
   .turn.q .turn-speaker { color: var(--accent2); }
   .turn.a .turn-speaker { color: var(--green); }
-  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
-  /* PATTERN DECLARATION */
+  /* PATTERN BAR */
   .pattern-bar {
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
   }
-
   .pattern-label {
     font-size: 8px;
     font-family: 'Syne', sans-serif;
@@ -149,15 +131,14 @@
     color: var(--text-dim);
     white-space: nowrap;
   }
-
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--pattern-color);
-    letter-spacing: 0.02em;
   }
-
   .pattern-reasoning {
     font-size: 10px;
     color: var(--text-dim);
@@ -166,7 +147,7 @@
     padding-left: 16px;
   }
 
-  /* PANELS GRID */
+  /* PANELS */
   .panels {
     display: grid;
     grid-template-columns: 1fr;
@@ -174,12 +155,10 @@
     gap: 1px;
     background: var(--border);
   }
-
   .panel {
     background: var(--surface);
     padding: 12px 14px;
   }
-
   .panel-call {
     font-size: 9px;
     color: var(--accent);
@@ -189,31 +168,8 @@
     text-transform: uppercase;
   }
 
-  .field-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-    align-items: flex-start;
-  }
-
-  .field-key {
-    font-size: 9px;
-    color: var(--text-dim);
-    min-width: 90px;
-    flex-shrink: 0;
-    padding-top: 1px;
-  }
-
-  .field-val {
-    font-size: 9px;
-    color: var(--text-bright);
-    line-height: 1.5;
-  }
-
-  .field-block {
-    margin-bottom: 8px;
-  }
-
+  /* FIELD STYLES */
+  .field-block { margin-bottom: 8px; }
   .field-label {
     font-size: 8px;
     font-weight: 600;
@@ -222,14 +178,12 @@
     letter-spacing: 0.12em;
     margin-bottom: 4px;
   }
-
   .field-answer {
     font-size: 10px;
     color: var(--text-bright);
     line-height: 1.6;
     margin-bottom: 3px;
   }
-
   .field-reasoning {
     font-size: 8px;
     color: var(--text-dim);
@@ -237,14 +191,51 @@
     font-style: italic;
     opacity: 0.8;
   }
-
   .field-note {
     font-size: 8px;
     color: var(--text-dim);
     line-height: 1.4;
     margin-top: 2px;
   }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+  .empty-state {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
 
+  /* ENCODING HELPERS */
+  .encoding-turn-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+  }
+  .encoding-implicit-label {
+    font-size: 7px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+    font-style: italic;
+  }
+  .encoding-tag { margin-bottom: 2px; }
+
+  /* TAGS */
   .tag {
     display: inline-block;
     font-size: 8px;
@@ -253,12 +244,12 @@
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
-
-  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
-  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
-  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
 
@@ -269,7 +260,6 @@
     margin: 6px 0;
     font-size: 9px;
   }
-
   .data-table th {
     text-align: left;
     padding: 4px 6px;
@@ -280,16 +270,12 @@
     border-bottom: 1px solid var(--border);
     font-weight: 600;
   }
-
   .data-table td {
     padding: 4px 6px;
     color: var(--text);
-    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+    border-bottom: 1px solid rgba(85,87,72,0.3);
   }
-
-  .data-table tbody tr:last-child td {
-    border-bottom: none;
-  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
 
   /* FOOTER */
   .footer {
@@ -303,13 +289,11 @@
     letter-spacing: 0.08em;
     background: var(--bg);
   }
-
   .footer-left { display: flex; gap: 16px; }
 
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -340,32 +324,32 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Status Clarification<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Status Clarification<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">The exchange moves from a vague inquiry about experimentation to a definitive statement that the witness did not conduct separate tests, thereby clarifying the witness’s status of involvement. Across all lenses, the dynamic is a single turn that resolves uncertainty and establishes a clear understanding of the witness’s role.</div>
   </div>
 
-  <!-- PANELS GRID -->
+  <!-- PANELS -->
   <div class="panels">
 
-    <!-- CALL 1: TRANSFORMATION -->
+    <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
-          <div class="field-answer">clarified experiment involvement</div>
+          <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="clarified experiment involvement">clarified experiment involvement</div>
           <div class="field-reasoning">The witness shifts from an ambiguous stance about conducting experiments to a definitive statement that he did not perform separate testing, thereby clarifying his role.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
-          <div class="field-answer">experimentation involvement status</div>
+          <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="experimentation involvement status">experimentation involvement status</div>
           <div class="field-reasoning">The specific concept being addressed is the witness's involvement in experimentation for the case.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
             <div class="field-val">question about experiments</div>
@@ -380,203 +364,168 @@
           </div>
           <div class="field-reasoning" style="margin-top:4px;">Turn 1 frames the inquiry about experiments, turn 2 introduces a technical issue and lab context, and together they provide the structural basis for clarifying the witness’s role.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 2: MECHANICS -->
+    <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">The question establishes a frame that the witness must address whether they performed experiments, thereby constraining the answer to a yes/no response and enabling a negative reply.</div>
           <div class="field-reasoning">The question explicitly asks about conducting experiments, which requires the witness to confirm or deny participation, making a negative answer possible and a positive answer necessary if true.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">The witness’s reply reframes the question by specifying that no separate testing was performed, while noting that some lab work existed but was outside their purview.</div>
           <div class="field-reasoning">The answer adds nuance—distinguishing between general lab testing and separate testing—and clarifies that the witness did not conduct experiments, thereby recontextualizing the original query.</div>
         </div>
+
       </div>
-      
       <hr class="divider">
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.0</div>
+          <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.0">3.0</div>
         </div>
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.0</div>
+          <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.0">3.0</div>
         </div>
+
       </div>
       <div class="field-reasoning">Both turns adhere to the same frame: a yes/no inquiry about experiments and a negative confirmation, indicating strong alignment.</div>
     </div>
 
-    <!-- CALL 3: CONSEQUENCES -->
+    <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div>
-          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Constrained</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-red">experiments</span></td>
-                <td>definition</td>
-                <td>testing</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">testing</span></td>
-                <td>boundary</td>
-                <td>separate</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">audio</span></td>
-                <td>communication</td>
-                <td>issue</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-red">experiments</span></td>
+              <td>definition</td>
+              <td>testing</td>
+            </tr><tr>
+              <td><span class="tag tag-red">testing</span></td>
+              <td>boundary</td>
+              <td>separate</td>
+            </tr><tr>
+              <td><span class="tag tag-red">audio</span></td>
+              <td>communication</td>
+              <td>issue</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The witness’s denial of conducting experiments narrows the scope to testing, while the mention of lab work but not separate tests further limits what is considered testing. The audio/technical note signals a communication constraint.</div>
         </div>
+
         <div>
-          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Enabled</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-green">lab testing</span></td>
-                <td>clarification</td>
-                <td>lab</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">realm</span></td>
-                <td>context</td>
-                <td>area</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">separate testing</span></td>
-                <td>differentiation</td>
-                <td>separate</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-green">lab testing</span></td>
+              <td>clarification</td>
+              <td>lab</td>
+            </tr><tr>
+              <td><span class="tag tag-green">realm</span></td>
+              <td>context</td>
+              <td>area</td>
+            </tr><tr>
+              <td><span class="tag tag-green">separate testing</span></td>
+              <td>differentiation</td>
+              <td>separate</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The witness’s reference to lab testing and Mr. Van Iderstein’s realm opens new lines of questioning about those areas, and the distinction between lab and separate testing creates a new investigative avenue.</div>
         </div>
+
         <div>
-          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">experiments</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">case context</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">inquiry focus</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">did not conduct separate testing</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">lab testing</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">Mr. Van Iderstein's realm</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">audio/technical issue</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">responsibility scope</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">incomplete answer</div>
+          <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
+          <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">experiments</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">case context</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">inquiry focus</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">did not conduct separate testing</div><div class="tag tag-green encoding-tag">lab testing</div><div class="tag tag-green encoding-tag">Mr. Van Iderstein's realm</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">audio/technical issue</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">responsibility scope</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">incomplete answer</div>
           <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly states the question about experiments, implicitly indicating the broader case context. Turn 2 explicitly lists the lack of separate testing, lab testing, and a specific realm, while implicitly referencing communication problems, scope of responsibility, and an incomplete response.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 4: GEOMETRY -->
+    <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: direct answer</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness directly responds to the examiner’s yes/no question by stating he did not conduct experiments, thereby aligning the two turns toward a shared understanding of the fact.</div>
+          <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: direct answer</div><div class="field-reasoning">The witness directly responds to the examiner’s yes/no question by stating he did not conduct experiments, thereby aligning the two turns toward a shared understanding of the fact.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-red">false</span></div>
-          <div class="field-note">Prevented by: no divergence</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness’s reply does not deviate from the scope of the question; it remains focused on the same issue and does not introduce contradictory information.</div>
+          <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
+          <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: no divergence</div><div class="field-reasoning">The witness’s reply does not deviate from the scope of the question; it remains focused on the same issue and does not introduce contradictory information.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: additional context</div>
-          <div class="field-reasoning" style="margin-top:4px;">The answer adds new details about an audio/technical issue and lab testing related to another individual, creating a structure that was not present in either turn alone.</div>
+          <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: additional context</div><div class="field-reasoning">The answer adds new details about an audio/technical issue and lab testing related to another individual, creating a structure that was not present in either turn alone.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 5: TRAJECTORY -->
+    <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">no separate experiments</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">lab testing other</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
+          <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">no separate experiments</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">lab testing other</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Witness now knows:</div>
           <div class="tag tag-green" style="display:block;margin-bottom:3px;">no separate experiments</div>
           <div class="field-reasoning" style="margin-top:6px;">The witness clarifies that he did not conduct separate experiments, indicating that any lab testing was performed by others. The examiner now knows that no separate testing was performed by the witness.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">experiments</div>
+            <div class="field-key">experiments</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">lab testing</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">lab testing</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">separate testing</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">separate testing</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The exchange confirms that the question about experiments is answered and that the lab testing was not conducted by the witness, which strengthens the narrative and informs future questioning.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">clarification</div>
+            <div class="field-key">clarification</div>
             <div class="field-val" style="color:var(--text);">→ next question</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">scope</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">scope</div>
             <div class="field-val" style="color:var(--text);">→ define testing</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">evidence</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">evidence</div>
             <div class="field-val" style="color:var(--text);">→ detail testing</div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">This clarification opens the way for follow-up questions about the scope of lab testing and the role of other parties, allowing the examiner to probe further into evidence.</div>
         </div>
+
       </div>
     </div>
 
@@ -592,6 +541,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>

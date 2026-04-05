@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · EM · Pair 251</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #454538;
+    --surface: #3d3e33;
+    --surface2: #363729;
+    --border: #555748;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,36 +35,26 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
     min-height: 100vh;
   }
 
-  /* INFO ICON STYLES */
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -74,9 +65,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--bg);
   }
-
   .header-left { display: flex; align-items: baseline; gap: 12px; }
-
   .battery-label {
     font-family: 'Syne', sans-serif;
     font-size: 9px;
@@ -85,14 +74,14 @@
     text-transform: uppercase;
     color: var(--accent);
   }
-
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--text-bright);
   }
-
   .header-meta {
     font-size: 9px;
     color: var(--text-dim);
@@ -110,15 +99,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-
-  .turn {
-    padding: 10px 12px;
-    border-radius: 4px;
-    border-left: 2px solid;
-  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
   .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
   .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
-
   .turn-speaker {
     font-size: 8px;
     font-weight: 500;
@@ -128,18 +111,17 @@
   }
   .turn.q .turn-speaker { color: var(--accent2); }
   .turn.a .turn-speaker { color: var(--green); }
-  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
-  /* PATTERN DECLARATION */
+  /* PATTERN BAR */
   .pattern-bar {
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
   }
-
   .pattern-label {
     font-size: 8px;
     font-family: 'Syne', sans-serif;
@@ -149,15 +131,14 @@
     color: var(--text-dim);
     white-space: nowrap;
   }
-
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--pattern-color);
-    letter-spacing: 0.02em;
   }
-
   .pattern-reasoning {
     font-size: 10px;
     color: var(--text-dim);
@@ -166,7 +147,7 @@
     padding-left: 16px;
   }
 
-  /* PANELS GRID */
+  /* PANELS */
   .panels {
     display: grid;
     grid-template-columns: 1fr;
@@ -174,12 +155,10 @@
     gap: 1px;
     background: var(--border);
   }
-
   .panel {
     background: var(--surface);
     padding: 12px 14px;
   }
-
   .panel-call {
     font-size: 9px;
     color: var(--accent);
@@ -189,31 +168,8 @@
     text-transform: uppercase;
   }
 
-  .field-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-    align-items: flex-start;
-  }
-
-  .field-key {
-    font-size: 9px;
-    color: var(--text-dim);
-    min-width: 90px;
-    flex-shrink: 0;
-    padding-top: 1px;
-  }
-
-  .field-val {
-    font-size: 9px;
-    color: var(--text-bright);
-    line-height: 1.5;
-  }
-
-  .field-block {
-    margin-bottom: 8px;
-  }
-
+  /* FIELD STYLES */
+  .field-block { margin-bottom: 8px; }
   .field-label {
     font-size: 8px;
     font-weight: 600;
@@ -222,14 +178,12 @@
     letter-spacing: 0.12em;
     margin-bottom: 4px;
   }
-
   .field-answer {
     font-size: 10px;
     color: var(--text-bright);
     line-height: 1.6;
     margin-bottom: 3px;
   }
-
   .field-reasoning {
     font-size: 8px;
     color: var(--text-dim);
@@ -237,14 +191,51 @@
     font-style: italic;
     opacity: 0.8;
   }
-
   .field-note {
     font-size: 8px;
     color: var(--text-dim);
     line-height: 1.4;
     margin-top: 2px;
   }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+  .empty-state {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
 
+  /* ENCODING HELPERS */
+  .encoding-turn-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+  }
+  .encoding-implicit-label {
+    font-size: 7px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+    font-style: italic;
+  }
+  .encoding-tag { margin-bottom: 2px; }
+
+  /* TAGS */
   .tag {
     display: inline-block;
     font-size: 8px;
@@ -253,12 +244,12 @@
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
-
-  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
-  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
-  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
 
@@ -269,7 +260,6 @@
     margin: 6px 0;
     font-size: 9px;
   }
-
   .data-table th {
     text-align: left;
     padding: 4px 6px;
@@ -280,16 +270,12 @@
     border-bottom: 1px solid var(--border);
     font-weight: 600;
   }
-
   .data-table td {
     padding: 4px 6px;
     color: var(--text);
-    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+    border-bottom: 1px solid rgba(85,87,72,0.3);
   }
-
-  .data-table tbody tr:last-child td {
-    border-bottom: none;
-  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
 
   /* FOOTER */
   .footer {
@@ -303,13 +289,11 @@
     letter-spacing: 0.08em;
     background: var(--bg);
   }
-
   .footer-left { display: flex; gap: 16px; }
 
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -340,32 +324,32 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Irrelevance Clarification<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Irrelevance Clarification<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">Across all lenses the second turn moves the conversation from uncertainty about a specific time to a clear statement that the exact hour is irrelevant to the case outcome. The dynamic is a focused clarification that a previously contested detail has no bearing on the broader understanding.</div>
   </div>
 
-  <!-- PANELS GRID -->
+  <!-- PANELS -->
   <div class="panels">
 
-    <!-- CALL 1: TRANSFORMATION -->
+    <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
-          <div class="field-answer">clarify timing irrelevance</div>
+          <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="clarify timing irrelevance">clarify timing irrelevance</div>
           <div class="field-reasoning">The witness moves from an uncertain, debated time frame to asserting that the specific timing does not affect the case outcome. This shift shows a change in the understanding of the event’s relevance.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
-          <div class="field-answer">event timing confusion</div>
+          <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="event timing confusion">event timing confusion</div>
           <div class="field-reasoning">The core issue being addressed is the exact time of the event, which was initially unclear and later clarified. The transformation focuses on resolving that specific concept.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
             <div class="field-val">cross-referencing depositions</div>
@@ -380,225 +364,180 @@
           </div>
           <div class="field-reasoning" style="margin-top:4px;">Turn 1 is scaffolded by referencing other depositions and witness statements, while Turn 2 is scaffolded by the witness’s clarification of the time frame. Together they produce an emergent agreement that the timing is irrelevant.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 2: MECHANICS -->
+    <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 established a frame that the witness needed to clarify the timing of events, referencing Porter's deposition and other witnesses’ recollections, thereby making it necessary for Turn 2 to address the specific time window and reconcile differing accounts.</div>
           <div class="field-reasoning">The question explicitly asks about the timing and cites Porter's testimony and other witnesses, creating a constraint that the answer must address the precise time range and its significance.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1 by correcting the implied time (1 p.m.) to a pre‑noon window, clarifying that the exact hour is immaterial to the outcome, and thereby recontextualizing the original question as a broader inquiry about timing rather than a precise moment.</div>
           <div class="field-reasoning">The answer acknowledges the question’s framing, corrects it to a specific time range, and emphasizes that the difference between 10 a.m. and 12 p.m. does not alter the case’s outcome, shifting the focus from a narrow detail to a general timeline.</div>
         </div>
+
       </div>
-      
       <hr class="divider">
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.0</div>
+          <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.0">3.0</div>
         </div>
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">2.0</div>
+          <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
+
       </div>
       <div class="field-reasoning">Turn 1 and Turn 2 largely align on the timing issue, with Turn 2 providing a detailed clarification that fits within the frame set by Turn 1, though it slightly adjusts the specific time reference. The alignment is strong but not perfect, hence +3.00 and +2.00.</div>
     </div>
 
-    <!-- CALL 3: CONSEQUENCES -->
+    <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div>
-          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Constrained</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-red">Timing</span></td>
-                <td>Focus</td>
-                <td>event</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Transcript</span></td>
-                <td>Quality</td>
-                <td>clarity</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Witnesses</span></td>
-                <td>Inclusion</td>
-                <td>testimony</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Timeframe</span></td>
-                <td>Boundary</td>
-                <td>event</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-red">Timing</span></td>
+              <td>Focus</td>
+              <td>event</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Transcript</span></td>
+              <td>Quality</td>
+              <td>clarity</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Witnesses</span></td>
+              <td>Inclusion</td>
+              <td>testimony</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Timeframe</span></td>
+              <td>Boundary</td>
+              <td>event</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The question narrows the discussion to the timing of the event, highlights transcript issues, references Porter's deposition, and notes that other witnesses place the event after lunch, establishing a pre‑noon boundary.</div>
         </div>
+
         <div>
-          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Enabled</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-green">Timing</span></td>
-                <td>Clarification</td>
-                <td>event</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Outcome</span></td>
-                <td>Relevance</td>
-                <td>case</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Consensus</span></td>
-                <td>Possibility</td>
-                <td>alignment</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Recollection</span></td>
-                <td>Comparison</td>
-                <td>memory</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Timeframe</span></td>
-                <td>Distinction</td>
-                <td>clarity</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-green">Timing</span></td>
+              <td>Clarification</td>
+              <td>event</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Outcome</span></td>
+              <td>Relevance</td>
+              <td>case</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Consensus</span></td>
+              <td>Possibility</td>
+              <td>alignment</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Recollection</span></td>
+              <td>Comparison</td>
+              <td>memory</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Timeframe</span></td>
+              <td>Distinction</td>
+              <td>clarity</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The answer resolves the exact time, states that the precise hour is irrelevant to outcomes, and aligns Porter’s testimony with Juan’s recollection, opening the possibility of agreement and clarifying the pre‑noon timeframe.</div>
         </div>
+
         <div>
-          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">transcript weirdness</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">Porter's deposition</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">pre‑noon vs post‑lunch timing</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">frustration with transcript</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">other witnesses’ statements</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">importance of event timing</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">pre‑noon timing</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">10 vs 12 irrelevant</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">outcomes unchanged</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">Porter vs Juan recollection</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">question about timing</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">disagreement between witnesses</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">event consistency</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">outcome unaffected by exact time</div>
+          <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
+          <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">transcript weirdness</div><div class="tag tag-blue encoding-tag">Porter's deposition</div><div class="tag tag-blue encoding-tag">pre‑noon vs post‑lunch timing</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">frustration with transcript</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">other witnesses’ statements</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">importance of event timing</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">pre‑noon timing</div><div class="tag tag-green encoding-tag">10 vs 12 irrelevant</div><div class="tag tag-green encoding-tag">outcomes unchanged</div><div class="tag tag-green encoding-tag">Porter vs Juan recollection</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">question about timing</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">disagreement between witnesses</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">event consistency</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">outcome unaffected by exact time</div>
           <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly names transcript issues, Porter's testimony, and timing, while implicitly conveying frustration and the significance of timing. Turn 2 explicitly states the time range, the irrelevance of exact hour, and the comparison of recollections, implicitly indicating the question’s focus and the potential for agreement.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 4: GEOMETRY -->
+    <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: time alignment</div>
-          <div class="field-reasoning" style="margin-top:4px;">Both speakers focus on the timing of the event, with Ms. Easterling noting it occurred after lunch and Gibson specifying times around lunch, indicating a move toward a shared chronological frame.</div>
+          <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: time alignment</div><div class="field-reasoning">Both speakers focus on the timing of the event, with Ms. Easterling noting it occurred after lunch and Gibson specifying times around lunch, indicating a move toward a shared chronological frame.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: conflicting timing</div>
-          <div class="field-reasoning" style="margin-top:4px;">Ms. Easterling asserts the event was after lunch, while Gibson indicates it could have been before or at lunch, creating a discrepancy in their temporal accounts.</div>
+          <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: conflicting timing</div><div class="field-reasoning">Ms. Easterling asserts the event was after lunch, while Gibson indicates it could have been before or at lunch, creating a discrepancy in their temporal accounts.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: outcome irrelevance</div>
-          <div class="field-reasoning" style="margin-top:4px;">Gibson introduces a new point that the exact timing does not alter the case outcome, a concept not present in Ms. Easterling’s question, thus emerging from the interaction.</div>
+          <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: outcome irrelevance</div><div class="field-reasoning">Gibson introduces a new point that the exact timing does not alter the case outcome, a concept not present in Ms. Easterling’s question, thus emerging from the interaction.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 5: TRAJECTORY -->
+    <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">pre-noon timing</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">time difference irrelevant</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">question framed 1pm</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">time still pre-noon</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">outcome unchanged</div>
+          <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">pre-noon timing</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">time difference irrelevant</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Witness now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">question framed 1pm</div><div class="tag tag-green" style="display:block;margin-bottom:3px;">time still pre-noon</div><div class="tag tag-green" style="display:block;margin-bottom:3px;">outcome unchanged</div>
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now sees that the event occurred before noon and that the exact hour is not critical. Benjamin clarifies that the question was framed as 1 p.m., but the event was still pre‑noon and the outcome is unaffected.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">pre-noon timing</div>
+            <div class="field-key">pre-noon timing</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">time difference irrelevant</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">time difference irrelevant</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">outcome unchanged</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">outcome unchanged</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">These concepts anchor the discussion, reinforcing coherence about the timing and its impact on the case outcome.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">relevance</div>
+            <div class="field-key">relevance</div>
             <div class="field-val" style="color:var(--text);">→ focus outcome</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">chronology</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">chronology</div>
             <div class="field-val" style="color:var(--text);">→ clarify timeline</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">consistency</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">consistency</div>
             <div class="field-val" style="color:var(--text);">→ compare testimony</div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The exchange opens the floor to discuss the relevance of timing, to clarify the chronological sequence, and to compare the consistency of different witnesses.</div>
         </div>
+
       </div>
     </div>
 
@@ -614,6 +553,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>

@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · EM · Pair 303</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #454538;
+    --surface: #3d3e33;
+    --surface2: #363729;
+    --border: #555748;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,36 +35,26 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
     min-height: 100vh;
   }
 
-  /* INFO ICON STYLES */
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -74,9 +65,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--bg);
   }
-
   .header-left { display: flex; align-items: baseline; gap: 12px; }
-
   .battery-label {
     font-family: 'Syne', sans-serif;
     font-size: 9px;
@@ -85,14 +74,14 @@
     text-transform: uppercase;
     color: var(--accent);
   }
-
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: var(--text-bright);
   }
-
   .header-meta {
     font-size: 9px;
     color: var(--text-dim);
@@ -110,15 +99,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-
-  .turn {
-    padding: 10px 12px;
-    border-radius: 4px;
-    border-left: 2px solid;
-  }
+  .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
   .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
   .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
-
   .turn-speaker {
     font-size: 8px;
     font-weight: 500;
@@ -128,18 +111,17 @@
   }
   .turn.q .turn-speaker { color: var(--accent2); }
   .turn.a .turn-speaker { color: var(--green); }
-  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-family: 'DM Mono', monospace; font-style: italic; }
+  .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
-  /* PATTERN DECLARATION */
+  /* PATTERN BAR */
   .pattern-bar {
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
   }
-
   .pattern-label {
     font-size: 8px;
     font-family: 'Syne', sans-serif;
@@ -149,15 +131,14 @@
     color: var(--text-dim);
     white-space: nowrap;
   }
-
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    font-style: italic;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--pattern-color);
-    letter-spacing: 0.02em;
   }
-
   .pattern-reasoning {
     font-size: 10px;
     color: var(--text-dim);
@@ -166,7 +147,7 @@
     padding-left: 16px;
   }
 
-  /* PANELS GRID */
+  /* PANELS */
   .panels {
     display: grid;
     grid-template-columns: 1fr;
@@ -174,12 +155,10 @@
     gap: 1px;
     background: var(--border);
   }
-
   .panel {
     background: var(--surface);
     padding: 12px 14px;
   }
-
   .panel-call {
     font-size: 9px;
     color: var(--accent);
@@ -189,31 +168,8 @@
     text-transform: uppercase;
   }
 
-  .field-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-    align-items: flex-start;
-  }
-
-  .field-key {
-    font-size: 9px;
-    color: var(--text-dim);
-    min-width: 90px;
-    flex-shrink: 0;
-    padding-top: 1px;
-  }
-
-  .field-val {
-    font-size: 9px;
-    color: var(--text-bright);
-    line-height: 1.5;
-  }
-
-  .field-block {
-    margin-bottom: 8px;
-  }
-
+  /* FIELD STYLES */
+  .field-block { margin-bottom: 8px; }
   .field-label {
     font-size: 8px;
     font-weight: 600;
@@ -222,14 +178,12 @@
     letter-spacing: 0.12em;
     margin-bottom: 4px;
   }
-
   .field-answer {
     font-size: 10px;
     color: var(--text-bright);
     line-height: 1.6;
     margin-bottom: 3px;
   }
-
   .field-reasoning {
     font-size: 8px;
     color: var(--text-dim);
@@ -237,14 +191,51 @@
     font-style: italic;
     opacity: 0.8;
   }
-
   .field-note {
     font-size: 8px;
     color: var(--text-dim);
     line-height: 1.4;
     margin-top: 2px;
   }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
+  .empty-state {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
 
+  /* ENCODING HELPERS */
+  .encoding-turn-label {
+    font-size: 8px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+  }
+  .encoding-implicit-label {
+    font-size: 7px;
+    color: var(--text-dim);
+    margin: 4px 0 2px 0;
+    font-style: italic;
+  }
+  .encoding-tag { margin-bottom: 2px; }
+
+  /* TAGS */
   .tag {
     display: inline-block;
     font-size: 8px;
@@ -253,12 +244,12 @@
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
-
-  .tag-blue { background: rgba(91,143,168,0.15); color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.2); }
-  .tag-green { background: rgba(110,168,152,0.12); color: var(--green); border: 1px solid rgba(110,168,152,0.2); }
-  .tag-red { background: rgba(201,112,112,0.12); color: var(--red); border: 1px solid rgba(201,112,112,0.2); }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
+  .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
 
@@ -269,7 +260,6 @@
     margin: 6px 0;
     font-size: 9px;
   }
-
   .data-table th {
     text-align: left;
     padding: 4px 6px;
@@ -280,16 +270,12 @@
     border-bottom: 1px solid var(--border);
     font-weight: 600;
   }
-
   .data-table td {
     padding: 4px 6px;
     color: var(--text);
-    border-bottom: 1px solid rgba(37, 41, 54, 0.3);
+    border-bottom: 1px solid rgba(85,87,72,0.3);
   }
-
-  .data-table tbody tr:last-child td {
-    border-bottom: none;
-  }
+  .data-table tbody tr:last-child td { border-bottom: none; }
 
   /* FOOTER */
   .footer {
@@ -303,13 +289,11 @@
     letter-spacing: 0.08em;
     background: var(--bg);
   }
-
   .footer-left { display: flex; gap: 16px; }
 
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -340,32 +324,32 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Clarifying Expansion<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Clarifying Expansion<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">Turn 1 poses a question that reveals uncertainty about who was involved; Turn 2 supplies a clear answer that both clarifies the missing identities and expands the context by adding higher‑level decision makers and new external participants. The dynamic across the lenses is a two‑step epistemic shift: first the unknown is clarified, then the scope of knowledge is broadened.</div>
   </div>
 
-  <!-- PANELS GRID -->
+  <!-- PANELS -->
   <div class="panels">
 
-    <!-- CALL 1: TRANSFORMATION -->
+    <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Transformation<span class="info-icon" data-field-id="transformation">ⓘ</span></div>
-          <div class="field-answer">uncertainty to clarity</div>
+          <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="uncertainty to clarity">uncertainty to clarity</div>
           <div class="field-reasoning">The witness moves from a state of not knowing who was involved to asserting knowledge based on testimony.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Object Of Transformation<span class="info-icon" data-field-id="object_of_transformation">ⓘ</span></div>
-          <div class="field-answer">others involvement details</div>
+          <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
+          <div class="field-answer" data-field-value="others involvement details">others involvement details</div>
           <div class="field-reasoning">The focus of the epistemic shift is the identity and role of other participants in the discussions.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Scaffolding<span class="info-icon" data-field-id="scaffolding">ⓘ</span></div>
+          <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
             <div class="field-val">asking about involvement</div>
@@ -380,220 +364,168 @@
           </div>
           <div class="field-reasoning" style="margin-top:4px;">Turn 1 uses a question to establish uncertainty; Turn 2 provides a testimony-based answer that stabilizes the understanding, and together they create a clearer context.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 2: MECHANICS -->
+    <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">T1 To T2 Relationship<span class="info-icon" data-field-id="t1_to_t2_relationship">ⓘ</span></div>
+          <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1’s question constrained Turn 2 to name and describe the people involved in the breaker‑unlocking discussions, thereby enabling Turn 2 to reference Mr. Ferrell’s testimony and detail the decision‑making hierarchy.</div>
           <div class="field-reasoning">The question explicitly asks who was involved in the discussions, so Turn 2 must provide that information. It uses the question’s focus to bring in Mr. Ferrell’s testimony and identify the participants.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">T2 To T1 Relationship<span class="info-icon" data-field-id="t2_to_t1_relationship">ⓘ</span></div>
+          <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1’s query by revealing that the decision was made by higher management and external parties (Leak Sealers), expanding the context beyond just the participants asked about.</div>
           <div class="field-reasoning">While Turn 2 answers the question, it adds that the supervisor or management made the decision and that Leak Sealers were consulted, thereby shifting the focus from merely who was present to who ultimately decided.</div>
         </div>
+
       </div>
-      
       <hr class="divider">
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (Q→A)<span class="info-icon" data-field-id="alignment_bidirectional_q_to_a">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">4.0</div>
+          <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="4.0">4.0</div>
         </div>
+
         <div class="field-block">
-          <div class="field-label">Alignment Bidirectional (A→Q)<span class="info-icon" data-field-id="alignment_bidirectional_a_to_q">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;color:var(--accent);">3.5</div>
+          <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.5">3.5</div>
         </div>
+
       </div>
       <div class="field-reasoning">Turn 2 directly addresses Turn 1’s question, showing strong alignment (t1_to_t2 = +4.00). It also stays within the frame but adds extra context, giving a slightly lower but still strong alignment for t2_to_t1 (≈+3.50).</div>
     </div>
 
-    <!-- CALL 3: CONSEQUENCES -->
+    <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div>
-          <div class="field-label">Constraints Operationalized<span class="info-icon" data-field-id="constraints_operationalized">ⓘ</span></div>
+          <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Constrained</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-red">Scope</span></td>
-                <td>Discussion</td>
-                <td>Participants</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Role</span></td>
-                <td>Involvement</td>
-                <td>Individuals</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-red">Event</span></td>
-                <td>Breaker</td>
-                <td>Action</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-red">Scope</span></td>
+              <td>Discussion</td>
+              <td>Participants</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Role</span></td>
+              <td>Involvement</td>
+              <td>Individuals</td>
+            </tr><tr>
+              <td><span class="tag tag-red">Event</span></td>
+              <td>Breaker</td>
+              <td>Action</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">The question limits the focus to those involved in the specific breaker discussion, setting a scope constraint. It also frames the participants as individuals with a role of involvement and ties the inquiry to the breaker‑unlocking event, creating a role and event constraint.</div>
         </div>
+
         <div>
-          <div class="field-label">Enablements Created<span class="info-icon" data-field-id="enablements_created">ⓘ</span></div>
+          <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Type</th>
-                <th>Enabled</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="tag tag-green">Identification</span></td>
-                <td>Persons</td>
-                <td>Names</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Decision</span></td>
-                <td>Authority</td>
-                <td>Management</td>
-              </tr>
-              <tr>
-                <td><span class="tag tag-green">Input</span></td>
-                <td>Expert</td>
-                <td>LeakSeal</td>
-              </tr>
-            </tbody>
-          </table>
+          <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
+          <tbody><tr>
+              <td><span class="tag tag-green">Identification</span></td>
+              <td>Persons</td>
+              <td>Names</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Decision</span></td>
+              <td>Authority</td>
+              <td>Management</td>
+            </tr><tr>
+              <td><span class="tag tag-green">Input</span></td>
+              <td>Expert</td>
+              <td>LeakSeal</td>
+            </tr></tbody>
+        </table>
           <div class="field-reasoning" style="margin-top:6px;">Gibson’s reply names specific individuals and groups, opening the possibility to probe their roles and decisions. It also introduces Leak Sealers as a potential expert source, enabling further inquiry into their input.</div>
         </div>
+
         <div>
-          <div class="field-label">Epistemic Encoding<span class="info-icon" data-field-id="epistemic_encoding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 2px 0;">TURN 1 (Q):</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">anyone else</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">discussions</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">unlocking breaker</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">energizing breaker</div>
-          <div class="tag tag-blue" style="margin-bottom:2px;">motor operate valve</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">operation context</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">question focus</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">breaker</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">valve</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">motor</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 2px 0;">TURN 2 (A):</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">Mr. Ferrell</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">production team leader</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">Josh White</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">other colleagues</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">supervisor</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">management</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">decision</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">Leak Sealers</div>
-          <div class="tag tag-green" style="margin-bottom:2px;">input</div>
-          <div style="font-size:7px;color:var(--text-dim);margin:4px 0 2px 0;font-style:italic;">Implicit:</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">discussion about breaker</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">hierarchy</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">Leak Sealers involvement</div>
-          <div class="tag tag-purple" style="margin-bottom:2px;opacity:0.7;">valve operation context</div>
+          <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
+          <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">anyone else</div><div class="tag tag-blue encoding-tag">discussions</div><div class="tag tag-blue encoding-tag">unlocking breaker</div><div class="tag tag-blue encoding-tag">energizing breaker</div><div class="tag tag-blue encoding-tag">motor operate valve</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">operation context</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">question focus</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">breaker</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">valve</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">motor</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">Mr. Ferrell</div><div class="tag tag-green encoding-tag">production team leader</div><div class="tag tag-green encoding-tag">Josh White</div><div class="tag tag-green encoding-tag">other colleagues</div><div class="tag tag-green encoding-tag">supervisor</div><div class="tag tag-green encoding-tag">management</div><div class="tag tag-green encoding-tag">decision</div><div class="tag tag-green encoding-tag">Leak Sealers</div><div class="tag tag-green encoding-tag">input</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">discussion about breaker</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">hierarchy</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Leak Sealers involvement</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">valve operation context</div>
           <div class="field-reasoning" style="margin-top:6px;">The question explicitly states the discussion elements and the focus on participants. Gibson’s answer explicitly lists the individuals and groups involved while implicitly referencing the broader decision‑making hierarchy and the context of the valve operation.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 4: GEOMETRY -->
+    <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Convergence<span class="info-icon" data-field-id="convergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: information exchange</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness directly addresses the question by listing individuals involved, aligning with the examiner’s inquiry.</div>
+          <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: information exchange</div><div class="field-reasoning">The witness directly addresses the question by listing individuals involved, aligning with the examiner’s inquiry.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Divergence<span class="info-icon" data-field-id="divergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-red">false</span></div>
-          <div class="field-note">Prevented by: question focus</div>
-          <div class="field-reasoning" style="margin-top:4px;">The answer does not add conflicting information; it stays within the scope of the question, so no divergence occurs.</div>
+          <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
+          <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: question focus</div><div class="field-reasoning">The answer does not add conflicting information; it stays within the scope of the question, so no divergence occurs.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Emergence<span class="info-icon" data-field-id="emergence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-note">Mechanism: new participant</div>
-          <div class="field-reasoning" style="margin-top:4px;">The witness introduces Leak Sealers as a new participant not mentioned in the question, creating a new element of the discourse.</div>
+          <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: new participant</div><div class="field-reasoning">The witness introduces Leak Sealers as a new participant not mentioned in the question, creating a new element of the discourse.</div>
         </div>
+
       </div>
     </div>
 
-    <!-- CALL 5: TRAJECTORY -->
+    <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+
         <div class="field-block">
-          <div class="field-label">Change In Understanding<span class="info-icon" data-field-id="change_in_understanding">ⓘ</span></div>
-          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 1 (Attorney) now knows:</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">multiple parties involved</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">management decision</div>
-          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">Leak Sealers consulted</div>
-          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Turn 2 (Witness) now knows:</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">confirmation sought</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">decision elevated</div>
-          <div class="tag tag-green" style="display:block;margin-bottom:3px;">consultation noted</div>
+          <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
+          <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
+          <div class="tag tag-blue" style="display:block;margin-bottom:3px;">multiple parties involved</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">management decision</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">Leak Sealers consulted</div>
+          <div style="font-size:8px;color:var(--text-dim);margin:8px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Witness now knows:</div>
+          <div class="tag tag-green" style="display:block;margin-bottom:3px;">confirmation sought</div><div class="tag tag-green" style="display:block;margin-bottom:3px;">decision elevated</div><div class="tag tag-green" style="display:block;margin-bottom:3px;">consultation noted</div>
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now realizes that several individuals and groups were involved in the decision, while Gibson acknowledges that the question seeks confirmation and highlights the elevated decision authority and external consultation.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">What Matters<span class="info-icon" data-field-id="what_matters">ⓘ</span></div>
+          <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">other parties involved</div>
+            <div class="field-key">other parties involved</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">management decision</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">management decision</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
-          </div>
-          <div class="field-row" style="margin-bottom:3px;">
-            <div class="field-key" style="min-width:90px;">Leak Sealers input</div>
+          </div><div class="field-row" style="margin-bottom:3px;">
+            <div class="field-key">Leak Sealers input</div>
             <div class="field-val"><span class="tag-gold">↑ active</span></div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The identification of additional participants, the role of management, and the involvement of Leak Sealers are key to understanding the decision chain and will influence subsequent questioning.</div>
         </div>
-        
+
         <div class="field-block">
-          <div class="field-label">Meaning Generated<span class="info-icon" data-field-id="meaning_generated">ⓘ</span></div>
+          <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">authority</div>
+            <div class="field-key">authority</div>
             <div class="field-val" style="color:var(--text);">→ question decision</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">consultation</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">consultation</div>
             <div class="field-val" style="color:var(--text);">→ trace input</div>
-          </div>
-          <div class="field-row" style="margin-bottom:4px;">
-            <div class="field-key" style="min-width:70px;">involvement</div>
+          </div><div class="field-row" style="margin-bottom:4px;">
+            <div class="field-key">involvement</div>
             <div class="field-val" style="color:var(--text);">→ clarify roles</div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">The exchange opens possibilities to probe the authority hierarchy, trace external input, and clarify each party’s role in the decision.</div>
         </div>
+
       </div>
     </div>
 
@@ -609,6 +541,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>
