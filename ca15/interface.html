@@ -673,33 +673,11 @@ function displaySchemaOverview() {
 
   panel.innerHTML = `
     <div style="display: grid; grid-template-rows: auto 1fr; height: 100%; overflow: hidden;">
-
-      <!-- BANNER: centered, two lines -->
       <div style="text-align: center; padding: 7px 16px; background: var(--bg); border-bottom: 1px solid var(--border);">
-        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 8px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: ${activeValueHTML ? '3px' : '0'};">${callLabel}${section ? ' · ' + section : ''} · ${field.label}</div>
-        ${activeValueHTML ? `<div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-bright); letter-spacing: 0.02em;">${activeValueHTML}</div>` : ''}
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent);">${currentSchema.battery_name} · Overview</div>
       </div>
-
-      <!-- THREE COLUMN CARDS -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 8px 12px; overflow: hidden;">
-
-        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; overflow: hidden;">
-          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px;">What it measures</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.55;">${definition}</div>
-        </div>
-
-        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; overflow: hidden;">
-          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px;">How to read this</div>
-          ${field.scale_description ? `<div style="font-size: 8px; color: var(--text-dim); line-height: 1.55; margin-bottom: 4px;">${field.scale_description}</div>` : ''}
-          ${field.value_description ? `<div style="font-size: 8px; color: var(--text-dim); line-height: 1.55;">${field.value_description}</div>` : ''}
-        </div>
-
-        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; overflow: hidden;">
-          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px;">Why it matters</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.55; margin-bottom: 10px;">${whyItMatters}</div>
-
-        </div>
-
+      <div style="padding: 10px 16px; font-size: 8px; color: var(--text-dim); line-height: 1.7; overflow: hidden;">
+        ${currentSchema.battery_overview}
       </div>
     </div>
   `;
