@@ -54,7 +54,7 @@
 
   .panel-header {
     padding: 16px 20px;
-    background: var(--bg);
+    background: #000000;
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
@@ -617,6 +617,10 @@ function loadCurrentView() {
     iframe.src = path;
     iframe.onload = function() {
       attachInfoIconHandlers();
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const style = iframeDoc.createElement('style');
+      style.textContent = '.footer { background: #000000 !important; }';
+      iframeDoc.head.appendChild(style);
     };
   }
 }
