@@ -616,11 +616,156 @@ function loadCurrentView() {
   if (path) {
     iframe.src = path;
     iframe.onload = function() {
-      attachInfoIconHandlers();
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      const style = iframeDoc.createElement('style');
-      style.textContent = '.footer { background: #000000 !important; }';
-      iframeDoc.head.appendChild(style);
+      if (!iframeDoc) return;
+
+      // ── Static style injections ──────────────────────────────────────────
+      const baseStyle = iframeDoc.createElement('style');
+      baseStyle.textContent = `
+        .footer { background: #000000 !important; }
+
+        /* FLIP CARD WRAPPER */
+        .col-card {
+          perspective: 800px;
+          background: transparent !important;
+          border: none !important;
+          padding: 0 !important;
+          cursor: pointer;
+        }
+        .col-card-inner {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          min-height: 80px;
+          transform-style: preserve-3d;
+          transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 4px;
+        }
+        .col-card.flipped .col-card-inner {
+          transform: rotateY(180deg);
+        }
+        .col-card-front,
+        .col-card-back {
+          position: absolute;
+          inset: 0;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          border-radius: 4px;
+          padding: 10px 12px;
+          border: 1px solid var(--border);
+        }
+        .col-card-front {
+          background: var(--surface2);
+        }
+        .col-card-back {
+          background: #000000;
+          transform: rotateY(180deg);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          overflow: hidden;
+        }
+        .flip-back-label {
+          font-size: 7px;
+          font-weight: 700;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: var(--accent);
+          border-bottom: 1px solid var(--border);
+          padding-bottom: 4px;
+          margin-bottom: 2px;
+        }
+        .flip-back-field {
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--text-bright);
+          margin-bottom: 3px;
+        }
+        .flip-back-def {
+          font-size: 8px;
+          color: var(--text-dim);
+          line-height: 1.55;
+          margin-bottom: 4px;
+        }
+        .flip-back-why-label {
+          font-size: 7px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text-dim);
+          margin-bottom: 2px;
+        }
+        .flip-back-why {
+          font-size: 8px;
+          color: var(--text-dim);
+          line-height: 1.55;
+          font-style: italic;
+        }
+        .col-card:hover .col-card-front {
+          border-color: var(--accent);
+        }
+        .col-card.flipped:hover .col-card-front {
+          border-color: var(--border);
+        }
+        .col-card.flipped .col-card-back {
+          border-color: var(--accent);
+        }
+      `;
+      iframeDoc.head.appendChild(baseStyle);
+
+      // ── Wrap every .col-card's existing content in front/back structure ──
+      iframeDoc.querySelectorAll('.col-card').forEach(card => {
+        const fieldId = card.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
+        const originalHTML = card.innerHTML;
+
+        card.innerHTML = `
+          <div class="col-card-inner">
+            <div class="col-card-front">${originalHTML}</div>
+            <div class="col-card-back" data-field-id="${fieldId}">
+              <div class="flip-back-label">Loading…</div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const isFlipped = card.classList.contains('flipped');
+          if (isFlipped) {
+            card.classList.remove('flipped');
+          } else {
+            card.classList.add('flipped');
+            // Ask parent for schema data for this field
+            if (fieldId) {
+              window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
+            }
+          }
+        });
+      });
+
+      // ── Listen for schema data posted back from parent ───────────────────
+      iframeDoc.defaultView.addEventListener('message', function(e) {
+        if (!e.data || e.data.type !== 'fieldSchema') return;
+        const { fieldId, label, definition, whyItMatters, activeValue } = e.data;
+
+        iframeDoc.querySelectorAll(`.col-card-back[data-field-id="${fieldId}"]`).forEach(back => {
+          back.innerHTML = `
+            <div class="flip-back-label">${label || fieldId}</div>
+            ${activeValue ? `<div class="flip-back-field">${activeValue}</div>` : ''}
+            <div class="flip-back-def">${definition || '—'}</div>
+            ${whyItMatters ? `<div class="flip-back-why-label">Why it matters</div><div class="flip-back-why">${whyItMatters}</div>` : ''}
+          `;
+        });
+      });
+
+      // ── Click anywhere outside a card resets all flipped cards ───────────
+      iframeDoc.addEventListener('click', function(e) {
+        if (!e.target.closest('.col-card')) {
+          iframeDoc.querySelectorAll('.col-card.flipped').forEach(c => c.classList.remove('flipped'));
+          if (currentSchema) displaySchemaOverview();
+        }
+      });
     };
   }
 }
@@ -909,11 +1054,42 @@ function updateStrategicButtons() {
 window.addEventListener('DOMContentLoaded', function() {
   loadCurrentView();
   updatePairSummaries();
-  loadBatterySchema(currentBattery); // loads schema then calls displaySchemaOverview
+  loadBatterySchema(currentBattery);
 
   // Clicking the bottom panel resets to overview
   document.querySelector('.bottom-panel').addEventListener('click', function() {
     if (currentSchema) displaySchemaOverview();
+  });
+
+  // ── Receive fieldClick from iframe, look up schema, post back + update bottom panel ──
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'fieldClick') return;
+    const fieldId = e.data.fieldId;
+    if (!fieldId || !currentSchema) return;
+
+    // Update bottom panel as before
+    displayFieldSchema(fieldId);
+
+    // Look up the field in schema
+    let field = null;
+    if (currentSchema.pattern_field?.id === fieldId) field = currentSchema.pattern_field;
+    if (!field && Array.isArray(currentSchema.fields))
+      field = currentSchema.fields.find(f => f.id === fieldId) || null;
+
+    if (!field) return;
+
+    const iframe = document.getElementById('main-content-frame');
+    const liveValue = getLiveValue(fieldId);
+    const activeValue = renderActiveValue(field, liveValue);
+
+    iframe.contentWindow.postMessage({
+      type: 'fieldSchema',
+      fieldId,
+      label:        field.label || fieldId,
+      definition:   field.definition || field.description || '—',
+      whyItMatters: field.why_it_matters || '',
+      activeValue,
+    }, '*');
   });
 });
 
