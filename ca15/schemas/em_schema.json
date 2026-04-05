@@ -10,7 +10,7 @@
     "definition": "The two-word summary of this entire exchange. After analyzing five separate dimensions of the question and answer, the instrument produces a single label that names the kind of moment this was \u2014 not what was talked about, but what structurally happened. Think of it as a diagnosis rather than a description.",
     "why_it_matters": "When you read these two-word labels across dozens or hundreds of exchanges, patterns emerge. You start to see whether the deposition was mostly cooperative, mostly evasive, whether the witness was being led or resisting, whether the attorney was in control. A single label means little on its own \u2014 the value is in the sequence.",
     "value_type": "qualitative",
-    "value_description": "The label shown is the instrument's judgment of this specific exchange. Examples of what these labels can look like: Identity Confirmation, Blame Shift, Frame Capture, Evasion Loop, Anchor Drop, Authority Press. Each one names a structural event, not a topic."
+    "value_description": "The two-word label shown is the instrument's single summary judgment of what structurally happened in this exchange \u2014 the kind of moment it was, not the topic it covered."
   },
   "fields": [
     {
@@ -21,7 +21,7 @@
       "definition": "What actually changed between the question and the answer \u2014 not the words that were exchanged, but the shift in what is now known, established, or understood. Every question-answer pair moves something. This field names what moved.",
       "why_it_matters": "Depositions are not just conversations \u2014 they are knowledge-building events. Every exchange either advances, retreats, or redirects what is known on the record. Understanding what transformed in each exchange tells you whether the deposition is moving toward or away from the facts that matter to the case.",
       "value_type": "qualitative",
-      "value_description": "The value shown is a short label \u2014 usually two or three words \u2014 naming the shift that occurred. For example: 'identity formally confirmed' means the exchange moved from unknown to known on the question of who this person is. 'responsibility acknowledged' means the witness accepted some form of accountability. 'claim introduced' means a new factual assertion entered the record."
+      "value_description": "The short label shown names the shift that occurred \u2014 what moved between the question and the answer at the level of knowledge or understanding."
     },
     {
       "id": "object_of_transformation",
@@ -31,7 +31,7 @@
       "definition": "The specific thing that was transformed \u2014 the subject matter that got moved, clarified, reframed, or established. If Transformation tells you what happened, Object Of Transformation tells you what it happened to.",
       "why_it_matters": "Knowing what was transformed is only useful if you also know what it was transformed about. This field names the target \u2014 the specific concept, fact, or question at the center of the exchange.",
       "value_type": "qualitative",
-      "value_description": "A short label naming the thing at the center of the exchange. Examples: 'witness identity verification' means the exchange was about establishing who this person is. 'safety protocol compliance' means the exchange was about whether proper procedures were followed. 'causation of injury' means the exchange was about what caused the harm."
+      "value_description": "The short label shown names the specific thing that was transformed \u2014 the subject matter that got moved, clarified, or established by this exchange."
     },
     {
       "id": "scaffolding",
@@ -41,7 +41,7 @@
       "definition": "The underlying structure that made this exchange possible \u2014 what held the question up, what held the answer up, and what the two together created that neither had alone. Think of it like the frame of a building: you don't see it when everything is working, but it's what keeps the exchange from collapsing.",
       "why_it_matters": "When scaffolding is solid, the exchange produces reliable information. When it is weak \u2014 when the question rests on an assumption that isn't established, or the answer doesn't connect to anything real \u2014 the exchange may look productive while actually building nothing. Spotting weak scaffolding is how you find the vulnerabilities in testimony.",
       "value_type": "structured",
-      "value_description": "Three components are shown: Turn 1 scaffolding (what held the question up \u2014 for example 'formal identification request' means the question was grounded in standard legal procedure), Turn 2 scaffolding (what held the answer up \u2014 for example 'affirmative identity statement' means the witness's answer was grounded in a direct, first-person claim), and Emergent support (what the pair produced together \u2014 for example 'identity confirmation process' means the two turns together created a completed verification event that neither turn accomplished alone)."
+      "value_description": "Three components are shown: Turn 1 scaffolding names what held the question up structurally, Turn 2 scaffolding names what held the answer up, and Emergent support names what the two turns together produced that neither contained alone."
     },
     {
       "id": "t1_to_t2_relationship",
@@ -138,7 +138,7 @@
       "definition": "The new limits this exchange placed on what can be said going forward. Once something is established on the record, certain things become harder to say, deny, or reframe. This field identifies what boundaries were created by this exchange \u2014 what is now locked in.",
       "why_it_matters": "Depositions build a record that is difficult to walk back. Every constraint created in one exchange becomes a wall the witness has to navigate in future exchanges. Understanding what got locked in helps you see what lines of questioning become available \u2014 or unavailable \u2014 as a result.",
       "value_type": "structured",
-      "value_description": "A list of constraints, each described by what kind of constraint it is, what type of thing it constrains, and what specifically got constrained. For example: a 'Name Disclosure' constraint on 'Identity' means the witness has now committed to their name being on the record \u2014 they cannot later claim they were misidentified. Each constraint listed is something that would be difficult to undo or contradict."
+      "value_description": "Each row names a constraint that became active: what class of limit it is, what type of thing it constrains, and what specifically got locked in as a result of this exchange."
     },
     {
       "id": "enablements_created",
@@ -148,7 +148,7 @@
       "definition": "The new possibilities this exchange opened up. Just as constraints close doors, enablements open them. This field identifies what became available \u2014 what lines of inquiry, what future questions, what arguments \u2014 that could not have been pursued before this exchange happened.",
       "why_it_matters": "Good deposition strategy is about creating opportunities. An attorney who asks the right questions early opens doors they can walk through later. This field shows what doors just opened \u2014 for either side.",
       "value_type": "structured",
-      "value_description": "A list of enablements, each described by what kind of opportunity it is, what type of action it enables, and what specifically became possible. For example: an 'Identification' enablement on 'Witness ID' means the deposition can now proceed with confidence about who is testifying \u2014 other questions that depend on knowing the witness's identity are now unlocked."
+      "value_description": "Each row names an opportunity that opened up: what class of enablement it is, what type of action it makes possible, and what specifically became available as a result of this exchange."
     },
     {
       "id": "epistemic_encoding",
@@ -158,7 +158,7 @@
       "definition": "The difference between what was said out loud and what was communicated. Every exchange carries two layers: the explicit layer \u2014 the words actually spoken \u2014 and the implicit layer \u2014 the meanings, assumptions, and signals those words carried beneath the surface. This field maps both layers for each turn.",
       "why_it_matters": "In legal proceedings, what is implied can be as significant as what is stated. An attorney who implies a fact without stating it creates a different kind of record than one who states it directly. A witness who accepts an implied premise without challenging it has effectively confirmed it. Seeing both layers helps you understand what was actually communicated \u2014 and what was not.",
       "value_type": "structured",
-      "value_description": "Four categories are shown \u2014 explicit and implicit for each turn. Explicit items are things directly stated in the words of the exchange. Implicit items are meanings that were communicated without being said \u2014 premises assumed, signals sent, or conclusions invited. For example: a question may explicitly request a name, while implicitly signaling that the witness is under formal scrutiny. An answer may explicitly provide a name, while implicitly expressing compliance and deference to the process."
+      "value_description": "Four categories are shown \u2014 explicit and implicit for each turn. Explicit items are things directly stated in the words spoken. Implicit items are meanings communicated without being said \u2014 premises assumed, signals sent, or conclusions invited without being stated outright."
     },
     {
       "id": "convergence",
@@ -213,7 +213,7 @@
       "definition": "What each person in the exchange knows now that they did not know \u2014 or could not claim to know \u2014 before this exchange happened. This is a record of the learning that occurred, on both sides.",
       "why_it_matters": "Depositions are information events. Tracking what each party learned from each exchange tells you whether the deposition is functioning as it should \u2014 producing real information \u2014 or whether exchanges are being used to perform rather than to discover.",
       "value_type": "structured",
-      "value_description": "Two lists are shown: what the attorney now knows, and what the witness now knows. Items are short labels describing new knowledge. For the attorney, this might include 'witness identity' or 'safety protocol awareness.' For the witness, this might include 'scope of questioning' or 'record purpose.' Each item represents something that entered the record through this specific exchange."
+      "value_description": "Two lists are shown \u2014 what the attorney now knows and what the witness now knows as a direct result of this exchange. Each item names a piece of new knowledge that entered the record."
     },
     {
       "id": "what_matters",
@@ -223,7 +223,7 @@
       "definition": "The content from this exchange that has forward momentum \u2014 the things said or established here that will continue to shape what happens later in the deposition. Not everything in an exchange matters equally. This field identifies what does.",
       "why_it_matters": "A deposition is a long document. Not every exchange carries equal weight. The things that matter are the ones that will be referenced, built upon, or challenged later. Identifying them early helps you know where to focus attention when reviewing the full record.",
       "value_type": "structured",
-      "value_description": "A list of items with trajectory scores. Each item names something from the exchange that carries forward, along with a trajectory indicator: +1 means it is gaining in importance as the deposition continues, 0 means it is stable and established but not growing, \u22121 means it is fading in relevance. For example: 'witness identity' with a trajectory of +1 means that the fact of who this witness is will become increasingly important as the deposition develops."
+      "value_description": "Each item names something from this exchange that carries forward into the rest of the deposition. The arrow indicator shows its trajectory: upward means growing in importance, rightward means stable, downward means fading."
     },
     {
       "id": "meaning_generated",
@@ -233,7 +233,7 @@
       "definition": "What this exchange made possible that was not possible before it happened. Every exchange changes the conversational landscape slightly \u2014 it opens certain future moves and closes others. This field captures what became available.",
       "why_it_matters": "Strategy in a deposition is about creating and using opportunities. This field tells you what opportunities this exchange created. For attorneys, it reveals what new questions become possible. For analysts, it reveals how the deposition's trajectory shifted.",
       "value_type": "structured",
-      "value_description": "A list of meaning objects, each with a concept name and a description of what became possible. For example: 'identification \u2192 name given' means that by providing their name, the witness made the concept of identification real and usable for the rest of the deposition. 'recording \u2192 official record' means this exchange activated the formal record-keeping function of the proceeding."
+      "value_description": "Each row names a concept that this exchange activated and what became possible as a result \u2014 what new territory opened up that the deposition can now move into."
     }
   ]
 }
