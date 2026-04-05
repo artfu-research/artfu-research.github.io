@@ -1,53 +1,22 @@
 {
   "battery_code": "wpb",
   "battery_name": "Witness Posture",
-  "battery_overview": "The Witness Posture Battery analyzes a question–answer turn-pair from a legal deposition for the structural properties of how the witness responds under examination — not what they said, but how they showed up. Six sequential calls analyze response quality, process control, credibility and integrity, composure, expertise, and adversarial awareness. Call 7 synthesizes all six lenses into a two-word pattern declaration. Every field carries a signed score (−5 to +5) and a dimension tag (coop, cred, excellent, seasoned, or expert). Scores aggregate per-call, per-dimension, and into a grand total for the pair. The scored JSON file is the primary input — it contains the full analytical output plus all pre-computed score aggregations.",
+  "battery_overview": "This page analyzes a single question-and-answer exchange from the deposition for how the witness showed up under examination — not what they said, but how they performed. Six sequential calls examine different dimensions of witness behavior: response quality (Call 1), process control and stress management (Call 2), credibility and integrity (Call 3), composure and presence (Call 4), expertise and preparation (Call 5), and adversarial awareness (Call 6). Call 7 synthesizes all six into a two-word pattern declaration. Every field carries a signed score from -5 to +5 and a dimension tag. Scores aggregate per-call, per-dimension, and into a grand total for the pair. The grand total is shown as a position on a scale — to the right of center means the witness performed above baseline, to the left means below. A score at 50% of maximum is the baseline expectation for adequate testimony.",
   "scoring_architecture": {
-    "field_score": "Every field carries a signed integer score (−5 to +5). When answer is null, score is 0 and the field's max is excluded from totals — null fields do not penalize the pair. Score is always present regardless of answer state.",
-    "call_total": "Per-call totals sum all non-null field scores within the call against the possible maximum (non-null fields × 5). Expressed as score / max / percentage.",
-    "tag_score": "Tag scores aggregate field scores by dimension within each call and across the full pair. A field with multiple tags contributes its score to each tag. pair_tag_totals shows cumulative score/max/percentage for each of the five quality dimensions across all six calls.",
-    "grand_total": "Single pair-level composite score: sum of all non-null field scores across all six calls vs. total possible max. Expressed as score / max / percentage. Baseline: 50% = adequate. Strong: ≥70%. Concern: ≤30%.",
-    "score_scale": {
-      "-5": "Catastrophic — actively harmful to credibility or cooperation",
-      "-4": "Severe — serious problem, materially damages the testimony",
-      "-3": "Poor — clearly below standard, significant concern",
-      "-2": "Weak — below expectations, noticeable deficiency",
-      "-1": "Marginal — slightly below standard, minor concern",
-      "0": "Null — no signal; field cannot be assessed on this pair",
-      "+1": "Adequate — meets minimum standard",
-      "+2": "Moderate — solid performance, meets expectations",
-      "+3": "Solid — clearly above standard, dependable",
-      "+4": "Strong — notably strong, consistently reliable",
-      "+5": "Exemplary — best observable performance on this dimension"
-    }
-  },
-  "dimensions": {
-    "coop": "Cooperative — facilitates examination, responsive, compliant",
-    "cred": "Credible — believable, consistent, grounded in personal knowledge",
-    "excellent": "Excellent — superior performance, stays in scope, defensible",
-    "seasoned": "Seasoned — experienced, prepared, familiar with materials",
-    "expert": "Expert — combines technical mastery with communication and composure"
-  },
-  "universal_return_format": {
-    "answer": "Primary boolean assessment: true (condition present) | false (condition absent) | null (insufficient evidence — not a failure state)",
-    "confidence": "Float 0.0–1.0. Present only when answer is true. Scores certainty of the positive assessment.",
-    "evidence": "Array of 1–3 short verbatim quotes. Present only when confidence = 1.0.",
-    "reasoning": "1–3 sentences. Present only when answer is false. Explains why the condition is absent.",
-    "score": "Integer −5 to +5. Always present regardless of answer state. 0 when answer is null.",
-    "tags": "Array of dimension labels assigned at battery design time. Fixed metadata — not produced by the model."
-  },
-  "special_return_formats": {
-    "presence_fields": "Used by: speculation, guessing. Returns: present (boolean — is the condition occurring?), solicited (boolean — was it invited by the question?), score. No answer/confidence/reasoning wrapper.",
-    "comprehensive_field": "Uniquely structured. question_type classifies the question as 'open' (invites elaboration) or 'constrained' (calls for specific fact/yes-no/brief confirmation). If open: sub-fields are complete_and_relevant and excessive_and_uncontrolled. If constrained: sub-fields are adds_beyond_scope and stays_within_scope. Each sub-field has answer, score. A score also appears at the comprehensive level itself."
+    "field_score_description": "Every field carries a signed integer score from -5 to +5. When the answer is null — meaning the field cannot be assessed on this pair — the score is 0 and the field's maximum is excluded from totals. Null fields do not penalize the pair.",
+    "grand_total_description": "The grand total is the single pair-level composite score: the sum of all non-null field scores across all six calls versus the total possible maximum. A score at 50% of maximum represents adequate testimony. Strong performance is 70% or above. Scores at 30% or below indicate significant concern.",
+    "dimension_description": "Each field belongs to one or more of five quality dimensions: cooperative, credible, excellent, seasoned, or expert. The dimension bars show how the witness performed on each dimension across the full pair."
   },
   "pattern_field": {
     "id": "pattern_declaration",
     "label": "Pattern Declaration",
     "call": 7,
-    "definition": "A two-word label naming what the witness demonstrated across all six analytical lenses — not a topic label or content summary, but a structural signature of how the witness showed up under examination. Synthesized after all six calls are complete.",
-    "scale": "Qualitative (2-word phrase)",
-    "why_it_matters": "When read in sequence across hundreds of turn-pairs it reveals the higher-order shape of witness performance across the full deposition.",
-    "examples": "Composed Deflection, Steady Compliance, Calibrated Evasion, Expert Grounding"
+    "parent_section": "Pattern",
+    "definition": "The two-word label naming what the witness demonstrated across all six analytical lenses — not a topic label or content summary, but a structural signature of how the witness showed up under examination. Synthesized after all six calls are complete.",
+    "why_it_matters": "When read in sequence across hundreds of pairs, these pattern declarations reveal the higher-order shape of witness performance across the full deposition — how the witness's posture shifted, held, or broke down over time.",
+    "value_type": "qualitative",
+    "value_description": "The two-word label shown is the instrument's synthesized judgment of how the witness showed up structurally in this exchange — not the topic, but the performance signature.",
+    "null_explanation": "A pattern declaration could not be produced for this pair."
   },
   "fields": [
     {
@@ -55,374 +24,467 @@
       "label": "Straightforward",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Does the witness answer clearly and plainly without unnecessary wording, evasion, or rephrasing the question? Assesses whether the surface form of the response is direct and uncluttered.",
-      "scale": "Standard return format (answer/confidence/evidence/reasoning/score/tags)",
-      "tags": ["coop"],
-      "why_it_matters": "Measures the surface clarity of the witness's response — whether it is direct and uncluttered or wrapped in unnecessary complexity.",
-      "order": 1
+      "definition": "Whether the witness answered clearly and plainly without unnecessary wording, evasion, or rephrasing the question. Assesses the surface form of the response — whether it was direct and uncluttered.",
+      "why_it_matters": "Direct, uncluttered responses make it easier for the record to reflect what the witness actually said. Witnesses who wrap answers in complexity, hedge every phrase, or rephrase the question before answering create ambiguity that opposing counsel can exploit.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness answered clearly and plainly. The response was direct and uncluttered — no unnecessary rephrasing, hedging, or complexity.",
+        "false": "The witness did not answer in a straightforward manner. The response contained unnecessary complexity, evasion, or rephrasing that obscured the answer."
+      },
+      "null_explanation": "Whether the response was straightforward could not be assessed for this exchange."
     },
     {
       "id": "direct_answers",
       "label": "Direct Answers",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Does the witness respond exactly to what was asked, without deflecting, adding unrelated information, or answering a different question? Assesses the semantic fit between question and answer.",
-      "scale": "Standard return format",
-      "tags": ["cred"],
-      "why_it_matters": "Measures semantic alignment — whether the witness answered what was actually asked.",
-      "order": 2
+      "definition": "Whether the witness responded exactly to what was asked, without deflecting, adding unrelated information, or answering a different question. Assesses the semantic fit between the question and the answer.",
+      "why_it_matters": "Semantic alignment between question and answer is the foundation of useful testimony. When a witness answers a different question than the one asked — even subtly — the examination loses ground and the record becomes muddled.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness answered exactly what was asked. The response was semantically aligned with the question — no deflection, no answering a different question, no unrelated additions.",
+        "false": "The witness did not answer directly. The response deflected, addressed a different question than the one asked, or added information unrelated to what was being asked."
+      },
+      "null_explanation": "Whether the witness answered directly could not be assessed for this exchange."
     },
     {
       "id": "inaccurate_testimony",
       "label": "Inaccurate Testimony",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Is the witness giving statements that are factually incorrect, inconsistent with known evidence, or contradicted by prior testimony?",
-      "scale": "Standard return format (inverted — true means inaccuracy is present, negative score)",
-      "tags": ["coop"],
-      "why_it_matters": "Flags factual errors or contradictions that could damage credibility under cross-examination.",
-      "order": 3
+      "definition": "Whether the witness gave statements that are factually incorrect, inconsistent with known evidence, or contradicted by prior testimony. This is an inverted field — true means inaccuracy is present, which produces a negative score.",
+      "why_it_matters": "Factual errors and contradictions are primary attack vectors in cross-examination. A single demonstrably inaccurate statement can be used to undermine the credibility of everything else the witness says.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "Inaccuracy was present — the witness made statements that are factually incorrect, inconsistent with known evidence, or contradicted by prior testimony. This is a negative finding.",
+        "false": "No inaccuracy was detected. The witness's statements were factually sound and consistent with known evidence."
+      },
+      "null_explanation": "Whether inaccurate testimony was present could not be assessed for this exchange."
     },
     {
       "id": "comprehensive",
       "label": "Comprehensive",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Uniquely structured field. The question is classified as 'open' (invites elaboration) or 'constrained' (calls for a specific fact, yes/no, or brief confirmation). For open: sub-fields are complete_and_relevant and excessive_and_uncontrolled. For constrained: sub-fields are adds_beyond_scope and stays_within_scope. Each sub-field has answer and score. A score also appears at the comprehensive level itself.",
-      "scale": "Special format: question_type ('open' | 'constrained') + conditional sub-fields + top-level score",
-      "tags": ["coop"],
-      "why_it_matters": "Assesses whether the response was appropriately complete given the type of question asked — not over-answering constrained questions or under-answering open ones.",
-      "order": 4
+      "definition": "Whether the witness's response was appropriately complete given the type of question asked. The question is first classified as open (invites elaboration) or constrained (calls for a specific fact, yes/no, or brief confirmation). For open questions, the sub-fields are complete and relevant and excessive and uncontrolled. For constrained questions, the sub-fields are adds beyond scope and stays within scope.",
+      "why_it_matters": "Completeness is context-dependent — what counts as a complete answer depends entirely on what was asked. Over-answering a constrained question gives opposing counsel unasked-for material. Under-answering an open question leaves the record thin. This field catches both.",
+      "value_type": "structured",
+      "value_description": "The question type is shown first — open or constrained. Then two sub-fields appear depending on the type, each with a true/false assessment. A top-level score reflects the overall comprehensiveness of the response.",
+      "null_explanation": "Comprehensiveness could not be assessed for this exchange."
     },
     {
       "id": "speculation",
       "label": "Speculation",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Is the witness offering possibilities or assumptions not based on personal knowledge or established facts? Two boolean sub-fields: present (is speculation occurring?) and solicited (was the question asking for it?).",
-      "scale": "Presence format: present (boolean), solicited (boolean), score. No answer/confidence/reasoning wrapper.",
-      "tags": ["cred"],
-      "why_it_matters": "Distinguishes solicited inference from unsolicited speculation — the latter damages credibility.",
-      "order": 5
+      "definition": "Whether the witness offered possibilities or assumptions not based on personal knowledge or established facts. Two sub-fields: present (is speculation occurring?) and solicited (was the question asking for it?). Solicited speculation is less damaging than unsolicited speculation.",
+      "why_it_matters": "Unsolicited speculation is a credibility risk — it signals that the witness is willing to go beyond what they know. When speculation is solicited by the question, it is expected and appropriate. The distinction between the two determines how damaging the speculation is.",
+      "value_type": "structured",
+      "value_description": "Two boolean fields are shown: present (whether speculation was occurring in this exchange) and solicited (whether the question invited it). When both are true, the speculation was appropriate. When present is true and solicited is false, the witness speculated without being asked to.",
+      "null_explanation": "Whether speculation was present could not be assessed for this exchange."
     },
     {
       "id": "guessing",
       "label": "Guessing",
       "call": 1,
       "parent_section": "Response Quality",
-      "definition": "Is the witness providing an answer despite not knowing, often without stating uncertainty? Structurally identical to speculation: present, solicited, and score. Distinct from speculation — guessing implies lack of knowledge rather than lack of basis.",
-      "scale": "Presence format: present (boolean), solicited (boolean), score.",
-      "tags": ["cred"],
-      "why_it_matters": "Identifies responses where the witness does not know the answer but provides one anyway — a significant credibility risk.",
-      "order": 6
+      "definition": "Whether the witness provided an answer despite not knowing, often without stating uncertainty. Structurally identical to speculation — present and solicited — but distinct in meaning: guessing implies lack of knowledge, while speculation implies lack of evidentiary basis.",
+      "why_it_matters": "Guessing when the witness does not know the answer is among the most damaging behaviors in deposition — it creates a record of statements that may be demonstrably wrong, and signals to opposing counsel that the witness can be led into unsupported claims.",
+      "value_type": "structured",
+      "value_description": "Two boolean fields are shown: present (whether guessing was occurring) and solicited (whether the question invited it). Unsolicited guessing — present but not solicited — is the most damaging pattern.",
+      "null_explanation": "Whether guessing was present could not be assessed for this exchange."
     },
     {
       "id": "enables_fast",
       "label": "Enables Fast",
       "call": 2,
       "parent_section": "Process Control & Stress",
-      "definition": "Does the witness provide responses without unnecessary delay, maintaining clarity and accuracy? Assesses pacing and response efficiency from the examination's perspective.",
-      "scale": "Standard return format",
-      "tags": ["coop"],
-      "why_it_matters": "Measures whether the witness's pacing facilitates or impedes the examination's momentum.",
-      "order": 7
+      "definition": "Whether the witness provided responses without unnecessary delay, maintaining clarity and accuracy. Assesses pacing and response efficiency from the examination's perspective.",
+      "why_it_matters": "Response pacing affects the examination's momentum. Witnesses who pause excessively, restart answers, or drag out simple responses disrupt the flow of examination and signal stress or evasion.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness responded without unnecessary delay. Pacing was appropriate — answers came cleanly and efficiently, supporting the examination's momentum.",
+        "false": "The witness's pacing impeded the examination. Responses were delayed, restarted, or dragged out in ways that disrupted momentum."
+      },
+      "null_explanation": "Whether the witness enabled fast examination could not be assessed for this exchange."
     },
     {
       "id": "enables_efficient",
       "label": "Enables Efficient",
       "call": 2,
       "parent_section": "Process Control & Stress",
-      "definition": "Does the witness deliver information concisely without unnecessary repetition or wasted effort? Assesses economy of expression, distinct from pacing.",
-      "scale": "Standard return format",
-      "tags": ["coop"],
-      "why_it_matters": "Measures conciseness — whether the witness uses language efficiently or buries responses in unnecessary detail.",
-      "order": 8
+      "definition": "Whether the witness delivered information concisely without unnecessary repetition or wasted effort. Assesses economy of expression, distinct from pacing.",
+      "why_it_matters": "Economy of language keeps the record clean and prevents opposing counsel from finding contradictions buried in verbose responses. Witnesses who repeat themselves, circle back, or pad answers create unnecessary complexity.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness communicated efficiently. Information was delivered concisely without unnecessary repetition or padding.",
+        "false": "The witness was not efficient. The response contained unnecessary repetition, padding, or circling back that made the answer harder to read and use."
+      },
+      "null_explanation": "Whether the witness enabled efficient examination could not be assessed for this exchange."
     },
     {
       "id": "scope_adherence",
       "label": "Scope Adherence",
       "call": 2,
       "parent_section": "Process Control & Stress",
-      "definition": "To what degree does the response stay within or extend beyond the scope of the question? Assesses containment — whether the witness expands the frame of the exchange beyond what was opened.",
-      "scale": "Standard return format",
-      "tags": ["excellent"],
-      "why_it_matters": "Measures whether the witness respects the question's frame or volunteers information outside it.",
-      "order": 9
+      "definition": "Whether the response stayed within or extended beyond the scope of the question. Assesses containment — whether the witness expanded the frame of the exchange beyond what was opened by the question.",
+      "why_it_matters": "Witnesses who consistently expand beyond the question's scope give opposing counsel material they did not ask for. Staying within scope is a discipline that protects the witness and the retaining party's position.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness stayed within the scope of the question. The response did not expand the frame of the exchange beyond what was opened.",
+        "false": "The witness went beyond the question's scope. The response expanded the frame — volunteering information or addressing territory the question did not open."
+      },
+      "null_explanation": "Whether scope adherence was present could not be assessed for this exchange."
     },
     {
       "id": "information_volume",
       "label": "Information Volume",
       "call": 2,
       "parent_section": "Process Control & Stress",
-      "definition": "Is the amount of detail or expansion provided appropriate relative to what the question requires? Assesses proportionality of response length and detail density.",
-      "scale": "Standard return format",
-      "tags": ["coop"],
-      "why_it_matters": "Measures whether the witness provides the right amount of information — not too little (evasion) or too much (losing the frame).",
-      "order": 10
+      "definition": "Whether the amount of detail or expansion provided was appropriate relative to what the question required. Assesses proportionality of response length and detail density.",
+      "why_it_matters": "Too little information signals evasion. Too much information signals poor discipline or strategic overreach. The right volume of information is the one that answers exactly what was asked — no more, no less.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The information volume was appropriate. The witness provided the right amount of detail relative to what the question required.",
+        "false": "The information volume was not appropriate. The response was either too sparse (suggesting evasion) or too dense (suggesting the witness was volunteering beyond what was asked)."
+      },
+      "null_explanation": "Whether information volume was appropriate could not be assessed for this exchange."
     },
     {
       "id": "worthy_of_belief",
       "label": "Worthy Of Belief",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Does the witness appear believable based on coherence, detail, and alignment with known facts?",
-      "scale": "Standard return format",
-      "tags": ["cred"],
-      "why_it_matters": "The core credibility judgment — whether a neutral observer would find the testimony believable.",
-      "order": 11
+      "definition": "Whether the witness appeared believable based on coherence, detail, and alignment with known facts. The core credibility judgment for this exchange.",
+      "why_it_matters": "Believability is the ultimate measure of testimony — if a jury does not find the witness credible, the substance of what they said does not matter. This field captures whether the testimony would hold up in front of a neutral observer.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appeared credible. The testimony was coherent, detailed appropriately, and aligned with known facts. A neutral observer would find it believable.",
+        "false": "The witness did not appear credible in this exchange. The testimony showed signs of incoherence, misalignment with known facts, or other features that would undermine belief."
+      },
+      "null_explanation": "Whether the witness was worthy of belief could not be assessed for this exchange."
     },
     {
       "id": "testimony_consistent",
       "label": "Testimony Consistent",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Do the witness's statements remain consistent across responses without contradiction? Null when only one exchange is visible and cross-response consistency cannot be assessed.",
-      "scale": "Standard return format",
-      "tags": ["cred", "seasoned"],
-      "why_it_matters": "Inconsistency across statements is a primary attack vector in cross-examination — this field flags it.",
-      "order": 12
+      "definition": "Whether the witness's statements remained consistent across responses without contradiction. This field is null when only one exchange is visible and cross-response consistency cannot be assessed.",
+      "why_it_matters": "Inconsistency across statements is a primary attack vector in cross-examination. Even minor contradictions between earlier and later testimony can be used to discredit the entire record. Consistency is a basic requirement of reliable testimony.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The testimony was consistent. No contradictions were detected within the visible range of this exchange.",
+        "false": "The testimony was inconsistent. Contradictions were present — statements in this exchange conflicted with each other or with prior testimony."
+      },
+      "null_explanation": "Consistency could not be assessed — either this is a single exchange with no prior testimony to compare, or consistency was not assessable from the available signal."
     },
     {
       "id": "testimony_honest",
       "label": "Testimony Honest",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Does the witness appear to provide truthful information without intent to deceive?",
-      "scale": "Standard return format",
-      "tags": ["coop", "cred"],
-      "why_it_matters": "Assesses the perceived honesty of the witness — whether there are signs of strategic omission or active deception.",
-      "order": 13
+      "definition": "Whether the witness appeared to provide truthful information without intent to deceive. Assesses perceived honesty — whether there are signs of strategic omission or active deception.",
+      "why_it_matters": "Perceived honesty shapes how every other piece of testimony is received. A witness who appears to be managing the truth — even subtly — loses the benefit of the doubt on everything else they say.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appeared honest. No signs of strategic omission, active deception, or truth management were detectable in this exchange.",
+        "false": "The witness did not appear fully honest. Signs of strategic omission, active deception, or truth management were present in this exchange."
+      },
+      "null_explanation": "Whether the testimony was honest could not be assessed for this exchange."
     },
     {
       "id": "based_on_personal_knowledge",
       "label": "Based On Personal Knowledge",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Is the testimony grounded in the witness's direct knowledge rather than hearsay or assumption?",
-      "scale": "Standard return format",
-      "tags": ["cred"],
-      "why_it_matters": "Knowledge basis is a foundational admissibility criterion — testimony not based on personal knowledge is legally vulnerable.",
-      "order": 14
+      "definition": "Whether the testimony was grounded in the witness's direct knowledge rather than hearsay or assumption.",
+      "why_it_matters": "Knowledge basis is a foundational admissibility criterion. Testimony not based on personal knowledge is legally vulnerable and may be excluded or attacked on that basis alone.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The testimony was grounded in personal knowledge. The witness spoke from direct experience or observation rather than hearsay or assumption.",
+        "false": "The testimony was not grounded in personal knowledge. The witness relied on hearsay, assumption, or second-hand information rather than direct knowledge."
+      },
+      "null_explanation": "Whether the testimony was based on personal knowledge could not be assessed for this exchange."
     },
     {
       "id": "admits_does_not_remember",
       "label": "Admits Does Not Remember",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Does the witness explicitly acknowledge lack of memory when applicable instead of speculating or guessing? Null when there is no occasion in this exchange to invoke memory limitations.",
-      "scale": "Standard return format",
-      "tags": ["cred"],
-      "why_it_matters": "Willingness to admit memory limits is a marker of credibility — witnesses who guess when they should not remember are vulnerable.",
-      "order": 15
+      "definition": "Whether the witness explicitly acknowledged lack of memory when applicable, instead of speculating or guessing. This field is null when there is no occasion in this exchange to invoke memory limitations.",
+      "why_it_matters": "Witnesses who admit when they do not remember are more credible than those who guess. Willingness to say 'I don't recall' is a marker of honesty — it signals that when the witness does claim to remember, that memory can be trusted.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appropriately acknowledged a memory limitation when it applied. They said they did not remember rather than speculating or guessing.",
+        "false": "The witness did not acknowledge a memory limitation when they should have. They guessed or speculated in a situation where admitting uncertainty would have been more appropriate."
+      },
+      "null_explanation": "There was no occasion in this exchange to invoke memory limitations — this field cannot be assessed."
     },
     {
       "id": "follows_legal_obligation_to_disclose",
       "label": "Follows Legal Obligation To Disclose",
       "call": 3,
       "parent_section": "Credibility, Integrity & Compliance",
-      "definition": "Does the witness comply with legal requirements to disclose relevant information when required?",
-      "scale": "Standard return format",
-      "tags": ["coop"],
-      "why_it_matters": "Compliance with disclosure obligations is a legal baseline — failure is both a credibility and legal risk.",
-      "order": 16
+      "definition": "Whether the witness complied with legal requirements to disclose relevant information when required.",
+      "why_it_matters": "Compliance with disclosure obligations is a legal baseline — failure is both a credibility risk and a legal one. Witnesses who withhold information they are required to provide expose themselves and the retaining party to serious consequences.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness complied with their disclosure obligations. Relevant information that was required to be disclosed was provided.",
+        "false": "The witness failed to comply with disclosure obligations. Information that should have been disclosed was withheld or omitted."
+      },
+      "null_explanation": "Whether this exchange triggered disclosure obligations could not be assessed, or no disclosure obligation was present."
     },
     {
       "id": "calm",
       "label": "Calm",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Does the witness maintain a relaxed, non-agitated emotional state?",
-      "scale": "Standard return format",
-      "tags": ["cred", "seasoned"],
-      "why_it_matters": "Emotional agitation signals stress and undermines the credibility of testimony.",
-      "order": 17
+      "definition": "Whether the witness maintained a relaxed, non-agitated emotional state.",
+      "why_it_matters": "Emotional agitation is visible and readable — by opposing counsel, by the court reporter, and eventually by a jury. Agitation signals that the witness feels threatened by the questioning, which raises doubt about their confidence in what they are saying.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness maintained a calm emotional state. No agitation, tension, or emotional disturbance was detectable in this exchange.",
+        "false": "The witness was not calm. Agitation, tension, or emotional disturbance was present and detectable in this exchange."
+      },
+      "null_explanation": "Whether the witness was calm could not be assessed for this exchange."
     },
     {
       "id": "professional",
       "label": "Professional",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Does the witness maintain appropriate deposition demeanor in tone, language, and conduct?",
-      "scale": "Standard return format",
-      "tags": ["excellent", "seasoned"],
-      "why_it_matters": "Professional conduct is a baseline expectation for expert witnesses — departures are noted and remembered.",
-      "order": 18
+      "definition": "Whether the witness maintained appropriate deposition demeanor in tone, language, and conduct.",
+      "why_it_matters": "Professional conduct is a baseline expectation for expert witnesses. Departures from professional demeanor — sarcasm, hostility, dismissiveness, or informality — are noted and remembered, and they undermine the witness's standing as a credible expert.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness maintained professional demeanor. Tone, language, and conduct were appropriate for a legal deposition.",
+        "false": "The witness did not maintain professional demeanor. Tone, language, or conduct departed from what is appropriate in a legal deposition setting."
+      },
+      "null_explanation": "Whether professional demeanor was maintained could not be assessed for this exchange."
     },
     {
       "id": "composed",
       "label": "Composed",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Does the witness maintain behavioral control and stability in responses and presentation? Distinct from calm (emotional state) — composed assesses structural self-regulation under examination.",
-      "scale": "Standard return format",
-      "tags": ["seasoned"],
-      "why_it_matters": "Composure is structural — it measures whether the witness's response architecture holds under pressure, not just their emotional tone.",
-      "order": 19
+      "definition": "Whether the witness maintained behavioral control and stability in responses and presentation. Distinct from calm — calm assesses emotional state, composed assesses structural self-regulation under examination.",
+      "why_it_matters": "Composure is structural — it measures whether the witness's response architecture holds under pressure, not just their emotional tone. A witness can appear calm while still losing structural control of their answers. Composure means the witness stays organized, coherent, and in command of their own responses even when pressed.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness was composed. Behavioral control and structural stability in responses were maintained — the witness stayed organized and coherent under examination.",
+        "false": "The witness was not composed. Behavioral control or structural stability broke down — responses became disorganized, fragmented, or otherwise structurally unstable under examination."
+      },
+      "null_explanation": "Whether the witness was composed could not be assessed for this exchange."
     },
     {
       "id": "emotional_outbursts",
       "label": "Emotional Outbursts",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Are sudden, intense emotional expressions present in this exchange? Inverted field — high score means outbursts are absent; positive scores indicate controlled delivery.",
-      "scale": "Standard return format (inverted — true means outbursts are present, negative score)",
-      "tags": ["coop"],
-      "why_it_matters": "Emotional outbursts are among the most damaging witness behaviors in deposition — they undermine credibility and signal instability.",
-      "order": 20
+      "definition": "Whether sudden, intense emotional expressions were present in this exchange. This is an inverted field — true means outbursts are present, which produces a negative score. High scores on this field mean outbursts were absent.",
+      "why_it_matters": "Emotional outbursts are among the most damaging witness behaviors in deposition. They undermine credibility, signal instability, and give opposing counsel an opening. They are also memorable — juries tend to remember the moment a witness lost control.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "Emotional outbursts were present — the witness displayed sudden, intense emotional expressions in this exchange. This is a negative finding.",
+        "false": "No emotional outbursts were present. The witness maintained controlled delivery throughout this exchange."
+      },
+      "null_explanation": "Whether emotional outbursts were present could not be assessed for this exchange."
     },
     {
       "id": "stress_signals",
       "label": "Stress Signals",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Are observable indicators of stress present — hesitation, tension, tonal changes, or behavioral shifts? Inverted field — high score means stress signals are absent.",
-      "scale": "Standard return format (inverted — true means stress signals are present, negative score)",
-      "tags": ["coop"],
-      "why_it_matters": "Stress signals are readable by opposing counsel and juries — their presence indicates vulnerability under examination.",
-      "order": 21
+      "definition": "Whether observable indicators of stress were present — hesitation, tension, tonal changes, or behavioral shifts. This is an inverted field — true means stress signals are present, which produces a negative score.",
+      "why_it_matters": "Stress signals are readable by opposing counsel and eventually by juries. Their presence indicates that the witness feels vulnerable under examination — which invites more pressure on those same points.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "Stress signals were present — observable indicators of stress such as hesitation, tension, tonal changes, or behavioral shifts were detectable in this exchange. This is a negative finding.",
+        "false": "No stress signals were present. The witness showed no observable indicators of stress under examination."
+      },
+      "null_explanation": "Whether stress signals were present could not be assessed for this exchange."
     },
     {
       "id": "remains_calm_under_questioning",
       "label": "Remains Calm Under Questioning",
       "call": 4,
       "parent_section": "Composure & Presence",
-      "definition": "Does the witness maintain calm specifically during sustained or adversarial questioning? Assesses composure under targeted pressure, not baseline demeanor.",
-      "scale": "Standard return format",
-      "tags": ["excellent"],
-      "why_it_matters": "The ability to remain calm under adversarial pressure is the highest-value composure indicator — it determines how the witness performs when it matters most.",
-      "order": 22
+      "definition": "Whether the witness maintained calm specifically during sustained or adversarial questioning. Assesses composure under targeted pressure, not baseline demeanor.",
+      "why_it_matters": "The ability to remain calm under adversarial pressure is the highest-value composure indicator. Baseline calm is expected — what matters is whether the witness stays calm when the questioning gets hard. This field measures exactly that.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness remained calm under questioning. Even when the questioning was sustained or adversarial, the witness maintained composure and did not show signs of stress or agitation.",
+        "false": "The witness did not remain calm under questioning. Adversarial or sustained questioning produced detectable stress, agitation, or loss of composure."
+      },
+      "null_explanation": "Whether the witness remained calm under questioning could not be assessed — either no adversarial questioning was present or the signal was insufficient."
     },
     {
       "id": "prepared",
       "label": "Prepared",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Does the witness demonstrate readiness through familiarity with materials, facts, and anticipated topics?",
-      "scale": "Standard return format",
-      "tags": ["excellent", "coop"],
-      "why_it_matters": "Preparation is visible in testimony — unprepared witnesses stumble on foundational facts that prepared witnesses navigate smoothly.",
-      "order": 23
+      "definition": "Whether the witness demonstrated readiness through familiarity with materials, facts, and anticipated topics.",
+      "why_it_matters": "Preparation is visible in testimony. Prepared witnesses navigate foundational facts smoothly, reference materials confidently, and do not stumble on questions they should have anticipated. Unprepared witnesses do the opposite — and opposing counsel notices.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appeared prepared. Familiarity with materials, facts, and anticipated topics was evident in how they responded.",
+        "false": "The witness did not appear prepared. Responses suggested unfamiliarity with materials, facts, or topics that should have been anticipated."
+      },
+      "null_explanation": "Whether the witness was prepared could not be assessed for this exchange."
     },
     {
       "id": "stays_within_expertise",
       "label": "Stays Within Expertise",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Does the witness limit responses to areas within their knowledge or expertise?",
-      "scale": "Standard return format",
-      "tags": ["excellent"],
-      "why_it_matters": "Testimony outside expertise is legally vulnerable and damages credibility — this field flags overreach.",
-      "order": 24
+      "definition": "Whether the witness limited responses to areas within their knowledge or expertise.",
+      "why_it_matters": "Testimony outside the witness's expertise is legally vulnerable and damages credibility. Opposing counsel can challenge it on Daubert grounds, and juries tend to notice when an expert reaches beyond what they actually know.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness stayed within their expertise. Responses were limited to areas of genuine knowledge and competence.",
+        "false": "The witness reached beyond their expertise. Responses addressed areas outside their genuine knowledge or competence — creating legal vulnerability and credibility risk."
+      },
+      "null_explanation": "Whether the witness stayed within their expertise could not be assessed for this exchange."
     },
     {
       "id": "familiarity_report",
       "label": "Familiarity Report",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Does the witness demonstrate familiarity with reports, documents, or materials relevant to the testimony? Null when the pair does not surface any reference to reports or documents.",
-      "scale": "Standard return format",
-      "tags": ["seasoned"],
-      "why_it_matters": "Document familiarity is a basic competence marker for expert witnesses — failure to know the relevant reports signals inadequate preparation.",
-      "order": 25
+      "definition": "Whether the witness demonstrated familiarity with reports, documents, or materials relevant to the testimony. This field is null when the pair does not surface any reference to reports or documents.",
+      "why_it_matters": "Document familiarity is a basic competence marker for expert witnesses. An expert who does not know the relevant reports has not done the work — and opposing counsel will make that visible.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness demonstrated familiarity with relevant reports or documents. They could speak to the materials with confidence and accuracy.",
+        "false": "The witness did not demonstrate familiarity with relevant reports or documents. Responses suggested inadequate review or understanding of the relevant materials."
+      },
+      "null_explanation": "No reference to reports or documents was present in this exchange — this field cannot be assessed."
     },
     {
       "id": "familiarity_facts",
       "label": "Familiarity Facts",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Does the witness demonstrate knowledge of the factual details relevant to the testimony?",
-      "scale": "Standard return format",
-      "tags": ["seasoned"],
-      "why_it_matters": "Factual familiarity demonstrates that the witness knows the case and can speak to specifics under examination.",
-      "order": 26
+      "definition": "Whether the witness demonstrated knowledge of the factual details relevant to the testimony.",
+      "why_it_matters": "Factual familiarity demonstrates that the witness knows the case and can speak to specifics under examination. Witnesses who are vague on the facts appear unprepared, and vagueness on key facts is an opening for opposing counsel.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness demonstrated factual familiarity. They knew the relevant factual details and could speak to them accurately under examination.",
+        "false": "The witness did not demonstrate factual familiarity. Responses were vague, inaccurate, or uncertain on factual details that a prepared witness should know."
+      },
+      "null_explanation": "Whether the witness demonstrated factual familiarity could not be assessed for this exchange."
     },
     {
       "id": "familiarity_methodology",
       "label": "Familiarity Methodology",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Does the witness demonstrate understanding of the methods, processes, or approaches relevant to their testimony? Null when methodology is not invoked or assessable in this exchange.",
-      "scale": "Standard return format",
-      "tags": ["seasoned"],
-      "why_it_matters": "Methodological fluency is the hallmark of a qualified expert — inability to speak to method is a vulnerability opposing counsel will exploit.",
-      "order": 27
+      "definition": "Whether the witness demonstrated understanding of the methods, processes, or approaches relevant to their testimony. This field is null when methodology is not invoked or assessable in this exchange.",
+      "why_it_matters": "Methodological fluency is the hallmark of a qualified expert. An expert who cannot speak to their own methods in precise, defensible terms is vulnerable to Daubert challenges and to the kind of methodological cross-examination that opposing counsel specializes in.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness demonstrated methodological familiarity. They could speak to relevant methods, processes, or approaches with precision and confidence.",
+        "false": "The witness did not demonstrate methodological familiarity. Responses were vague, imprecise, or uncertain on methods that an expert should be able to articulate clearly."
+      },
+      "null_explanation": "Methodology was not invoked or assessable in this exchange — this field cannot be assessed."
     },
     {
       "id": "analysis_supported_by_evidence",
       "label": "Analysis Supported By Evidence",
       "call": 5,
       "parent_section": "Expertise & Support",
-      "definition": "Are conclusions or statements supported by evidence rather than unsupported assertion?",
-      "scale": "Standard return format",
-      "tags": ["excellent"],
-      "why_it_matters": "Unsupported assertions are the primary target of Daubert challenges — this field identifies whether testimony rests on evidentiary foundation.",
-      "order": 28
+      "definition": "Whether conclusions or statements were supported by evidence rather than unsupported assertion.",
+      "why_it_matters": "Unsupported assertions are the primary target of Daubert challenges. Expert testimony must rest on evidentiary foundation — conclusions that float free of evidence are legally vulnerable and provide opposing counsel with a straightforward attack vector.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The analysis was supported by evidence. Conclusions and statements rested on an evidentiary foundation rather than unsupported assertion.",
+        "false": "The analysis was not supported by evidence. Conclusions or statements were asserted without adequate evidentiary grounding."
+      },
+      "null_explanation": "Whether the analysis was supported by evidence could not be assessed for this exchange."
     },
     {
       "id": "trap_handling",
       "label": "Trap Handling",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Does the witness navigate or respond appropriately to potentially misleading or adversarial questions? Null when no trap-like framing is detectably present in the question.",
-      "scale": "Standard return format",
-      "tags": ["seasoned"],
-      "why_it_matters": "Adversarial questioning often contains framing traps — witnesses who recognize and navigate them preserve their position; those who walk into them create damaging admissions.",
-      "order": 29
+      "definition": "Whether the witness navigated or responded appropriately to potentially misleading or adversarial questions. This field is null when no trap-like framing is detectably present in the question.",
+      "why_it_matters": "Adversarial questioning frequently contains framing traps — questions designed to get the witness to accept a premise, concede a point, or contradict themselves. Witnesses who recognize and navigate these traps preserve their position. Those who walk into them create damaging admissions.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness handled the trap appropriately. They recognized the adversarial framing and responded in a way that avoided accepting the problematic premise or conceding the intended point.",
+        "false": "The witness did not handle the trap appropriately. They walked into the adversarial framing — accepting a problematic premise, conceding an unintended point, or otherwise responding in a way that served opposing counsel's purpose."
+      },
+      "null_explanation": "No trap-like framing was detectably present in this question — this field cannot be assessed."
     },
     {
       "id": "understands_opposing_probe",
       "label": "Understands Opposing Probe",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Does the witness recognize the intent or strategy behind opposing questioning? Null when there is insufficient signal to assess strategic awareness in this exchange.",
-      "scale": "Standard return format",
-      "tags": ["expert"],
-      "why_it_matters": "Strategic awareness distinguishes an excellent witness from an expert one — recognizing what opposing counsel is building toward allows the witness to respond strategically.",
-      "order": 30
+      "definition": "Whether the witness recognized the intent or strategy behind opposing questioning. This field is null when there is insufficient signal to assess strategic awareness in this exchange.",
+      "why_it_matters": "Strategic awareness distinguishes an excellent witness from a truly expert one. Recognizing what opposing counsel is building toward — what they are trying to establish, what admission they are maneuvering toward — allows the witness to respond strategically rather than just accurately.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appeared to understand the opposing probe. Their response showed awareness of the strategic intent behind the questioning — not just the surface question, but what it was building toward.",
+        "false": "The witness did not appear to understand the opposing probe. Their response was reactive rather than strategic — addressing the surface question without apparent awareness of its adversarial purpose."
+      },
+      "null_explanation": "There was insufficient signal to assess strategic awareness in this exchange — this field cannot be assessed."
     },
     {
       "id": "prepared_with_counsel",
       "label": "Prepared With Counsel",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Does the witness appear prepared through prior discussion or guidance with legal counsel? Null when the exchange provides no signal of counsel preparation.",
-      "scale": "Standard return format",
-      "tags": ["expert"],
-      "why_it_matters": "Counsel preparation is visible in testimony — it shapes how witnesses handle objections, frame answers, and avoid landmines.",
-      "order": 31
+      "definition": "Whether the witness appeared to have been prepared through prior discussion or guidance with legal counsel. This field is null when the exchange provides no signal of counsel preparation.",
+      "why_it_matters": "Counsel preparation is visible in testimony. It shapes how witnesses handle objections, frame answers, and avoid landmines. Witnesses who show signs of preparation — knowing when to stop, how to frame sensitive answers, when to flag uncertainty — have been guided. Those who do not show these signs may be exposed.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness appeared to have been prepared with counsel. Signs of preparation were visible — appropriate handling of sensitive areas, strategic framing of answers, or other indicators of prior guidance.",
+        "false": "The witness did not appear to have been prepared with counsel. The response lacked the markers of prior guidance — the witness appeared to be navigating without preparation."
+      },
+      "null_explanation": "The exchange provided no signal of counsel preparation — this field cannot be assessed."
     },
     {
       "id": "defensible_under_challenge",
       "label": "Defensible Under Challenge",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Do the witness's statements remain logically and factually defensible when challenged?",
-      "scale": "Standard return format",
-      "tags": ["excellent"],
-      "why_it_matters": "Defensibility is the bottom line of adversarial examination — statements that collapse under challenge are worse than no statement at all.",
-      "order": 32
+      "definition": "Whether the witness's statements remained logically and factually defensible when challenged.",
+      "why_it_matters": "Defensibility is the bottom line of adversarial examination. Statements that collapse under challenge are worse than no statement at all — they create a moment in the record where the witness's position visibly fell apart. Defensibility determines whether testimony survives.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness's statements were defensible under challenge. The positions taken held up logically and factually when pressed.",
+        "false": "The witness's statements were not defensible under challenge. Positions collapsed, contradicted themselves, or could not be maintained when pressure was applied."
+      },
+      "null_explanation": "Whether the testimony was defensible under challenge could not be assessed for this exchange."
     },
     {
       "id": "withstands_questioning_facts",
       "label": "Withstands Questioning Facts",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Do factual statements hold up under scrutiny without contradiction or collapse?",
-      "scale": "Standard return format",
-      "tags": ["expert"],
-      "why_it_matters": "Factual durability under questioning determines whether the witness's testimony survives cross-examination.",
-      "order": 33
+      "definition": "Whether factual statements held up under scrutiny without contradiction or collapse.",
+      "why_it_matters": "Factual durability under questioning determines whether the witness's testimony survives cross-examination. Facts that hold under pressure become the stable foundation of the case. Facts that collapse become the opposing counsel's best material.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The factual statements held up under scrutiny. The witness's factual claims were durable — they did not contradict themselves or collapse under examination.",
+        "false": "The factual statements did not hold up under scrutiny. The witness's factual claims were contradicted, collapsed, or otherwise failed to survive examination."
+      },
+      "null_explanation": "Whether factual statements withstood questioning could not be assessed for this exchange."
     },
     {
       "id": "withstands_questioning_opinions",
       "label": "Withstands Questioning Opinions",
       "call": 6,
       "parent_section": "Adversarial Awareness",
-      "definition": "Do opinions or interpretations remain coherent and supported under challenge?",
-      "scale": "Standard return format",
-      "tags": ["expert"],
-      "why_it_matters": "Opinion durability is the highest-stakes measure for expert witnesses — opinions that collapse under questioning destroy the expert's value to the retaining party.",
-      "order": 34
+      "definition": "Whether opinions or interpretations remained coherent and supported under challenge.",
+      "why_it_matters": "Opinion durability is the highest-stakes measure for expert witnesses. Opinions that collapse under questioning destroy the expert's value to the retaining party — and they provide opposing counsel with a clean narrative: the expert could not defend their own conclusions.",
+      "value_type": "boolean",
+      "enum_values": {
+        "true": "The witness's opinions and interpretations held up under challenge. They remained coherent and supported even when pressed.",
+        "false": "The witness's opinions and interpretations did not hold up under challenge. They became incoherent, lost their support, or were otherwise unable to survive examination."
+      },
+      "null_explanation": "Whether opinions withstood questioning could not be assessed for this exchange."
     }
   ]
 }
