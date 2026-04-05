@@ -51,7 +51,7 @@
       "definition": "How the question shaped the answer. Every question constrains what a witness can reasonably say in response \u2014 it opens some doors and closes others. This field describes exactly how the question did that: what it made necessary, what it made possible, and what it made difficult or impossible.",
       "why_it_matters": "Attorneys design questions strategically. A well-constructed question boxes the witness in \u2014 it forces a useful answer or makes evasion visible. A poorly constructed question gives the witness room to wander. Reading this field tells you how much control the question actually exercised over what followed.",
       "value_type": "narrative",
-      "value_description": "A paragraph written in plain English describing the relationship. Read it as an explanation of the leverage the question had \u2014 or didn't have \u2014 over the answer."
+      "value_description": "Written as a paragraph describing the leverage the question had over the answer \u2014 what it made necessary, what it opened up, and what it made difficult or impossible for the witness to say."
     },
     {
       "id": "t2_to_t1_relationship",
@@ -61,7 +61,7 @@
       "definition": "How the answer changed the meaning of the question in retrospect. Once a witness responds, that response reframes what the question was really doing. Sometimes an answer reveals the question was more powerful than it appeared. Sometimes it reveals the question was weaker \u2014 or was being used for something other than its surface meaning.",
       "why_it_matters": "Questions don't have fixed meanings \u2014 their meaning is completed by the answers they receive. This field captures that retrospective reframing. It can reveal when a witness has subtly repositioned what was being asked, or when an attorney's question succeeded in ways that weren't immediately obvious.",
       "value_type": "narrative",
-      "value_description": "A paragraph describing what the answer revealed about the question. Look for language about reframing, confirmation, repositioning, or exposure \u2014 these signal whether the answer strengthened or complicated the question's original intent."
+      "value_description": "Written as a paragraph describing what the answer revealed about the question in retrospect \u2014 whether it confirmed, complicated, or reframed what the attorney was doing."
     },
     {
       "id": "alignment_bidirectional_q_to_a",
@@ -173,7 +173,8 @@
         "false": "The exchange did not converge. The question and answer remained in separate frames \u2014 they did not move toward a shared understanding.",
         "partial": "The exchange partially converged. Some alignment occurred, but something prevented full convergence. The 'prevented by' note describes what got in the way."
       },
-      "null_explanation": "Convergence could not be assessed for this exchange."
+      "null_explanation": "Convergence could not be assessed for this exchange.",
+      "value_description": "Shows whether the two turns moved toward each other or stayed apart. The mechanism note describes what caused the result \u2014 what specifically brought them together or kept them separate."
     },
     {
       "id": "divergence",
@@ -188,7 +189,8 @@
         "false": "The exchange did not diverge. The question and answer remained in compatible frames \u2014 they did not pull away from each other.",
         "partial": "The exchange partially diverged. Some separation occurred, but something prevented full divergence. The 'prevented by' note describes what limited the separation."
       },
-      "null_explanation": "Divergence could not be assessed for this exchange."
+      "null_explanation": "Divergence could not be assessed for this exchange.",
+      "value_description": "Shows whether the two turns moved away from each other. The mechanism note describes what caused the separation, and the 'prevented by' note (when present) describes what limited how far they pulled apart."
     },
     {
       "id": "emergence",
@@ -203,7 +205,8 @@
         "false": "No emergence occurred. The exchange produced exactly what its parts contained \u2014 nothing more arose from the combination.",
         "partial": "Something partially emerged. A new structure began to form but was not fully realized. The 'prevented by' note describes what blocked complete emergence."
       },
-      "null_explanation": "Emergence could not be assessed for this exchange."
+      "null_explanation": "Emergence could not be assessed for this exchange.",
+      "value_description": "Shows whether something new arose from the combination of these two turns that neither contained on its own. The mechanism note describes what was created and how \u2014 this is rare and significant when it occurs."
     },
     {
       "id": "change_in_understanding",
