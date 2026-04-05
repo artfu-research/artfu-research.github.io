@@ -631,10 +631,13 @@ function loadCurrentView() {
           border: none !important;
           padding: 0 !important;
           cursor: pointer;
+          display: flex;
+          flex-direction: column;
         }
         .col-card-inner {
           position: relative;
           width: 100%;
+          flex: 1;
           transform-style: preserve-3d;
           transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
           border-radius: 4px;
@@ -653,6 +656,9 @@ function loadCurrentView() {
         }
         .col-card-front {
           background: var(--surface2);
+          position: relative;
+          height: 100%;
+          box-sizing: border-box;
         }
         .col-card-back {
           position: absolute;
