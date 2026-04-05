@@ -619,181 +619,53 @@ function loadCurrentView() {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       if (!iframeDoc) return;
 
-      // ── Static style injections ──────────────────────────────────────────
+      // ── Style injections ─────────────────────────────────────────────────
       const baseStyle = iframeDoc.createElement('style');
       baseStyle.textContent = `
         .footer { background: #000000 !important; }
 
-        /* FLIP CARD WRAPPER */
-        .col-card {
-          perspective: 800px;
-          background: transparent !important;
-          border: none !important;
-          padding: 0 !important;
-          cursor: pointer;
-          display: flex;
-          flex-direction: column;
-        }
-        .col-card-inner {
-          position: relative;
-          width: 100%;
-          flex: 1;
-          transform-style: preserve-3d;
-          transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-          border-radius: 4px;
-        }
-        .col-card.flipped .col-card-inner {
-          transform: rotateY(180deg);
-        }
-        .col-card-front,
-        .col-card-back {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-          border-radius: 4px;
-          padding: 10px 12px;
-          border: 1px solid var(--border);
-          width: 100%;
-        }
-        .col-card-front {
-          background: var(--surface2);
-          position: relative;
-          height: 100%;
-          box-sizing: border-box;
-        }
-        .col-card-back {
-          position: absolute;
-          inset: 0;
-          background: #000000;
-          transform: rotateY(180deg);
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          overflow: auto;
-          padding: 8px 10px;
-        }
-        .flip-back-banner {
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: var(--accent);
-          border-bottom: 1px solid var(--border);
-          padding-bottom: 4px;
-          margin-bottom: 2px;
-          flex-shrink: 0;
-        }
-        .flip-back-active {
-          font-family: 'Space Grotesk', sans-serif;
-          font-size: 11px;
-          font-weight: 600;
-          color: var(--text-bright);
-          flex-shrink: 0;
-          margin-bottom: 2px;
-        }
-        .flip-back-cols {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 6px;
-          flex: 1;
-          align-items: stretch;
-        }
-        .flip-back-col {
-          background: var(--surface2);
-          border: 1px solid var(--border);
-          border-radius: 4px;
-          padding: 6px 8px;
-        }
-        .flip-back-col-label {
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--text-dim);
-          margin-bottom: 4px;
-        }
-        .flip-back-col-body {
-          font-size: 8px;
-          color: var(--text-dim);
-          line-height: 1.55;
-        }
-        /* Make all col-card grids stretch children to equal height */
+        /* Remove info icons */
+        .info-icon { display: none !important; }
+
+        /* Equal-height cards within every call row */
         [style*="grid-template-columns"] {
           align-items: stretch !important;
         }
-        .col-card:hover .col-card-front {
-          border-color: var(--accent);
+
+        /* Card base */
+        .col-card {
+          cursor: pointer;
+          transition: border-color 0.15s, background 0.15s;
         }
-        .col-card.flipped:hover .col-card-front {
-          border-color: var(--border);
+        .col-card:hover {
+          border-color: var(--accent) !important;
         }
-        .col-card.flipped .col-card-back {
-          border-color: var(--accent);
+        .col-card.selected {
+          background: #000000 !important;
+          border-color: var(--accent) !important;
         }
       `;
       iframeDoc.head.appendChild(baseStyle);
 
-      // ── Wrap every .col-card's existing content in front/back structure ──
+      // ── Card click handlers ──────────────────────────────────────────────
       iframeDoc.querySelectorAll('.col-card').forEach(card => {
         const fieldId = card.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
-        const originalHTML = card.innerHTML;
-
-        card.innerHTML = `
-          <div class="col-card-inner">
-            <div class="col-card-front">${originalHTML}</div>
-            <div class="col-card-back" data-field-id="${fieldId}">
-              <div class="flip-back-label">Loading…</div>
-            </div>
-          </div>
-        `;
 
         card.addEventListener('click', function(e) {
           e.stopPropagation();
-          const isFlipped = card.classList.contains('flipped');
-          if (isFlipped) {
-            card.classList.remove('flipped');
-          } else {
-            card.classList.add('flipped');
-            // Ask parent for schema data for this field
-            if (fieldId) {
-              window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
-            }
+          // Deselect all, select this one
+          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          if (fieldId) {
+            window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
           }
         });
       });
 
-      // ── Listen for schema data posted back from parent ───────────────────
-      iframeDoc.defaultView.addEventListener('message', function(e) {
-        if (!e.data || e.data.type !== 'fieldSchema') return;
-        const { fieldId, label, callLabel, section, definition, scaleDescription, valueDescription, whyItMatters, activeValue } = e.data;
-
-        const banner = [callLabel, section, label].filter(Boolean).join(' · ');
-
-        iframeDoc.querySelectorAll(`.col-card-back[data-field-id="${fieldId}"]`).forEach(back => {
-          back.innerHTML = `
-            <div class="flip-back-banner">${banner}</div>
-            ${activeValue ? `<div class="flip-back-active">${activeValue}</div>` : ''}
-            <div class="flip-back-cols">
-              <div class="flip-back-col">
-                <div class="flip-back-col-label">What it measures</div>
-                <div class="flip-back-col-body">${definition}</div>
-              </div>
-              <div class="flip-back-col">
-                <div class="flip-back-col-label">How to read this</div>
-                <div class="flip-back-col-body">${scaleDescription || valueDescription || '—'}</div>
-              </div>
-              <div class="flip-back-col">
-                <div class="flip-back-col-label">Why it matters</div>
-                <div class="flip-back-col-body">${whyItMatters || '—'}</div>
-              </div>
-            </div>
-          `;
-        });
-      });
-
-      // ── Click anywhere outside a card resets all flipped cards ───────────
+      // ── Click outside cards → deselect all, reset to overview ───────────
       iframeDoc.addEventListener('click', function(e) {
         if (!e.target.closest('.col-card')) {
-          iframeDoc.querySelectorAll('.col-card.flipped').forEach(c => c.classList.remove('flipped'));
+          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
           if (currentSchema) displaySchemaOverview();
         }
       });
@@ -1098,15 +970,37 @@ window.addEventListener('DOMContentLoaded', function() {
     const fieldId = e.data.fieldId;
     if (!fieldId || !currentSchema) return;
 
-    // Update bottom panel as before
+    // Update bottom panel
     displayFieldSchema(fieldId);
 
-    // Look up the field in schema
+    // Pulse the bottom panel
+    const bottomPanel = document.querySelector('.bottom-panel');
+    bottomPanel.classList.remove('schema-pulse');
+    void bottomPanel.offsetWidth; // reflow to restart animation
+    bottomPanel.classList.add('schema-pulse');
+
+    // Inject pulse keyframes once
+    if (!document.getElementById('schema-pulse-style')) {
+      const s = document.createElement('style');
+      s.id = 'schema-pulse-style';
+      s.textContent = `
+        @keyframes schema-pulse {
+          0%   { box-shadow: inset 0 0 0 1px var(--accent); }
+          50%  { box-shadow: inset 0 0 0 1px var(--accent), 0 0 12px 2px rgba(165,164,129,0.25); }
+          100% { box-shadow: inset 0 0 0 0px transparent; }
+        }
+        .schema-pulse {
+          animation: schema-pulse 0.6s ease-out forwards;
+        }
+      `;
+      document.head.appendChild(s);
+    }
+
+    // Look up field and post back to iframe (for any future use)
     let field = null;
     if (currentSchema.pattern_field?.id === fieldId) field = currentSchema.pattern_field;
     if (!field && Array.isArray(currentSchema.fields))
       field = currentSchema.fields.find(f => f.id === fieldId) || null;
-
     if (!field) return;
 
     const iframe = document.getElementById('main-content-frame');
