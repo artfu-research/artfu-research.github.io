@@ -1,15 +1,16 @@
 {
   "battery_code": "fa",
   "battery_name": "Forensic Language Analysis",
-  "battery_overview": "The Forensic Language Analysis Battery analyzes a question–answer turn-pair from a legal deposition for structural properties, force dynamics, and strategic distortion. It examines how agency and power are distributed, how pressure and leverage operate, what evidential ground the claims rest on, how stable that ground is, and what strategic exposure exists. Five sequential LLM calls produce the analysis. Call 6 distills everything into a two-word pattern declaration — identical in structure to all other CA_15 batteries.",
+  "battery_overview": "This page analyzes a single question-and-answer exchange from the deposition for the structural forces operating beneath the surface of the language. Where the Epistemic Motion battery asks what changed in the conversation, this battery asks how power, pressure, and distortion shaped what was said and what was withheld. It examines five dimensions in sequence: who held agency and where blame landed (Call 1), what coercive forces were operating and how accountability was distributed (Call 2), what kind of evidence was actually backing the claims and how solid the reasoning was (Call 3), how internally durable the claims were and whether truth was being bent (Call 4), and what was being concealed, what bias structured the framing, and what adversarial posture the speakers adopted (Call 5). Call 6 distills all of that into the two-word Pattern Declaration at the top — the instrument's single summary judgment of what kind of forensic event this exchange was.",
   "pattern_field": {
     "id": "pattern_declaration",
     "label": "Pattern Declaration",
     "call": 6,
-    "definition": "A two-word label capturing the dominant forensic dynamic of the exchange. Derived after all five analytical calls are computed and represents the instrument's single synthesized judgment about what structural and strategic event occurred. Not a summary of content — a label for the kind of force or distortion that defined the exchange.",
-    "scale": "Qualitative (2-word phrase)",
-    "why_it_matters": "When read in sequence across hundreds of turn-pairs, these pattern declarations reveal the higher-order structure of how force, pressure, and distortion moved through the entire deposition.",
-    "examples": "Deflection Contest, Frame Capture, Blame Shift, Authority Press"
+    "parent_section": "Pattern",
+    "definition": "The two-word summary of this entire exchange from a forensic standpoint. After analyzing five separate dimensions — agency, pressure, evidence, truth stability, and strategic exposure — the instrument produces a single label that names the dominant forensic dynamic. It is not a description of what was talked about. It is a label for the kind of force or distortion that defined the exchange.",
+    "why_it_matters": "Reading these two-word labels in sequence across hundreds of exchanges reveals the higher-order structure of the deposition — how force, pressure, and distortion moved through it as a whole. A single label means little on its own. The value is in the pattern across the full record.",
+    "value_type": "qualitative",
+    "value_description": "The two-word label shown is the instrument's single synthesized judgment of what forensic event occurred in this exchange — the kind of structural and strategic moment it was, not the topic it covered."
   },
   "fields": [
     {
@@ -17,150 +18,165 @@
       "label": "Agency Distribution",
       "call": 1,
       "parent_section": "Forensic Positioning",
-      "definition": "How agency — the capacity to act, decide, and influence — is allocated across the three possible sites in the exchange. Turn 1 and Turn 2 receive integer percentages (0–100); External receives the remainder and is labeled when non-zero. The flow keys identify which site agency moves from and which it moves toward.",
-      "scale": "Structured object: turn_1 (0–100) · turn_2 (0–100) · external (0–100, sums to 100) · external_label (text or null) · flow_from ('speaker_1' | 'speaker_2' | 'external') · flow_to ('speaker_1' | 'speaker_2' | 'external')",
-      "why_it_matters": "Identifies where decision-making power and responsibility are located in the exchange, and in which direction they are moving.",
-      "order": 1
+      "definition": "How the capacity to act and decide was divided across this exchange. Three sites are possible: the questioner (Turn 1), the witness (Turn 2), and external forces — institutions, events, or other parties outside the room. The percentages show how much of the active agency in the exchange belonged to each site. The flow direction shows which way agency was moving — who was gaining it and who was losing it.",
+      "why_it_matters": "Agency tells you who was in the driver's seat. An exchange where the attorney holds most of the agency means the attorney was steering; the witness was being led. An exchange where external forces hold most of the agency means responsibility is being displaced onto institutions, events, or other parties — a common strategy for avoiding accountability.",
+      "value_type": "structured",
+      "value_description": "Three percentage bars show how agency was split across Turn 1 (the questioner), Turn 2 (the witness), and External (outside forces). The Flow row shows which direction agency was moving — from whom toward whom — during this exchange.",
+      "null_explanation": "Agency distribution could not be determined for this exchange."
     },
     {
       "id": "power_alignment",
       "label": "Power Alignment",
       "call": 1,
       "parent_section": "Forensic Positioning",
-      "definition": "The power posture each speaker adopts and what that posture is directed toward. For each turn, 3–5 adjective–target pairs are identified. The adjective describes the quality of the power stance; the target names what or who it is aimed at — participants, institutions, groups, or entities discussed in the exchange.",
-      "scale": "Structured object: turn_1_power_posture [{adjective, target} × 3–5] · turn_2_power_posture [{adjective, target} × 3–5]",
-      "why_it_matters": "Maps the relational dynamics of power within the exchange — who is asserting, deferring, challenging, or positioning against whom.",
-      "order": 2
+      "definition": "The power stance each speaker adopted and what that stance was directed toward. For each turn, the instrument identifies three to five adjective-target pairs — the adjective describes the quality of the power posture, and the target names what or who it was aimed at.",
+      "why_it_matters": "Power dynamics in a deposition are rarely explicit — no one says 'I am asserting dominance.' But the language reveals it anyway. Mapping each speaker's power posture shows who was asserting, who was deferring, who was challenging an institution, and who was positioning against the other party. Repeated patterns across exchanges reveal the underlying relational structure of the deposition.",
+      "value_type": "structured",
+      "value_description": "Two lists are shown — one for each turn. Each item is a power stance paired with its target: what quality the power had and what it was aimed at.",
+      "null_explanation": "Power alignment could not be assessed for this exchange."
     },
     {
       "id": "blame_structure",
       "label": "Blame Structure",
       "call": 1,
       "parent_section": "Forensic Positioning",
-      "definition": "Whether blame is present in the exchange and how it is structured. Blame state classifies the form of blame. When blame is present, target names the recipient, justification_type identifies the logic used to support the blame, and intensity scores its strength on the 1–10 scale. All three conditional fields are null when blame_state is 'absent'.",
-      "scale": "blame_state: 'absent' | 'accepted' | 'deflected' | 'distributed' | 'implied' · justification_type: 'evidential' | 'normative' | 'consequential' | 'character' | 'comparative' | 'none' · intensity: 1–10 or null",
-      "why_it_matters": "Tracks how culpability is attributed or avoided, revealing strategic positioning around liability and responsibility.",
-      "order": 3
+      "definition": "Whether blame was present in this exchange and how it was structured. The state field classifies whether blame was accepted, deflected, distributed across multiple parties, implied without being stated, or absent entirely. When blame was present, the instrument also identifies who received it, what logic was used to justify it, and how strong it was.",
+      "why_it_matters": "Depositions in personal injury cases turn heavily on who is responsible for what. Tracking how blame is attributed or avoided — whether it is accepted outright, deflected onto others, or implied without ever being stated — reveals the strategic positioning around liability. Repeated patterns of blame deflection or distribution are significant findings.",
+      "value_type": "structured",
+      "value_description": "The top field shows the blame state — absent, accepted, deflected, distributed, or implied. When blame is present, three additional fields appear: who received it, what kind of justification was used, and how intense it was on a scale of 1 to 10.",
+      "null_explanation": "Blame structure could not be assessed for this exchange."
     },
     {
       "id": "pressure_configuration",
       "label": "Pressure Configuration",
       "call": 2,
       "parent_section": "Forensic Pressure",
-      "definition": "Whether pressure is applied in the exchange, what kind it is, who applies it, who receives it, and how strong it is. When pressure_present is false, all four conditional fields (pressure_type, source, target, intensity) are null. Intensity is scored on the 1–10 scale.",
-      "scale": "pressure_present: boolean · pressure_type: 'temporal' | 'social' | 'epistemic' | 'material' | 'reputational' · source (text) · target (text) · intensity: 1–10 or null",
-      "why_it_matters": "Identifies the coercive forces operating in the exchange — what kind of pressure is being applied, by whom, against whom, and at what force.",
-      "order": 4
+      "definition": "Whether coercive force was applied in this exchange — and if so, what kind, who applied it, who received it, and how strong it was. Pressure can be temporal (time-based urgency), social (group norms or expectations), epistemic (challenges to what someone knows or can claim to know), material (real-world consequences), or reputational (threats to standing or credibility).",
+      "why_it_matters": "Not all deposition pressure is visible. An attorney can apply epistemic pressure simply by asking a question that implies the witness should know something they do not. A witness can apply reputational pressure by invoking their credentials. Understanding what kind of pressure is operating, and at what intensity, tells you whether the exchange was coercive — and in whose favor.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether pressure was present. When it was, four additional fields appear: what type of pressure it was, who applied it, who received it, and how intense it was on a scale of 1 to 10.",
+      "null_explanation": "Pressure configuration could not be assessed for this exchange."
     },
     {
       "id": "leverage_pattern",
       "label": "Leverage Pattern",
       "call": 2,
       "parent_section": "Forensic Pressure",
-      "definition": "Whether leverage is used in the exchange, what kind, who wields it, who it is applied to, and how strong it is. When leverage_present is false, all four conditional fields are null. Intensity is scored on the 1–10 scale.",
-      "scale": "leverage_present: boolean · leverage_type: 'authority' | 'information' | 'relationship' | 'resource' | 'expertise' · wielded_by (text) · applied_to (text) · intensity: 1–10 or null",
-      "why_it_matters": "Reveals what structural advantages are being deployed to shape the exchange's outcome and who holds the upper hand.",
-      "order": 5
+      "definition": "Whether one party used a structural advantage to shape the outcome of this exchange — and if so, what kind of advantage, who wielded it, who it was applied against, and how strong it was. Leverage types include authority (institutional or professional rank), information (knowing something the other party does not), relationship (personal or professional ties), resource (control over something the other party needs), and expertise (specialized knowledge that the other party cannot easily challenge).",
+      "why_it_matters": "Leverage is about structural advantage — who had the upper hand and why. An expert witness wields expertise leverage. An attorney with damaging documents wields information leverage. Understanding who held leverage and how they used it tells you who was structurally advantaged in this exchange and whether that advantage was exercised.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether leverage was present. When it was, four additional fields appear: what type of leverage it was, who wielded it, who it was applied against, and how intense it was on a scale of 1 to 10.",
+      "null_explanation": "Leverage pattern could not be assessed for this exchange."
     },
     {
       "id": "accountability_state",
       "label": "Accountability State",
       "call": 2,
       "parent_section": "Forensic Pressure",
-      "definition": "How accountability is distributed across the exchange. The distribution_pattern classifies the structural form. Holders is an array of entity names when accountability is locatable; null when obscured. Displaced_to names the displacement target when the pattern is 'displaced'; null otherwise.",
-      "scale": "distribution_pattern: 'concentrated' | 'distributed' | 'displaced' | 'obscured' | 'contested' · holders: [text] or null · displaced_to: text or null",
-      "why_it_matters": "Shows whether responsibility is being owned, shared, evaded, or redirected — a key forensic indicator of strategic intent.",
-      "order": 6
+      "definition": "How responsibility was distributed in this exchange. Accountability can be concentrated in one party, distributed across several, displaced onto an outside entity, obscured so that no one appears responsible, or contested between competing claims. The instrument identifies who held accountability when it was locatable, and where it was displaced to when it was moved.",
+      "why_it_matters": "In litigation, accountability is contested terrain. Witnesses and attorneys both work to locate responsibility in ways that serve their case. Understanding how accountability was structured in each exchange — whether it was owned, shared, evaded, or redirected — reveals the strategic intent beneath the surface of the language.",
+      "value_type": "structured",
+      "value_description": "The top field shows the accountability pattern — concentrated, distributed, displaced, obscured, or contested. Below that, the holders are listed when accountability was locatable. If it was displaced, the displacement target is also shown.",
+      "null_explanation": "Accountability state could not be assessed for this exchange."
     },
     {
       "id": "evidential_basis",
       "label": "Evidential Basis",
       "call": 3,
       "parent_section": "Truth Ground",
-      "definition": "What kind of evidence supports the claims made in the exchange, how strong that evidence is, and whether the source is made explicit. When source_explicit is false, gap_description captures the nature of the evidentiary gap in 2–4 words. Gap_description is null when the source is explicit.",
-      "scale": "basis_type: 'empirical' | 'testimonial' | 'logical' | 'authoritative' | 'assumed' | 'none' · strength: 'strong' | 'moderate' | 'weak' | 'absent' · source_explicit: boolean · gap_description: text (2–4 words) or null",
-      "why_it_matters": "Assesses the factual foundation of claims — whether they are grounded, inferred, assumed, or unattributed.",
-      "order": 7
+      "definition": "What kind of evidence actually supported the claims made in this exchange, how strong that evidence was, and whether its source was made explicit. Evidence can be empirical (measurable facts or data), testimonial (personal observation or experience), logical (derived by reasoning), authoritative (based on expert opinion or institutional standing), assumed (treated as true without support), or absent entirely. When the source was not made explicit, the instrument names the gap.",
+      "why_it_matters": "Claims in a deposition are not all equal. Some rest on solid evidence. Others are assumed to be true without any stated basis. Understanding what each claim is actually resting on — and whether the source was disclosed — tells you how vulnerable that claim is to challenge. Unstated sources and assumed facts are attack surfaces.",
+      "value_type": "structured",
+      "value_description": "Four fields are shown: the type of evidence, how strong it was, whether the source was made explicit, and — when the source was not explicit — a brief description of the gap. The gap field is blank when the source was stated.",
+      "null_explanation": "Evidential basis could not be assessed for this exchange."
     },
     {
       "id": "source_position",
       "label": "Source Position",
       "call": 3,
       "parent_section": "Truth Ground",
-      "definition": "The structural position of the claim's source — who is speaking and from what epistemic vantage point. Credibility markers are 0–3 short phrases identifying features that establish or undermine authority. Distance from event captures how many removes the source is from the events being described.",
-      "scale": "source_type: 'first_person' | 'second_person' | 'third_party' | 'institutional' | 'unattributed' · credibility_markers: [text × 0–3] · distance_from_event: 'direct' | 'one_remove' | 'multiple_removes' | 'unclear'",
-      "why_it_matters": "Positions the speaker epistemically — how close are they to the truth they are asserting, and what gives them the right to assert it.",
-      "order": 8
+      "definition": "The structural position of whoever was making the claims — who was speaking and from what epistemic vantage point. Source type identifies whether claims came from first-hand personal knowledge, were addressed to the other party, came through a third party, were grounded in institutional authority, or were unattributed. The instrument also identifies features that established or undermined that authority, and how many removes the speaker was from the events being described.",
+      "why_it_matters": "A witness who says 'I saw it happen' is in a fundamentally different epistemic position than one who says 'I was told that.' Proximity to the events matters. So does the authority the speaker claims. Credibility markers that strengthen or weaken that authority shape how much weight the claim should carry.",
+      "value_type": "structured",
+      "value_description": "Three components are shown: the source type (first-person, institutional, unattributed, etc.), credibility markers that establish or undermine authority, and the speaker's distance from the events — direct, one remove, multiple removes, or unclear.",
+      "null_explanation": "Source position could not be assessed for this exchange."
     },
     {
       "id": "inferential_structure",
       "label": "Inferential Structure",
       "call": 3,
       "parent_section": "Truth Ground",
-      "definition": "Whether inference is used to bridge claims to conclusions. When inference_present is false, all four conditional fields (inference_type, steps_explicit, missing_steps, strength) are null. When present, steps_explicit identifies whether the reasoning chain is stated or only implied, and missing_steps names the gap in 2–4 words.",
-      "scale": "inference_present: boolean · inference_type: 'deductive' | 'inductive' | 'abductive' | 'analogical' | 'speculative' · steps_explicit: boolean · missing_steps: text (2–4 words) or null · strength: 'strong' | 'moderate' | 'weak'",
-      "why_it_matters": "Identifies logical leaps and reasoning gaps — where the argument is solid, where it is implied, and where it can be attacked.",
-      "order": 9
+      "definition": "Whether the claims in this exchange required a logical leap — an inference that connected evidence to conclusion. When inference was present, the instrument classifies what kind of reasoning was used (deductive, inductive, abductive, analogical, or speculative), whether the reasoning steps were made explicit or only implied, what the missing steps were if any, and how strong the overall inference was.",
+      "why_it_matters": "Many claims in a deposition appear to follow logically from what came before, but the actual reasoning chain is never stated. These implied leaps are attack surfaces — they can be challenged precisely because they were never made explicit. Identifying them tells you where the argument has gaps and where cross-examination can find traction.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether inference was present. When it was, four additional fields appear: the type of reasoning used, whether the steps were stated explicitly, what was missing from the reasoning chain (when applicable), and how strong the inference was overall.",
+      "null_explanation": "Inferential structure could not be assessed for this exchange."
     },
     {
       "id": "epistemic_reliability",
       "label": "Epistemic Reliability",
       "call": 4,
       "parent_section": "Truth Stability",
-      "definition": "The internal structural durability of the claim — independent of external challenge. Reliability_state classifies the overall condition. Support_structure lists 1–3 short phrases identifying what holds the claim up. Vulnerability_points lists 0–3 phrases identifying where the claim could internally collapse.",
-      "scale": "reliability_state: 'stable' | 'conditional' | 'contested' | 'undermined' | 'collapsed' · support_structure: [text × 1–3] · vulnerability_points: [text × 0–3]",
-      "why_it_matters": "Measures how structurally sound a claim is from the inside — its internal consistency, not just how others are attacking it.",
-      "order": 10
+      "definition": "How internally durable the claims in this exchange were — independent of whether anyone was challenging them. The reliability state classifies the overall structural condition: stable means the claim holds together from the inside, conditional means it holds only under certain assumptions, contested means its internal coherence is disputed, undermined means it has internal weaknesses that weaken it significantly, and collapsed means the claim cannot sustain itself. The instrument also identifies what was holding the claim up and where its internal vulnerabilities lay.",
+      "why_it_matters": "A claim can appear solid and still be internally fragile — it may depend on assumptions that have not been established, or rest on a single point that, if removed, causes the whole thing to fall. Understanding internal reliability separately from external challenge tells you which claims are genuinely solid and which are vulnerable even before anyone pushes on them.",
+      "value_type": "structured",
+      "value_description": "The reliability state is shown first. Below that, support items name what held the claim up structurally, and vulnerability points name where it could internally collapse. Both lists reflect the internal structure of the claim, not external attack.",
+      "null_explanation": "Epistemic reliability could not be assessed for this exchange."
     },
     {
       "id": "contestability",
       "label": "Contestability",
       "call": 4,
       "parent_section": "Truth Stability",
-      "definition": "Whether the claim is being externally attacked or challenged within the exchange. When contest_present is false, all three conditional fields (contest_type, contested_by, contest_strength) are null. Contest_strength scores the challenge's force on the 1–10 scale.",
-      "scale": "contest_present: boolean · contest_type: 'factual' | 'interpretive' | 'normative' | 'procedural' · contested_by: text or null · contest_strength: 1–10 or null",
-      "why_it_matters": "Identifies where and how the truth is being actively attacked — who is challenging what, and how hard.",
-      "order": 11
+      "definition": "Whether the truth of a claim was being actively challenged within this exchange — and if so, what kind of challenge it was, who was mounting it, and how forceful it was. Contest types include factual (disputing the facts themselves), interpretive (disputing what the facts mean), normative (disputing what standards apply), and procedural (disputing whether the question or process was valid).",
+      "why_it_matters": "A claim that is being actively contested in the deposition is already in play. Understanding what kind of challenge is being mounted — and how hard — tells you where the factual and interpretive battles are being fought and who is fighting them.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether a challenge was present. When it was, three additional fields appear: what type of challenge it was, who was mounting it, and how strong the challenge was on a scale of 1 to 10.",
+      "null_explanation": "Contestability could not be assessed for this exchange."
     },
     {
       "id": "distortion_pattern",
       "label": "Distortion Pattern",
       "call": 4,
       "parent_section": "Truth Stability",
-      "definition": "Whether the truth is being bent, suppressed, amplified, or substituted in the exchange. When distortion_present is false, all four conditional fields are null. Direction classifies whether the distortion benefits the speaker ('favorable'), harms them ('unfavorable'), or is directionally neutral. Intensity scored 1–10.",
-      "scale": "distortion_present: boolean · distortion_type: 'amplification' | 'minimization' | 'reframing' | 'omission' | 'substitution' · what_is_distorted: text or null · direction: 'favorable' | 'unfavorable' | 'neutral_shift' · intensity: 1–10 or null",
-      "why_it_matters": "Detects strategic manipulation of truth — whether facts are being exaggerated, minimized, replaced, or recontextualized to serve a positional interest.",
-      "order": 12
+      "definition": "Whether the truth was being bent in this exchange — and if so, how, what was being distorted, in whose favor the distortion ran, and how strongly. Distortion types include amplification (making something seem larger or more significant than it is), minimization (making something seem smaller or less significant), reframing (shifting the context so the same facts appear to mean something different), omission (leaving something out), and substitution (replacing one thing with another).",
+      "why_it_matters": "Witnesses and attorneys both shape the truth strategically. Amplification, minimization, and reframing are rarely accidental. Detecting distortion — and understanding whose interests it serves — is one of the core functions of forensic language analysis.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether distortion was present. When it was, four additional fields appear: the type of distortion, what specifically was being distorted, whether the distortion favored or harmed the speaker (or shifted the frame without a clear directional benefit), and how intense it was on a scale of 1 to 10.",
+      "null_explanation": "Distortion pattern could not be assessed for this exchange."
     },
     {
       "id": "concealment_state",
       "label": "Concealment State",
       "call": 5,
       "parent_section": "Strategic Exposure",
-      "definition": "Whether information is being strategically withheld or obscured. When concealment_present is false, all three conditional fields (concealment_mechanism, what_is_concealed, intensity) are null. What_is_concealed names the suppressed content in 2–4 words. Intensity scored 1–10.",
-      "scale": "concealment_present: boolean · concealment_mechanism: 'omission' | 'vagueness' | 'misdirection' | 'technical_obscurity' | 'temporal_displacement' · what_is_concealed: text (2–4 words) or null · intensity: 1–10 or null",
-      "why_it_matters": "Identifies what is being hidden and how — the gap between what was said and what was strategically withheld.",
-      "order": 13
+      "definition": "Whether information was being strategically withheld or obscured in this exchange — and if so, by what mechanism, what was being concealed, and how strongly. Concealment mechanisms include omission (simply not saying something), vagueness (speaking in terms general enough to hide the specifics), misdirection (drawing attention elsewhere), technical obscurity (using specialized language that obscures rather than clarifies), and temporal displacement (describing something as past or future in a way that avoids present accountability).",
+      "why_it_matters": "What is not said in a deposition can be as significant as what is said. Concealment is a deliberate act — it reflects a strategic judgment that something is better left unsaid. Identifying what was concealed and how it was hidden tells you what the speaker was protecting and where the gaps in the record are.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether concealment was present. When it was, three additional fields appear: the mechanism used to conceal, a brief description of what was being concealed, and how intense the concealment was on a scale of 1 to 10.",
+      "null_explanation": "Concealment state could not be assessed for this exchange."
     },
     {
       "id": "framing_bias",
       "label": "Framing Bias",
       "call": 5,
       "parent_section": "Strategic Exposure",
-      "definition": "Whether the exchange is structured around a directionally biased frame. When bias_present is false, all three conditional fields (bias_direction, framing_elements, intensity) are null. Framing_elements lists 2–4 short phrases identifying the constitutive components of the bias. Intensity scored 1–10.",
-      "scale": "bias_present: boolean · bias_direction: 'self_advantaging' | 'blame_shifting' | 'protective_framing' | 'accusatory_framing' · framing_elements: [text × 2–4] or null · intensity: 1–10 or null",
-      "why_it_matters": "Reveals the directional slant of the exchange — whether it is constructed to protect, accuse, deflect, or advantage.",
-      "order": 14
+      "definition": "Whether the exchange was structured around a directionally biased frame — and if so, in which direction it ran and how it was constructed. Bias directions include self-advantaging (constructing the frame to benefit the speaker), blame-shifting (constructing the frame to redirect responsibility onto others), protective framing (constructing the frame to defend against attack), and accusatory framing (constructing the frame to direct suspicion or fault toward someone else). When bias was present, the instrument identifies the specific elements that constituted it.",
+      "why_it_matters": "Every speaker in a deposition frames what they say — there is no neutral position. But some frames are more aggressively directional than others. Identifying framing bias tells you what strategic work the language was doing beneath its surface — whose interests the structure of the exchange was built to serve.",
+      "value_type": "structured",
+      "value_description": "The top field shows whether framing bias was present. When it was, three additional fields appear: which direction the bias ran, the specific elements that constituted the biased frame, and how intense the bias was on a scale of 1 to 10.",
+      "null_explanation": "Framing bias could not be assessed for this exchange."
     },
     {
       "id": "adversarial_posture",
       "label": "Adversarial Posture",
       "call": 5,
       "parent_section": "Strategic Exposure",
-      "definition": "The adversarial stance taken in the exchange. Posture_type classifies the overall orientation. Tactical_moves is an array of 0–3 specific maneuvers used within that posture. Target_of_posture names what the posture is directed at in 2–4 words; null when posture_type is 'cooperative' or 'neutral'.",
-      "scale": "posture_type: 'cooperative' | 'neutral' | 'defensive' | 'aggressive' | 'evasive' · tactical_moves: ['preemption' | 'deflection' | 'counter_accusation' | 'boundary_setting' | 'challenge' | 'none'] × 0–3 · target_of_posture: text (2–4 words) or null",
-      "why_it_matters": "Classifies the overall adversarial stance and specific tactical maneuvers — whether the speaker is attacking, defending, evading, or cooperating, and exactly how.",
-      "order": 15
+      "definition": "The overall adversarial stance adopted in this exchange and the specific tactical moves used within it. Posture types range from cooperative (working with the other party) and neutral (neither attacking nor defending) through defensive (protecting a position), evasive (avoiding direct engagement), and aggressive (actively attacking or pressuring). Tactical moves are the specific maneuvers used within that posture — preemption, deflection, counter-accusation, boundary-setting, or challenge.",
+      "why_it_matters": "Adversarial posture tells you what game each speaker was playing in this exchange. Cooperative and neutral postures produce information. Defensive and evasive postures protect it. Aggressive postures try to control the terrain. Tracking posture across exchanges shows you how the deposition's adversarial dynamics shifted over time — who was on offense, who was on defense, and when that changed.",
+      "value_type": "structured",
+      "value_description": "The posture type is shown first. Below that, any specific tactical moves are listed. When a posture had a target — something or someone the adversarial stance was directed at — that is shown as well.",
+      "null_explanation": "Adversarial posture could not be assessed for this exchange."
     }
   ]
 }
