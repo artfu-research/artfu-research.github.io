@@ -661,10 +661,11 @@ function loadCurrentView() {
           transform: rotateY(180deg);
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
           overflow: auto;
+          padding: 8px 10px;
         }
-        .flip-back-label {
+        .flip-back-banner {
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.15em;
@@ -673,34 +674,45 @@ function loadCurrentView() {
           border-bottom: 1px solid var(--border);
           padding-bottom: 4px;
           margin-bottom: 2px;
+          flex-shrink: 0;
         }
-        .flip-back-field {
-          font-size: 8px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
+        .flip-back-active {
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 11px;
+          font-weight: 600;
           color: var(--text-bright);
-          margin-bottom: 3px;
+          flex-shrink: 0;
+          margin-bottom: 2px;
         }
-        .flip-back-def {
-          font-size: 8px;
-          color: var(--text-dim);
-          line-height: 1.55;
-          margin-bottom: 4px;
+        .flip-back-cols {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 6px;
+          flex: 1;
+          align-items: stretch;
         }
-        .flip-back-why-label {
+        .flip-back-col {
+          background: var(--surface2);
+          border: 1px solid var(--border);
+          border-radius: 4px;
+          padding: 6px 8px;
+        }
+        .flip-back-col-label {
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           color: var(--text-dim);
-          margin-bottom: 2px;
+          margin-bottom: 4px;
         }
-        .flip-back-why {
+        .flip-back-col-body {
           font-size: 8px;
           color: var(--text-dim);
           line-height: 1.55;
-          font-style: italic;
+        }
+        /* Make all col-card grids stretch children to equal height */
+        [style*="grid-template-columns"] {
+          align-items: stretch !important;
         }
         .col-card:hover .col-card-front {
           border-color: var(--accent);
@@ -746,14 +758,28 @@ function loadCurrentView() {
       // ── Listen for schema data posted back from parent ───────────────────
       iframeDoc.defaultView.addEventListener('message', function(e) {
         if (!e.data || e.data.type !== 'fieldSchema') return;
-        const { fieldId, label, definition, whyItMatters, activeValue } = e.data;
+        const { fieldId, label, callLabel, section, definition, scaleDescription, valueDescription, whyItMatters, activeValue } = e.data;
+
+        const banner = [callLabel, section, label].filter(Boolean).join(' · ');
 
         iframeDoc.querySelectorAll(`.col-card-back[data-field-id="${fieldId}"]`).forEach(back => {
           back.innerHTML = `
-            <div class="flip-back-label">${label || fieldId}</div>
-            ${activeValue ? `<div class="flip-back-field">${activeValue}</div>` : ''}
-            <div class="flip-back-def">${definition || '—'}</div>
-            ${whyItMatters ? `<div class="flip-back-why-label">Why it matters</div><div class="flip-back-why">${whyItMatters}</div>` : ''}
+            <div class="flip-back-banner">${banner}</div>
+            ${activeValue ? `<div class="flip-back-active">${activeValue}</div>` : ''}
+            <div class="flip-back-cols">
+              <div class="flip-back-col">
+                <div class="flip-back-col-label">What it measures</div>
+                <div class="flip-back-col-body">${definition}</div>
+              </div>
+              <div class="flip-back-col">
+                <div class="flip-back-col-label">How to read this</div>
+                <div class="flip-back-col-body">${scaleDescription || valueDescription || '—'}</div>
+              </div>
+              <div class="flip-back-col">
+                <div class="flip-back-col-label">Why it matters</div>
+                <div class="flip-back-col-body">${whyItMatters || '—'}</div>
+              </div>
+            </div>
           `;
         });
       });
@@ -1082,11 +1108,15 @@ window.addEventListener('DOMContentLoaded', function() {
     const activeValue = renderActiveValue(field, liveValue);
 
     iframe.contentWindow.postMessage({
-      type: 'fieldSchema',
+      type:             'fieldSchema',
       fieldId,
-      label:        field.label || fieldId,
-      definition:   field.definition || field.description || '—',
-      whyItMatters: field.why_it_matters || '',
+      label:            field.label || fieldId,
+      callLabel:        field.call !== undefined ? `Call ${field.call}` : '',
+      section:          field.parent_section || '',
+      definition:       field.definition || field.description || '—',
+      scaleDescription: field.scale_description || '',
+      valueDescription: field.value_description || '',
+      whyItMatters:     field.why_it_matters || '',
       activeValue,
     }, '*');
   });
