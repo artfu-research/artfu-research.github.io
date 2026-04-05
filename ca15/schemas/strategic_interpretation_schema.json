@@ -1,25 +1,25 @@
 {
   "battery_code": "si",
   "battery_name": "Strategic Interpretation",
-  "battery_overview": "The Strategic Interpretation Battery is Call 7 — the client-facing strategy layer that sits above the three analytical batteries (Epistemic Motion, Forensic Analysis, Semantic Content). It receives the output of one battery at a time, strips all evidence fields, and interprets the findings through a declared client bias. The client specifies their side, witness posture, primary concern, desired finding, feared outcome, and opposing counsel read. Call 7 then produces a strategic brief: what to use, what to watch, how the calls rank in importance for this pair, a two-to-three word strategic signature, and value scores for both sides. Three separate Call 7 files are produced per pair — one per source battery.",
+  "battery_overview": "This page is Call 7 — the strategy layer that sits above the three analytical batteries. Where the Epistemic Motion, Forensic Language Analysis, and Semantic Content batteries analyze what structurally happened in an exchange, this battery asks what it means for the case. It receives the output of one analytical battery at a time and interprets those findings through a declared client bias — the prosecution's perspective. The result is a strategy brief: a two-to-three word strategic signature naming the consequence for the case, value scores for both sides, a summary of what matters and why, an ordered list of findings the attorney can actively use, an ordered list of risks to watch and how to mitigate them, and a ranking of which analytical calls produced the most strategically useful output for this specific pair. Three separate Call 7 files exist per pair — one per source battery (Epistemic Motion, Forensic Analysis, Semantic Content).",
   "client_bias_declaration": {
-    "note": "Call 7 is not neutral. The analysis is always shaped by six declared inputs from the client: (1) which side they are preparing for (prosecution or defense), (2) their current assessment of the witness posture, (3) their single biggest concern about this deposition, (4) what they most hope the analysis surfaces, (5) what outcome would be most damaging to their side, and (6) their read on opposing counsel's likely strategy. These six inputs are injected into the prompt directly and define the lens through which all battery output is interpreted.",
     "side": "Prosecution",
     "witness_posture": "Credible and cooperative, plaintiff-aligned",
     "primary_concern": "Convey defendant safety failures",
     "what_you_want_to_find": "Defendant failure to follow safety practices",
     "what_you_are_afraid_of": "Exclusive plaintiff negligence finding",
-    "opposing_counsel_read": "Establish exclusive plaintiff negligence",
-    "case_context": "Cristoball Jasso v. Shell USA, Inc. and Shell Chemical, L.P. · Benjamin Gibson deposition, February 14 2025 · Direct examination by Ms. Kate Easterling for the Defense · Gibson serving as expert witness for Plaintiffs"
+    "opposing_counsel_read": "Establish exclusive plaintiff negligence"
   },
   "pattern_field": {
     "id": "pair_strategic_signature",
     "label": "Pair Strategic Signature",
     "call": 7,
-    "definition": "A 2–3 word strategic label capturing what this pair means for the client's case position. Derived from the client's declared perspective after reading all battery output. Distinct from the pattern declarations produced by the analytical batteries — those label epistemic or forensic events; this labels strategic consequence.",
-    "scale": "Qualitative (2–3 word phrase) · always client-perspective · strategic, not analytical",
-    "why_it_matters": "Names the strategic consequence of this exchange for the declared client side — what this pair means in case-position terms, not analytical terms.",
-    "examples": "Contractor Blame Shift, Deflection Advantage, Credibility Risk, Narrative Anchor"
+    "parent_section": "Strategic Interpretation",
+    "definition": "The two-to-three word strategic label naming what this pair means for the prosecution's case position. This is not an analytical label — it does not describe what structurally happened in the exchange. It names the strategic consequence from the prosecution's declared perspective: what this pair means in case-position terms.",
+    "why_it_matters": "Names the strategic bottom line for this exchange in the fewest possible words. When read across hundreds of pairs, these signatures reveal how the deposition's strategic terrain shifted — which pairs advanced the client's position, which created risk, and which were neutral.",
+    "value_type": "qualitative",
+    "value_description": "The two-to-three word label shown is the instrument's strategic judgment of what this pair means for the prosecution's case position — not what analytically happened, but what it means for the case.",
+    "null_explanation": "A strategic signature could not be produced for this pair."
   },
   "fields": [
     {
@@ -27,70 +27,120 @@
       "label": "Summary",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "A 3–4 sentence strategic overview from the declared client's perspective. Answers: what happened in this exchange that matters to the client? What should they know before walking into or past this pair? The summary is direct and opinionated — it is a strategy brief, not a neutral description. It does not fabricate winning conditions that are not supported by the battery output.",
-      "scale": "Narrative (3–4 sentences) · client-perspective · opinionated · evidence-grounded",
-      "why_it_matters": "Provides the strategic bottom line for this pair — the first thing a trial attorney reads when reviewing this pair's analysis.",
-      "order": 1
-    },
-    {
-      "id": "pair_strategic_signature",
-      "label": "Pair Strategic Signature",
-      "call": 7,
-      "parent_section": "Strategic Interpretation",
-      "definition": "A 2–3 word strategic label capturing what this pair means for the client's case position. Derived from the client's declared perspective after reading all battery output. Distinct from the pattern declarations produced by the analytical batteries — those label epistemic or forensic events; this labels strategic consequence.",
-      "scale": "Qualitative (2–3 word phrase) · always client-perspective · strategic, not analytical",
-      "why_it_matters": "Names the strategic consequence of this exchange for the declared client side — what this pair means in case-position terms, not analytical terms.",
-      "order": 2
+      "definition": "A three-to-four sentence strategic overview from the prosecution's declared perspective. This is a strategy brief, not a neutral description — it answers what happened in this exchange that matters to the prosecution, and what the attorney should know before walking into or past this pair. All findings are drawn from battery output, not invented.",
+      "why_it_matters": "The first thing a trial attorney reads when reviewing this pair. It tells them whether this exchange matters, why it matters, and what to do about it — without requiring them to read the full analytical output first.",
+      "value_type": "narrative",
+      "value_description": "Written as three to four direct, opinionated sentences from the prosecution's perspective. Not a neutral description of what happened — a strategy brief telling the attorney what this pair means for their case.",
+      "null_explanation": "A strategic summary could not be produced for this pair."
     },
     {
       "id": "client_value",
       "label": "Client Value",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "Integer score (0–10) assessing how useful this pair is to the declared client side. Scores use the full range — pairs are not clustered toward the middle. A pair can score high on both sides simultaneously if it is high-stakes for both.",
-      "scale": "Integer 0–10: 0 = zero strategic value · 3 = low / worth logging · 5 = moderate / actively useful · 7 = significant / act on this · 9 = critical / could move the needle · 10 = ignore at your own peril",
-      "why_it_matters": "Quantifies the strategic asset value of this pair for the client — enabling prioritization across the full deposition.",
-      "order": 3
+      "definition": "How useful this pair is to the prosecution's side, scored from 0 to 10. This measures strategic asset value — how much the attorney can do with this exchange, how much it advances the prosecution's case position, and how important it is relative to other pairs. A pair can score high on both client value and opposition value simultaneously if it is high-stakes for both sides.",
+      "why_it_matters": "Enables prioritization across the full deposition. With 395 pairs, not everything can receive equal attention. This score tells the attorney where this pair ranks in terms of what it can do for the prosecution.",
+      "value_type": "numeric",
+      "scale_description": "Scored from 0 to 10. 0 means this pair has no strategic value for the prosecution. 10 means ignoring this pair is a serious mistake. The full range is used — scores are not clustered toward the middle.",
+      "scale_values": {
+        "0": "No strategic value. This pair has nothing the prosecution can use.",
+        "1": "Negligible value. Worth logging but not worth acting on.",
+        "1_to_2": "Very low value. This pair contributes almost nothing to the prosecution's position.",
+        "2": "Low value. There may be something here but it is minor and not worth prioritizing.",
+        "2_to_3": "Low-to-moderate value. Something is here but it is not strong enough to act on directly.",
+        "3": "Low value worth logging. This pair has a findable asset but it is not significant on its own.",
+        "3_to_4": "Below moderate value. Useful as supporting context but not as a primary asset.",
+        "4": "Low-moderate value. This pair contributes something real but is not among the stronger pairs.",
+        "4_to_5": "Approaching moderate value. The pair has genuine utility but not at a level that demands attention.",
+        "5": "Moderate value — actively useful. This pair has something the prosecution can work with.",
+        "5_to_6": "Above moderate value. This pair is more useful than average and worth keeping in focus.",
+        "6": "Moderately significant. This pair has clear strategic value and should be tracked.",
+        "6_to_7": "Significant value. This pair is meaningfully useful and deserves attention in case preparation.",
+        "7": "Significant — act on this. This pair has real strategic weight for the prosecution's position.",
+        "7_to_8": "High value. This pair is among the stronger assets in the deposition.",
+        "8": "High value. This pair is important and the prosecution should build around it.",
+        "8_to_9": "Very high value. This pair is a major asset — near the top of what the deposition offers.",
+        "9": "Critical. This pair could move the needle. Ignoring it would be a serious mistake.",
+        "9_to_10": "Near-maximum value. This pair is among the most important in the entire deposition.",
+        "10": "Maximum value — ignore at your own peril. This pair is a defining asset for the prosecution's case."
+      },
+      "null_explanation": "Client value could not be scored for this pair."
     },
     {
       "id": "opposition_value",
       "label": "Opposition Value",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "Integer score (0–10) assessing how useful this pair is to the opposing side. Independent of client_value — scored from the opposition's perspective, not the client's. A pair can score high on both sides simultaneously.",
-      "scale": "Integer 0–10: 0 = zero strategic value · 3 = low / worth logging · 5 = moderate / actively useful · 7 = significant / act on this · 9 = critical / could move the needle · 10 = ignore at your own peril",
-      "why_it_matters": "Quantifies the threat level of this pair — how much the opposition can exploit it, independent of its value to the client.",
-      "order": 4
+      "definition": "How useful this pair is to the defense's side, scored from 0 to 10. This is scored independently from client value — from the opposition's perspective, not the prosecution's. A pair can score high on both sides simultaneously if it is high-stakes for both. High opposition value means the defense can exploit this exchange and the prosecution needs to prepare for that.",
+      "why_it_matters": "Quantifies the threat level of this pair — how much the defense can use it, independent of its value to the prosecution. High opposition value on a pair with low client value is a warning sign. High opposition value alongside high client value means the pair is contested terrain important to both sides.",
+      "value_type": "numeric",
+      "scale_description": "Scored from 0 to 10 from the defense's perspective. 0 means the defense gets nothing from this pair. 10 means this pair is a major asset for the defense and the prosecution needs to account for it.",
+      "scale_values": {
+        "0": "No strategic value for the defense. This pair gives them nothing to work with.",
+        "1": "Negligible threat. The defense can find almost nothing useful here.",
+        "1_to_2": "Very low threat. The defense has minimal use for this pair.",
+        "2": "Low threat. The defense might note it but cannot do much with it.",
+        "2_to_3": "Low-to-moderate threat. Something here benefits the defense but it is minor.",
+        "3": "Low threat worth monitoring. The defense has a findable asset here but it is not significant.",
+        "3_to_4": "Below moderate threat. Useful to the defense as context but not as a primary asset.",
+        "4": "Low-moderate threat. The defense has something real here but it is not among their stronger assets.",
+        "4_to_5": "Approaching moderate threat. The defense can use this but not at a level that demands urgent attention.",
+        "5": "Moderate threat — the defense can actively use this pair.",
+        "5_to_6": "Above moderate threat. The defense gets more from this pair than average.",
+        "6": "Moderately significant threat. The defense has clear strategic value here and will use it.",
+        "6_to_7": "Significant threat. The defense will prioritize this pair in their preparation.",
+        "7": "Significant threat — the defense will act on this. This pair has real weight for their position.",
+        "7_to_8": "High threat. This pair is among the stronger assets available to the defense.",
+        "8": "High threat. The prosecution needs to prepare a response to what the defense can do with this pair.",
+        "8_to_9": "Very high threat. This pair is a major asset for the defense — near the top of what the deposition offers them.",
+        "9": "Critical threat. This pair could move the needle for the defense. The prosecution must address it.",
+        "9_to_10": "Near-maximum threat. This pair is among the most important in the entire deposition for the defense.",
+        "10": "Maximum threat — ignore at your own peril. This pair is a defining asset for the defense's case."
+      },
+      "null_explanation": "Opposition value could not be scored for this pair."
     },
     {
       "id": "use_this",
       "label": "Use This",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "Battery findings the client can actively use, ordered from most to least useful. Each item identifies: the utility level of the finding, which call produced it (1–6), which specific field within that call contains it, and a 1–2 sentence explanation of the strategic value to the declared side. Evidence must be drawn from the battery output — not invented or inferred from the original transcript.",
-      "scale": "Ordered array of {utility: 'low' | 'medium' | 'high', source_call: integer 1–6, source_field: field name, reason: text (1–2 sentences)}",
-      "why_it_matters": "Converts analytical findings into actionable strategic assets — the specific things the attorney can use from this pair.",
-      "order": 5
+      "definition": "The battery findings the prosecution can actively use, ordered from most to least useful. Each item identifies the utility level, which analytical call produced it, which specific field contains it, and a one-to-two sentence explanation of the strategic value to the prosecution's side. All items are drawn from battery output — nothing is invented.",
+      "why_it_matters": "Converts analytical findings into actionable strategic assets. Tells the attorney not just what the analysis found, but which specific findings they can pick up and use — and exactly how.",
+      "value_type": "structured",
+      "value_description": "An ordered list of findings the prosecution can actively use. Each item shows a utility level (low, medium, or high), which call and field it came from, and a brief explanation of why it is useful to the prosecution.",
+      "enum_values": {
+        "high": "This finding is a significant strategic asset for the prosecution. It directly advances their position and should be prioritized in case preparation.",
+        "medium": "This finding is moderately useful to the prosecution. It supports their position and is worth incorporating, but is not a primary asset.",
+        "low": "This finding has limited strategic value for the prosecution. It may provide minor support or context but does not significantly advance their position."
+      },
+      "null_explanation": "No usable findings were identified for this pair from the prosecution's perspective."
     },
     {
       "id": "watch_this",
       "label": "Watch This",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "Battery findings that represent risk or threat to the declared client's side, ordered from highest to lowest threat. Each item identifies: the threat level, which call produced it, which field contains it, and a 1–2 sentence mitigation strategy. Watch This items are not symmetrical to Use This — the opposition's advantage is not necessarily the client's threat unless it is actionable against them.",
-      "scale": "Ordered array of {threat_level: 'low' | 'medium' | 'high', source_call: integer 1–6, source_field: field name, mitigation: text (1–2 sentences)}",
-      "why_it_matters": "Surfaces the risks in this pair and provides mitigation strategies — what the attorney needs to watch out for and how to prepare.",
-      "order": 6
+      "definition": "Battery findings that represent risk or threat to the prosecution's side, ordered from highest to lowest threat. Each item identifies the threat level, which analytical call produced it, which field contains it, and a one-to-two sentence mitigation strategy. These are the prosecution's vulnerabilities in this pair — and how to address them.",
+      "why_it_matters": "Surfaces the risks in this pair and provides mitigation strategies. Tells the attorney not just what could go wrong, but how to prepare for it. The defense will use these findings — the prosecution needs to get ahead of them.",
+      "value_type": "structured",
+      "value_description": "An ordered list of risks from battery findings, from highest to lowest threat. Each item shows a threat level (low, medium, or high), which call and field it came from, and a mitigation strategy.",
+      "enum_values": {
+        "high": "This finding poses a significant threat to the prosecution's position. The defense can actively exploit it and the prosecution must prepare a response.",
+        "medium": "This finding poses a moderate threat. The defense may use it and the prosecution should be prepared, but it is not an immediate priority.",
+        "low": "This finding poses a minor threat. The prosecution should be aware of it but it is unlikely to significantly affect their position."
+      },
+      "null_explanation": "No significant threats were identified for this pair from the prosecution's perspective."
     },
     {
       "id": "call_rank",
       "label": "Call Rank",
       "call": 7,
       "parent_section": "Strategic Interpretation",
-      "definition": "All six calls from the source battery ranked 1–6 by strategic importance for this specific pair on the declared side. Rank 1 is the most strategically important call; rank 6 is least important. The ranking reflects the value of each call's output for the client's position on this pair — not the general importance of the call across all pairs. Each item includes a one-sentence explanation of the ranking.",
-      "scale": "Array of {call: integer 1–6, rank: integer 1–6, reason: text (1 sentence)} · all six calls must appear · no ties",
-      "why_it_matters": "Directs the attorney to the most strategically valuable analytical output for this pair — where to focus attention first.",
-      "order": 7
+      "definition": "All six calls from the source battery ranked 1 through 6 by strategic importance for this specific pair from the prosecution's perspective. Rank 1 is the most strategically important call for this pair; rank 6 is the least important. The ranking reflects the value of each call's output for the prosecution's position on this specific pair — not the general importance of the call across all pairs.",
+      "why_it_matters": "Directs the attorney to the most strategically valuable analytical output for this pair. With six calls each producing multiple fields, this ranking tells the attorney where to focus first — which analytical dimension produced the most actionable intelligence for this exchange.",
+      "value_type": "structured",
+      "value_description": "All six calls are shown ranked from most to least strategically important for this pair from the prosecution's perspective. Each rank includes a one-sentence explanation of why that call was ranked where it was.",
+      "null_explanation": "Call ranking could not be produced for this pair."
     }
   ]
 }
