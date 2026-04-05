@@ -917,6 +917,9 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Track the current load session so stale batches don't overwrite a newer request
+let _loadSession = 0;
+
 async function updatePairSummaries() {
   const container = document.getElementById('pair-summaries-container');
 
@@ -931,15 +934,78 @@ async function updatePairSummaries() {
     return;
   }
 
+  // Increment session — any in-flight batch from a previous call will see a
+  // mismatched session ID and discard its results rather than rendering.
+  const session = ++_loadSession;
+
+  // Immediately clear old cards and show a loading indicator
+  container.innerHTML = `
+    <div class="placeholder" id="pair-loading-indicator">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div class="pair-load-spinner"></div>
+        <div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Loading pairs…</div>
+      </div>
+    </div>
+  `;
+
+  // Inject spinner keyframes once
+  if (!document.getElementById('pair-spinner-style')) {
+    const s = document.createElement('style');
+    s.id = 'pair-spinner-style';
+    s.textContent = `
+      @keyframes pair-spin {
+        to { transform: rotate(360deg); }
+      }
+      .pair-load-spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: pair-spin 0.7s linear infinite;
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  const BATCH = 20;   // fetch this many files at once
+  const total = 395;
+  let firstBatch = true;
+
   try {
-    let summariesHTML = '';
-    for (let i = 1; i <= 395; i++) {
-      const summaryHTML = await renderPairSummary(i);
-      if (summaryHTML) summariesHTML += summaryHTML;
+    for (let start = 1; start <= total; start += BATCH) {
+      if (session !== _loadSession) return;  // a newer request took over — bail
+
+      const end = Math.min(start + BATCH - 1, total);
+      const batchNums = [];
+      for (let i = start; i <= end; i++) batchNums.push(i);
+
+      // Fetch the whole batch in parallel
+      const results = await Promise.all(batchNums.map(n => renderPairSummary(n)));
+
+      if (session !== _loadSession) return;  // check again after await
+
+      const batchHTML = results.filter(Boolean).join('');
+      if (!batchHTML) continue;
+
+      if (firstBatch) {
+        // Replace the loading indicator with the first real cards
+        container.innerHTML = batchHTML;
+        firstBatch = false;
+      } else {
+        container.insertAdjacentHTML('beforeend', batchHTML);
+      }
+
+      highlightPair(currentPair);
     }
-    container.innerHTML = summariesHTML;
-    highlightPair(currentPair);
+
+    // If nothing rendered at all, restore placeholder
+    if (firstBatch && session === _loadSession) {
+      container.innerHTML = `<div class="placeholder">No summaries available</div>`;
+    }
+
   } catch (error) {
+    if (session !== _loadSession) return;
     console.error('Error rendering pair summaries:', error);
     container.innerHTML = `<div class="placeholder">Error loading summaries</div>`;
   }
