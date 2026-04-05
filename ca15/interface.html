@@ -675,11 +675,11 @@ function displaySchemaOverview() {
   if (!currentSchema) { displaySchemaPlaceholder(); return; }
 
   panel.innerHTML = `
-    <div style="padding: 10px 16px;">
-      <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px;">
+    <div style="display: flex; flex-direction: column; height: 100%;">
+      <div style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); text-align: center; padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--border); flex-shrink: 0;">
         ${currentSchema.battery_name} · Overview
       </div>
-      <div style="font-size: 9px; color: var(--text-dim); line-height: 1.6;">
+      <div style="padding: 12px 16px; font-size: 9px; color: var(--text-dim); line-height: 1.7;">
         ${currentSchema.battery_overview}
       </div>
     </div>
@@ -730,10 +730,8 @@ function renderActiveValue(field, liveValue) {
     for (const k of tryKeys) {
       if (field.scale_values[k]) {
         return `
-          <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--accent);">
-            <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;">This exchange — ${liveValue}</div>
-            <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.scale_values[k]}</div>
-          </div>`;
+          <div style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); text-align: center; margin-bottom: 4px;">${liveValue}</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; text-align: center;">${field.scale_values[k]}</div>`;
       }
     }
   }
@@ -743,10 +741,8 @@ function renderActiveValue(field, liveValue) {
     const key = liveValue.toString().toLowerCase();
     if (field.enum_values[key]) {
       return `
-        <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--accent);">
-          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;">This exchange — ${liveValue}</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${field.enum_values[key]}</div>
-        </div>`;
+          <div style="font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); text-align: center; margin-bottom: 4px;">${liveValue}</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; text-align: center;">${field.enum_values[key]}</div>`;
     }
   }
 
@@ -812,39 +808,42 @@ function displayFieldSchema(fieldId) {
   const activeValueHTML = renderActiveValue(field, liveValue);
 
   panel.innerHTML = `
-    <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; height: 100%; overflow: auto;">
+    <div style="display: flex; flex-direction: column; height: 100%; overflow: auto;">
 
-      <!-- COL 1: What it is + active value -->
-      <div>
-        <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">
-          ${field.label}
-          ${callLabel ? `<span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">${callLabel}${section ? ' · ' + section : ''}</span>` : ''}
-        </div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${definition}</div>
+      <!-- BANNER: field name + call -->
+      <div style="font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); text-align: center; padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--border); flex-shrink: 0;">
+        ${callLabel ? `<span style="font-size: 8px; font-weight: 400; color: var(--text-dim); margin-right: 8px;">${callLabel}${section ? ' · ' + section : ''}</span>` : ''}${field.label}
+      </div>
+
+      <!-- ACTIVE VALUE ROW: only renders if there's a match -->
+      ${activeValueHTML ? `
+      <div style="padding: 8px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; text-align: center;">
         ${activeValueHTML}
-      </div>
+      </div>` : ''}
 
-      <!-- COL 2: Scale / how to read it -->
-      <div>
-        ${field.scale_description ? `
-          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How it's scored</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 10px;">${field.scale_description}</div>
-        ` : ''}
-        ${field.value_description ? `
-          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How to read this</div>
-          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${field.value_description}</div>
-        ` : ''}
-      </div>
+      <!-- THREE COLUMN CARDS -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 10px 12px; flex: 1;">
 
-      <!-- COL 3: Why it matters + back button -->
-      <div>
-        <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">Why it matters</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px;">${whyItMatters}</div>
-        <button onclick="displaySchemaOverview()" style="background: var(--surface2); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
-          ← Back to ${currentSchema.battery_name} overview
-        </button>
-      </div>
+        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 10px 12px;">
+          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">What it measures</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${definition}</div>
+        </div>
 
+        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 10px 12px;">
+          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">How to read this</div>
+          ${field.scale_description ? `<div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 6px;">${field.scale_description}</div>` : ''}
+          ${field.value_description ? `<div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${field.value_description}</div>` : ''}
+        </div>
+
+        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 10px 12px;">
+          <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">Why it matters</div>
+          <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6; margin-bottom: 12px;">${whyItMatters}</div>
+          <button onclick="displaySchemaOverview()" style="background: var(--bg); color: var(--accent); border: 1px solid var(--border); padding: 4px 10px; border-radius: 3px; font-size: 8px; cursor: pointer; font-family: 'DM Mono', monospace;">
+            ← Back to ${currentSchema.battery_name} overview
+          </button>
+        </div>
+
+      </div>
     </div>
   `;
 }
