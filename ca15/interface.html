@@ -803,12 +803,10 @@ function displayFieldSchema(fieldId) {
   panel.innerHTML = `
     <div style="display: grid; grid-template-rows: auto 1fr; height: 100%; overflow: hidden;">
 
-      <!-- BANNER: call + field name + active value inline -->
-      <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 6px 16px; background: var(--bg); border-bottom: 1px solid var(--border); gap: 16px; flex-shrink: 0;">
-        <div>
-          <span style="font-family: 'Space Grotesk', sans-serif; font-size: 8px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-right: 8px;">${callLabel}${section ? ' · ' + section : ''}</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);">${field.label}</span>
-        </div>
-        ${activeValueHTML ? `<div style="text-align: right;">${activeValueHTML}</div>` : ''}
+      <!-- BANNER: centered two lines -->
+      <div style="text-align: center; padding: 7px 16px; background: var(--bg); border-bottom: 1px solid var(--border);">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 8px; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: ${activeValueHTML ? '3px' : '0'};">${callLabel}${section ? ' · ' + section : ''} · ${field.label}</div>
+        ${activeValueHTML ? `<div style="font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-bright);">${activeValueHTML}</div>` : ''}
       </div>
 
       <!-- THREE COLUMN CARDS -->
