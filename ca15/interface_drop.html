@@ -103,6 +103,7 @@
     height: 100%;
     border: none;
     background: var(--surface);
+    color-scheme: dark;
   }
 
   /* SCRIM — sits over iframe, under dropdowns */
@@ -547,7 +548,7 @@
 
     <!-- Epistemic Motion -->
     <div class="acc-row" id="acc-em" data-battery="em" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">network_intel_node</span></div>
+      <div class="acc-icon"><span class="mat-icon">cognition</span></div>
       <div class="acc-label">Epistemic Motion</div>
       <div class="acc-chev">
         <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
@@ -670,7 +671,7 @@
 
     <!-- EM -->
     <div class="acc-row" id="racc-em" data-rbattery="em" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">network_intel_node</span></div>
+      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">cognition</span></div>
       <div class="acc-label" style="font-size:9px;">Epistemic Motion</div>
       <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
     </div>
@@ -994,6 +995,8 @@ function loadCurrentView() {
   const path = getBatteryPath(currentBattery, currentPair, currentModifier);
   if (!path) { iframe.srcdoc = blankPrompt('View not available.'); return; }
 
+  // Clear srcdoc first — some browsers ignore iframe.src if srcdoc is still set
+  iframe.removeAttribute('srcdoc');
   iframe.src = path;
   iframe.onload = function() {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -1421,8 +1424,7 @@ window.addEventListener('message', function(e) {
 // ── Init ─────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
   updateCrumbs();
-  // Show blank center
-  document.getElementById('main-content-frame').srcdoc = blankPrompt('Open Battery Nav to select a battery, then open Pair Navigator to select a pair.');
+  // Leave iframe blank — content loads when user selects a battery and pair
 });
 
 </script>
