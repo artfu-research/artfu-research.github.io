@@ -624,14 +624,6 @@ function loadCurrentView() {
       baseStyle.textContent = `
         .footer { background: #000000 !important; }
 
-        /* Remove info icons */
-        .info-icon { display: none !important; }
-
-        /* Equal-height cards within every call row */
-        [style*="grid-template-columns"] {
-          align-items: stretch !important;
-        }
-
         /* Card base */
         .col-card {
           cursor: pointer;
@@ -644,6 +636,13 @@ function loadCurrentView() {
           background: #000000 !important;
           border-color: var(--accent) !important;
         }
+        .pattern-bar {
+          transition: background 0.15s;
+        }
+        .pattern-bar.pattern-selected {
+          background: #000000 !important;
+          outline: 1px solid var(--accent);
+        }
       `;
       iframeDoc.head.appendChild(baseStyle);
 
@@ -653,8 +652,8 @@ function loadCurrentView() {
 
         card.addEventListener('click', function(e) {
           e.stopPropagation();
-          // Deselect all, select this one
           iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
+          iframeDoc.querySelector('.pattern-bar')?.classList.remove('pattern-selected');
           card.classList.add('selected');
           if (fieldId) {
             window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
@@ -662,10 +661,26 @@ function loadCurrentView() {
         });
       });
 
+      // ── Pattern bar click handler ────────────────────────────────────────
+      const patternBar = iframeDoc.querySelector('.pattern-bar');
+      if (patternBar) {
+        const patternFieldId = patternBar.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
+        patternBar.style.cursor = 'pointer';
+        patternBar.addEventListener('click', function(e) {
+          e.stopPropagation();
+          iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
+          patternBar.classList.add('pattern-selected');
+          if (patternFieldId) {
+            window.parent.postMessage({ type: 'fieldClick', fieldId: patternFieldId }, '*');
+          }
+        });
+      }
+
       // ── Click outside cards → deselect all, reset to overview ───────────
       iframeDoc.addEventListener('click', function(e) {
-        if (!e.target.closest('.col-card')) {
+        if (!e.target.closest('.col-card') && !e.target.closest('.pattern-bar')) {
           iframeDoc.querySelectorAll('.col-card').forEach(c => c.classList.remove('selected'));
+          iframeDoc.querySelector('.pattern-bar')?.classList.remove('pattern-selected');
           if (currentSchema) displaySchemaOverview();
         }
       });
