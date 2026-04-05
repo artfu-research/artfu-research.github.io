@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CA15 Analysis Interface · Benjamin Gibson Deposition</title>
+<title>CA15 · Benjamin Gibson Deposition</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,300,0,0" rel="stylesheet">
 <style>
@@ -16,9 +16,13 @@
     --text: #c8cab8;
     --text-dim: #989A89;
     --text-bright: #F4F3E7;
+
+    --icon-w: 44px;       /* icon rail width */
+    --panel-w: 280px;     /* accordion + pair list width */
+    --u: 18px;            /* subheader unit — 75% smaller than 30px was */
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
     background: var(--bg);
@@ -32,135 +36,199 @@
     flex-direction: column;
   }
 
-  /* ═══════════════════════════════════════════════
-     TOP BAR
-  ═══════════════════════════════════════════════ */
+  .mat { font-family:'Material Symbols Rounded'; font-weight:300; line-height:1; user-select:none; }
+
+  /* ═══ TOP BAR ═══════════════════════════════════════════════════════ */
   .top-bar {
     height: 40px;
     background: #000;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 12px;
+    padding: 0 16px;
     flex-shrink: 0;
     position: relative;
-    z-index: 200;
+    z-index: 300;
   }
-
-  .top-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 5px 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-dim);
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.12em;
+  .top-case-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--accent);
     text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
-    user-select: none;
   }
-  .top-btn:hover { border-color: var(--accent); color: var(--text); }
-  .top-btn.open { border-color: var(--accent); color: var(--accent); background: #0d0e0e; }
-  .top-btn .mat-icon { font-size: 15px; line-height: 1; font-family: 'Material Symbols Rounded'; font-weight: 300; }
-
+  .top-sep { color: var(--border); margin: 0 10px; }
+  .top-case-sub { font-size: 9px; color: var(--text-dim); letter-spacing: 0.06em; }
   .top-crumbs {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 0;
     font-size: 9px;
     letter-spacing: 0.08em;
     white-space: nowrap;
+    pointer-events: none;
+    gap: 0;
   }
   .crumb { color: var(--text-dim); }
-  .crumb.active { color: var(--accent); }
-  .crumb-sep { color: #3a3b3b; margin: 0 7px; }
+  .crumb.lit { color: var(--accent); }
+  .crumb-sep { color: #3a3b3b; margin: 0 6px; }
 
-  /* ═══════════════════════════════════════════════
-     MAIN AREA
-  ═══════════════════════════════════════════════ */
-  .main-area {
+  /* ═══ BODY ══════════════════════════════════════════════════════════ */
+  .body-row {
     flex: 1;
-    position: relative;
+    display: flex;
     overflow: hidden;
+    position: relative;
+  }
+
+  /* ═══ LEFT SIDE ═════════════════════════════════════════════════════
+     Three layers, all absolutely positioned within .left-side:
+     1. Icon rail — always visible, always at x=0
+     2. Accordion panel — slides in from right of icon rail
+     3. Pair list — lives behind accordion, revealed when accordion closes
+  ════════════════════════════════════════════════════════════════════ */
+  .left-side {
+    position: relative;
+    flex-shrink: 0;
+    height: 100%;
+    /* Width is always icon-w + panel-w, pair list and accordion share that space */
+    width: calc(var(--icon-w) + var(--panel-w));
+    border-right: 1px solid var(--border);
+    transition: width 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+  .left-side.pairs-collapsed {
+    width: var(--icon-w);
+  }
+
+  /* ICON RAIL */
+  .icon-rail {
+    position: absolute;
+    top: 0; left: 0;
+    width: var(--icon-w);
+    height: 100%;
+    background: #000;
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
+    z-index: 3;
   }
+  .icon-rail-top { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .icon-rail-bottom { border-top: 1px solid var(--border); flex-shrink: 0; }
 
-  /* CENTER IFRAME — fills full width */
-  #main-content-frame {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: var(--surface);
-    color-scheme: dark;
+  .bat-icon-btn {
+    width: var(--icon-w);
+    height: var(--icon-w);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    flex-shrink: 0;
   }
+  .bat-icon-btn:hover { background: #1a1b1b; }
+  .bat-icon-btn.open { background: var(--bg); }
+  .bat-icon-btn .mat { font-size: 17px; color: var(--text-dim); }
+  .bat-icon-btn.open .mat { color: var(--accent); }
+  .bat-icon-btn:hover .mat { color: var(--text); }
+  .bat-icon-btn.pair-active { border-right: 2px solid var(--accent); }
+  .bat-icon-btn.pair-active .mat { color: var(--accent); }
 
-  /* SCRIM — sits over iframe, under dropdowns */
-  .scrim {
-    position: absolute;
-    inset: 0;
-    z-index: 50;
-    display: none;
-    cursor: default;
+  .icon-sep { height: 1px; background: var(--border); margin: 4px 8px; flex-shrink: 0; }
+
+  .collapse-btn {
+    width: var(--icon-w);
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.12s;
   }
-  .scrim.active { display: block; }
+  .collapse-btn:hover { background: #1a1b1b; }
+  .collapse-btn .mat { font-size: 15px; color: var(--text-dim); transition: transform 0.25s; }
+  .collapse-btn.pairs-open .mat { transform: rotate(180deg); }
 
-  /* ═══════════════════════════════════════════════
-     DROPDOWNS
-  ═══════════════════════════════════════════════ */
-  .dropdown {
+  /* PAIR LIST — behind accordion, z=1 */
+  .pair-panel {
     position: absolute;
     top: 0;
-    background: #0d0e0e;
-    border: 1px solid var(--border);
-    border-top: none;
-    z-index: 100;
+    left: var(--icon-w);
+    width: var(--panel-w);
+    height: 100%;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .pair-panel-header {
+    height: 34px;
+    background: #000;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    flex-shrink: 0;
+    gap: 8px;
+  }
+  .pair-panel-bat {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .pair-panel-mod {
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+  }
+  .pair-list {
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(100% - 0px);
-    transition: opacity 0.15s, transform 0.15s;
-    opacity: 0;
+    padding: 8px;
+  }
+  .pair-list::-webkit-scrollbar { width: 5px; }
+  .pair-list::-webkit-scrollbar-track { background: var(--surface); }
+  .pair-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .pair-list::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ACCORDION PANEL — slides over pair list, z=2 */
+  .acc-panel {
+    position: absolute;
+    top: 0;
+    left: var(--icon-w);
+    width: var(--panel-w);
+    height: 100%;
+    background: #0a0b0b;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    transform: translateX(0);
+    border-left: 1px solid var(--border);
+  }
+  .acc-panel.hidden {
+    transform: translateX(calc(-1 * var(--panel-w)));
     pointer-events: none;
-    transform: translateY(-8px);
   }
-  .dropdown.open {
-    opacity: 1;
-    pointer-events: all;
-    transform: translateY(0);
-  }
-  .dropdown-left {
-    left: 0;
-    width: 248px;
-    border-left: none;
-    border-radius: 0 0 4px 0;
-  }
-  .dropdown-right {
-    right: 0;
-    width: 308px;
-    border-right: none;
-    border-radius: 0 0 0 4px;
-  }
+  .acc-panel::-webkit-scrollbar { width: 5px; }
+  .acc-panel::-webkit-scrollbar-track { background: #0a0b0b; }
+  .acc-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* scrollbar */
-  .dropdown::-webkit-scrollbar { width: 6px; }
-  .dropdown::-webkit-scrollbar-track { background: #0d0e0e; }
-  .dropdown::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  .dropdown::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-  /* ═══════════════════════════════════════════════
-     ACCORDION (shared by both dropdowns)
-  ═══════════════════════════════════════════════ */
   .acc-section-label {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 8px;
@@ -168,1265 +236,817 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-dim);
-    padding: 9px 14px 6px;
+    padding: 8px 14px 5px;
     border-bottom: 1px solid var(--border);
     background: var(--bg);
+    flex-shrink: 0;
   }
-
-  .acc-row {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  .acc-bat-header {
+    padding: 10px 14px 6px;
     border-bottom: 1px solid var(--border);
-    transition: background 0.12s;
-    user-select: none;
+    background: #000;
+    flex-shrink: 0;
   }
-  .acc-row:hover { background: #1a1b1b; }
-  .acc-row.active { background: #000; }
-
-  .acc-icon {
-    width: 38px;
-    height: 38px;
+  .acc-bat-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-right: 1px solid var(--border);
+    gap: 8px;
   }
-  .acc-icon svg { width: 15px; height: 15px; }
-
-  .mat-icon {
-    font-family: 'Material Symbols Rounded';
-    font-size: 16px;
-    line-height: 1;
-    font-weight: 300;
-    color: #6b6d61;
-    user-select: none;
-  }
-  .acc-row.active .mat-icon { color: var(--accent); }
-  .acc-row:hover .mat-icon { color: var(--text); }
-
-  /* child-level icons (person_add / person_remove / tactic) */
-  .child-mat-icon {
-    font-family: 'Material Symbols Rounded';
-    font-size: 13px;
-    line-height: 1;
-    font-weight: 300;
-    color: var(--border);
-    user-select: none;
-    flex-shrink: 0;
-  }
-  .acc-child.active .child-mat-icon { color: var(--accent); }
-  .acc-child:hover .child-mat-icon { color: var(--text-dim); }
-
-  .acc-label {
-    flex: 1;
-    padding: 0 11px;
-    font-size: 10px;
-    color: var(--text);
-    letter-spacing: 0.03em;
-  }
-  .acc-row.active .acc-label { color: var(--accent); }
-
-  .acc-chev {
-    width: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .acc-chev svg { width: 9px; height: 9px; transition: transform 0.18s; }
-  .acc-row.open .acc-chev svg { transform: rotate(90deg); }
-
-  .acc-children {
-    display: none;
-    border-bottom: 1px solid var(--border);
-    background: #080909;
-  }
-  .acc-children.open { display: block; }
+  .acc-bat-title .mat { font-size: 16px; }
 
   .acc-child {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 7px 12px 7px 38px;
-    font-size: 9px;
+    gap: 9px;
+    padding: 9px 14px 9px 20px;
+    font-size: 10px;
     color: var(--text-dim);
-    letter-spacing: 0.06em;
     border-bottom: 1px solid #252626;
     cursor: pointer;
     transition: all 0.12s;
-    position: relative;
     user-select: none;
+    position: relative;
   }
   .acc-child::before {
     content: '';
     position: absolute;
-    left: 20px;
-    top: 0;
-    bottom: 0;
+    left: 10px; top: 0; bottom: 0;
     width: 1px;
     background: var(--border);
   }
-  .acc-child:last-child { border-bottom: none; }
   .acc-child:hover { background: #141515; color: var(--text); }
   .acc-child.active { background: #060707; color: var(--accent); }
-  .acc-child.soon { color: #353730; font-style: italic; cursor: default; }
-  .acc-child.soon:hover { background: transparent; color: #353730; }
-
-  .acc-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--border);
-    flex-shrink: 0;
-  }
+  .acc-child.soon { color: #383a34; cursor: default; font-style: italic; }
+  .acc-child.soon:hover { background: transparent; color: #383a34; }
+  .acc-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
   .acc-child.active .acc-dot { background: var(--accent); }
+  .acc-child .mat { font-size: 13px; }
+  .acc-divider { height: 1px; background: var(--border); margin: 3px 14px 3px 20px; opacity: 0.6; }
 
-  .acc-divider {
-    height: 1px;
+  /* ═══ CENTER ════════════════════════════════════════════════════════ */
+  .center-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* SUBHEADER — 75% smaller: u=18px so main cell = 54×36, square = 54×54 */
+  .subheader {
+    background: #000;
+    border-bottom: 1px solid var(--border);
+    padding: 5px 10px;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .subheader::-webkit-scrollbar { height: 2px; }
+  .subheader::-webkit-scrollbar-track { background: #000; }
+  .subheader::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .sh-divider {
+    width: 1px;
+    height: calc(var(--u)*3 + 4px);
     background: var(--border);
-    margin: 3px 12px 3px 38px;
-    opacity: 0.6;
+    margin: 0 3px;
+    flex-shrink: 0;
+    align-self: flex-end;
   }
 
-  /* ═══════════════════════════════════════════════
-     RIGHT DROPDOWN — pair summaries
-  ═══════════════════════════════════════════════ */
-  .pair-summaries-container {
-    padding: 10px;
-  }
+  .bat-sq { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; }
 
-  .pair-block {
+  .bat-main {
+    width: calc(var(--u)*3);
+    height: calc(var(--u)*2);
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 9px 11px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .pair-block:hover { background: var(--surface); border-color: var(--accent); }
-  .pair-block.selected {
-    border-color: var(--accent);
-    background: #0a0b0b;
-    box-shadow: 0 0 0 1px var(--accent);
-  }
-
-  .pair-header {
+    border-radius: 2px;
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 6px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-  .pair-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-  }
-  .pair-loc { font-size: 9px; color: var(--text-dim); }
-  .pair-content { font-size: 10px; line-height: 1.5; }
-  .pair-pattern {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: var(--text-bright);
-    margin-bottom: 5px;
-  }
-  .pair-reasoning { color: var(--text); margin-bottom: 5px; }
-  .pair-summary { color: var(--text); margin-bottom: 5px; }
-  .pair-scores { display: flex; gap: 12px; font-size: 9px; color: var(--text-dim); margin-top: 5px; }
-  .pair-score-item { display: flex; align-items: baseline; gap: 4px; }
-  .pair-score-label { color: var(--text-dim); }
-  .pair-score-value { color: var(--accent); font-weight: 500; }
-  .jur-section { margin-bottom: 7px; }
-  .jur-section:last-child { margin-bottom: 0; }
-  .jur-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 3px;
-  }
-  .entity-summary { font-size: 9px; line-height: 1.6; color: var(--text); }
-  .entity-count { font-weight: 500; color: var(--text-bright); margin-bottom: 3px; }
-
-  .placeholder {
-    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
-    color: var(--text-dim);
-    font-style: italic;
-    text-align: center;
-    padding: 30px 20px;
-    font-size: 10px;
-    line-height: 1.7;
-  }
-
-  /* ═══════════════════════════════════════════════
-     BOTTOM SCHEMA BAR
-  ═══════════════════════════════════════════════ */
-  .bottom-bar {
-    height: 34px;
-    background: #000;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    gap: 14px;
+    gap: 2px;
     cursor: pointer;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 200;
-    transition: background 0.12s;
+    transition: all 0.12s;
     user-select: none;
   }
-  .bottom-bar:hover { background: #0a0b0b; }
-  .bottom-bar.open { border-top-color: var(--accent); }
+  .bat-main:hover { border-color: var(--accent); background: var(--surface); }
+  .bat-sq.active .bat-main { background: #000; border-color: var(--accent); }
+  .bat-main-icon { font-size: 12px; color: var(--text-dim); }
+  .bat-sq.active .bat-main-icon { color: var(--accent); }
+  .bat-main:hover .bat-main-icon { color: var(--text); }
+  .bat-abbr { font-size: 6px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+  .bat-sq.active .bat-abbr { color: var(--accent); }
 
-  .bottom-bar-tag {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    flex-shrink: 0;
-  }
-  .bottom-bar.open .bottom-bar-tag { color: var(--accent); }
-
-  .bottom-bar-preview {
-    flex: 1;
-    font-size: 9px;
-    color: var(--text-dim);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  .bottom-bar-preview .preview-active { color: var(--text); }
-
-  .bottom-bar-chevron { margin-left: auto; flex-shrink: 0; }
-  .bottom-bar-chevron svg { width: 10px; height: 10px; transition: transform 0.2s; }
-  .bottom-bar.open .bottom-bar-chevron svg { transform: rotate(180deg); }
-
-  .bottom-drawer {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.22s ease;
-    position: relative;
-    z-index: 200;
-  }
-  .bottom-drawer.open { max-height: 130px; }
-
-  .bottom-drawer-inner {
-    padding: 10px 14px;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 0;
-    height: 100%;
-  }
-
-  .bottom-drawer-banner {
-    text-align: center;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
-  }
-  .bottom-drawer-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 8px;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .bottom-drawer-value {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-top: 3px;
-  }
-
-  .bottom-drawer-cols {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-  }
-  .schema-card {
+  .bat-mods { display: grid; grid-template-columns: repeat(3, var(--u)); gap: 2px; }
+  .mod-cell {
+    width: var(--u); height: var(--u);
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 7px 9px;
-    overflow: hidden;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
   }
-  .schema-card-label {
-    font-size: 7px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 4px;
-  }
-  .schema-card-body {
-    font-size: 8px;
-    color: var(--text-dim);
-    line-height: 1.55;
-  }
+  .mod-cell:hover:not(.disabled) { border-color: var(--accent); background: var(--surface); }
+  .mod-cell.disabled { opacity: 0.18; cursor: default; pointer-events: none; }
+  .mod-cell .mat { font-size: 9px; color: var(--text-dim); }
+  .mod-cell:hover:not(.disabled) .mat { color: var(--text); }
+  .mod-cell.active-cl { background: #0a140a; border-color: #4a7a4a; }
+  .mod-cell.active-cl .mat { color: #7ac47a; }
+  .mod-cell.active-op { background: #140a0a; border-color: #7a4a4a; }
+  .mod-cell.active-op .mat { color: #c47a7a; }
+  .mod-cell.active-gr { background: #0a0f1a; border-color: #4a6080; }
+  .mod-cell.active-gr .mat { color: #7a9fc4; }
+  .mod-soon { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
 
-  /* spinner */
-  @keyframes pair-spin { to { transform: rotate(360deg); } }
-  .pair-load-spinner {
-    width: 16px; height: 16px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: pair-spin 0.7s linear infinite;
-  }
+  /* IFRAME + WELCOME */
+  .content-area { flex: 1; position: relative; overflow: hidden; }
+  #main-content-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: var(--surface); color-scheme: dark; display: none; }
+  .welcome { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+  .welcome-firm { font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-dim); margin-bottom:24px; }
+  .welcome-case { font-family:'Syne',sans-serif; font-size:64px; font-weight:800; letter-spacing:-0.02em; color:var(--accent); line-height:1; margin-bottom:24px; }
+  .welcome-parties { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-bright); margin-bottom:4px; }
+  .welcome-v { font-size:9px; color:var(--text-dim); letter-spacing:0.12em; margin-bottom:4px; }
+  .welcome-deponent { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-bright); margin-bottom:32px; }
+  .welcome-meta { font-size:9px; color:var(--text-dim); letter-spacing:0.1em; margin-bottom:40px; }
+  .welcome-hint { display:flex; align-items:center; gap:8px; font-size:9px; color:var(--text-dim); letter-spacing:0.08em; border:1px solid var(--border); border-radius:3px; padding:8px 14px; }
+  .welcome-hint .mat { font-size:13px; color:var(--accent); }
 
-  /* schema pulse */
-  @keyframes schema-pulse {
-    0%   { box-shadow: inset 0 0 0 1px var(--accent); }
-    60%  { box-shadow: inset 0 0 0 1px var(--accent), 0 0 14px 2px rgba(165,164,129,0.2); }
-    100% { box-shadow: inset 0 0 0 0px transparent; }
-  }
-  .schema-pulse { animation: schema-pulse 0.65s ease-out forwards; }
+  /* PAIR BLOCKS */
+  .pair-block { background:var(--surface2); border:1px solid var(--border); border-radius:3px; padding:8px 10px; margin-bottom:6px; cursor:pointer; transition:all .12s; overflow:hidden; }
+  .pair-block:hover { background:var(--surface); border-color:var(--accent); }
+  .pair-block.selected { border-color:var(--accent); background:#0a0b0b; box-shadow:0 0 0 1px var(--accent); }
+  .pair-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; padding-bottom:5px; border-bottom:1px solid var(--border); }
+  .pair-num { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.1em; color:var(--accent); }
+  .pair-loc { font-size:8px; color:var(--text-dim); }
+  .pair-pattern { font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; color:var(--text-bright); margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pair-reasoning { font-size:9px; color:var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pair-scores { display:flex; gap:10px; font-size:8px; color:var(--text-dim); margin-top:4px; }
+  .pair-score-value { color:var(--accent); font-weight:500; }
+  .jur-section { margin-bottom:4px; }
+  .entity-summary { font-size:8px; line-height:1.6; color:var(--text); }
+  .entity-count { font-weight:500; color:var(--text-bright); margin-bottom:2px; }
+  .pair-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; color:var(--text-dim); font-size:9px; font-style:italic; text-align:center; padding:20px; line-height:1.8; gap:8px; }
+  @keyframes pair-spin { to { transform:rotate(360deg); } }
+  .pair-spinner { width:14px; height:14px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:pair-spin .7s linear infinite; }
+
+  /* BOTTOM */
+  .bottom-bar { height:32px; background:#000; border-top:1px solid var(--border); display:flex; align-items:center; padding:0 14px; gap:12px; cursor:pointer; flex-shrink:0; z-index:200; transition:background .12s; user-select:none; }
+  .bottom-bar:hover { background:#0a0b0b; }
+  .bottom-bar.open { border-top-color:var(--accent); }
+  .bottom-bar-tag { font-family:'Space Grotesk',sans-serif; font-size:8px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--text-dim); flex-shrink:0; }
+  .bottom-bar.open .bottom-bar-tag { color:var(--accent); }
+  .bottom-bar-preview { flex:1; font-size:9px; color:var(--text-dim); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .bottom-bar-preview .lit { color:var(--text); }
+  .bottom-bar-chev { margin-left:auto; flex-shrink:0; }
+  .bottom-bar-chev svg { width:10px; height:10px; transition:transform .2s; }
+  .bottom-bar.open .bottom-bar-chev svg { transform:rotate(180deg); }
+  .bottom-drawer { background:var(--surface); border-top:1px solid var(--border); flex-shrink:0; max-height:0; overflow:hidden; transition:max-height .22s ease; }
+  .bottom-drawer.open { max-height:130px; }
+  .bottom-drawer-inner { padding:10px 14px; }
+  .bottom-drawer-banner { text-align:center; padding-bottom:7px; border-bottom:1px solid var(--border); margin-bottom:7px; }
+  .bottom-drawer-title { font-family:'Space Grotesk',sans-serif; font-size:8px; letter-spacing:.15em; text-transform:uppercase; color:var(--text-dim); }
+  .bottom-drawer-value { font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:600; color:var(--text-bright); margin-top:2px; }
+  .bottom-drawer-cols { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .schema-card { background:var(--surface2); border:1px solid var(--border); border-radius:3px; padding:7px 9px; overflow:hidden; }
+  .schema-card-label { font-size:7px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px; }
+  .schema-card-body { font-size:8px; color:var(--text-dim); line-height:1.55; }
+  @keyframes schema-pulse { 0%{box-shadow:inset 0 0 0 1px var(--accent);} 60%{box-shadow:inset 0 0 0 1px var(--accent),0 0 14px 2px rgba(165,164,129,.18);} 100%{box-shadow:none;} }
+  .schema-pulse { animation:schema-pulse .65s ease-out forwards; }
 </style>
 </head>
 <body>
 
-<!-- ═══ TOP BAR ═══════════════════════════════════════════════════════════ -->
+<!-- TOP BAR -->
 <div class="top-bar">
-
-  <button class="top-btn" id="btn-left" onclick="toggleDropdown('left')">
-    <span class="mat-icon">network_intel_node</span>
-    Battery Nav
-  </button>
-
-  <div class="top-crumbs" id="top-crumbs">
-    <span class="crumb">CA15</span>
-    <span class="crumb-sep">·</span>
-    <span class="crumb">Benjamin Gibson</span>
-    <span class="crumb-sep">·</span>
-    <span class="crumb active" id="crumb-pair">Pair —</span>
-    <span class="crumb-sep">·</span>
-    <span class="crumb active" id="crumb-battery">—</span>
+  <span class="top-case-name">Artfu Research</span>
+  <span class="top-sep">·</span>
+  <span class="top-case-sub">CA15 · Benjamin Gibson Deposition</span>
+  <div class="top-crumbs">
+    <span class="crumb lit" id="crumb-pair"></span>
+    <span class="crumb-sep" id="crumb-sep" style="display:none">·</span>
+    <span class="crumb lit" id="crumb-battery" style="display:none"></span>
   </div>
-
-  <button class="top-btn" id="btn-right" onclick="toggleDropdown('right')">
-    Pair Navigator
-    <span class="mat-icon">conversation</span>
-  </button>
-
 </div>
 
-<!-- ═══ MAIN AREA ═════════════════════════════════════════════════════════ -->
-<div class="main-area" id="main-area">
+<!-- BODY -->
+<div class="body-row">
 
-  <!-- Scrim: clicking closes dropdowns -->
-  <div class="scrim" id="scrim" onclick="closeAllDropdowns()"></div>
+  <!-- LEFT SIDE -->
+  <div class="left-side pairs-collapsed" id="left-side">
 
-  <!-- Center iframe — full width/height -->
-  <iframe id="main-content-frame"></iframe>
-
-  <!-- ── LEFT DROPDOWN: Battery Navigation ───────────────────────────── -->
-  <div class="dropdown dropdown-left" id="dropdown-left">
-
-    <div class="acc-section-label">Primary</div>
-
-    <!-- Epistemic Motion -->
-    <div class="acc-row" id="acc-em" data-battery="em" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">cognition</span></div>
-      <div class="acc-label">Epistemic Motion</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+    <!-- Icon rail — always on top, always at x=0 -->
+    <div class="icon-rail">
+      <div class="icon-rail-top">
+        <div class="bat-icon-btn" id="ibtn-em" onclick="openAccordion('em')" title="Epistemic Motion"><span class="mat">cognition</span></div>
+        <div class="bat-icon-btn" id="ibtn-fa" onclick="openAccordion('fa')" title="Forensic Analysis"><span class="mat">biotech</span></div>
+        <div class="bat-icon-btn" id="ibtn-sc" onclick="openAccordion('sc')" title="Semantic Content"><span class="mat">newspaper</span></div>
+        <div class="icon-sep"></div>
+        <div class="bat-icon-btn" id="ibtn-wpb" onclick="openAccordion('wpb')" title="Witness Posture"><span class="mat">account_box</span></div>
+        <div class="bat-icon-btn" id="ibtn-apb" onclick="openAccordion('apb')" title="Attorney Performance"><span class="mat">taunt</span></div>
+        <div class="bat-icon-btn" id="ibtn-jsb" onclick="openAccordion('jsb')" title="Jury Selection"><span class="mat">crowdsource</span></div>
+        <div class="bat-icon-btn" id="ibtn-eeb" onclick="openAccordion('eeb')" title="Entity Extraction"><span class="mat">scan</span></div>
+      </div>
+      <div class="icon-rail-bottom">
+        <div class="collapse-btn" id="collapse-btn" onclick="togglePairs()" title="Toggle pairs">
+          <span class="mat">chevron_right</span>
+        </div>
       </div>
     </div>
-    <div class="acc-children" id="children-em">
-      <div class="acc-child" onclick="selectView('em', null)">
-        <div class="acc-dot"></div>Base
-      </div>
-      <div class="acc-child" onclick="selectView('em','client')">
-        <span class="child-mat-icon">person_add</span>Client
-      </div>
-      <div class="acc-child" onclick="selectView('em','opposition')">
-        <span class="child-mat-icon">person_remove</span>Opposition
-      </div>
-      <div class="acc-divider"></div>
-      <div class="acc-child" data-battery="em" data-modifier="graph1" onclick="selectView('em','graph1')">
-        <div class="acc-dot"></div>Narrative Arc Graph
-      </div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 2 — coming soon</div>
-    </div>
 
-    <!-- Forensic Analysis -->
-    <div class="acc-row" id="acc-fa" data-battery="fa" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">biotech</span></div>
-      <div class="acc-label">Forensic Analysis</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+    <!-- Pair panel — z:1, behind accordion -->
+    <div class="pair-panel" id="pair-panel" style="display:none">
+      <div class="pair-panel-header">
+        <span class="pair-panel-bat" id="pair-panel-bat">—</span>
+        <span class="pair-panel-mod" id="pair-panel-mod"></span>
+      </div>
+      <div class="pair-list" id="pair-list">
+        <div class="pair-placeholder">Select a battery from the left to begin</div>
       </div>
     </div>
-    <div class="acc-children" id="children-fa">
-      <div class="acc-child" onclick="selectView('fa', null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" onclick="selectView('fa','client')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" onclick="selectView('fa','opposition')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-      <div class="acc-divider"></div>
-      <div class="acc-child" onclick="selectView('fa','graph1')"><div class="acc-dot"></div>Evidence Map Graph</div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 2 — coming soon</div>
+
+    <!-- Accordion panel — z:2, slides over pair panel -->
+    <div class="acc-panel hidden" id="acc-panel" style="display:none">
+      <!-- content injected by openAccordion() -->
     </div>
 
-    <!-- Semantic Content -->
-    <div class="acc-row" id="acc-sc" data-battery="sc" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">newspaper</span></div>
-      <div class="acc-label">Semantic Content</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+  </div><!-- /left-side -->
+
+  <!-- CENTER -->
+  <div class="center-area">
+
+    <!-- Subheader battery grid -->
+    <div class="subheader">
+
+      <div class="bat-sq" id="sq-em">
+        <div class="bat-main" onclick="selectBatteryBase('em')">
+          <span class="mat bat-main-icon">cognition</span>
+          <span class="bat-abbr">EM</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell" id="mod-em-cl" onclick="selectMod('em','cl')"><span class="mat">person_add</span></div>
+          <div class="mod-cell" id="mod-em-op" onclick="selectMod('em','op')"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
       </div>
-    </div>
-    <div class="acc-children" id="children-sc">
-      <div class="acc-child" onclick="selectView('sc', null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" onclick="selectView('sc','client')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" onclick="selectView('sc','opposition')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-      <div class="acc-divider"></div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 1 — coming soon</div>
-    </div>
 
-    <div class="acc-section-label">Evaluative</div>
-
-    <!-- Witness Posture -->
-    <div class="acc-row" id="acc-wpb" data-battery="wpb" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">account_box</span></div>
-      <div class="acc-label">Witness Posture</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+      <div class="bat-sq" id="sq-fa">
+        <div class="bat-main" onclick="selectBatteryBase('fa')">
+          <span class="mat bat-main-icon">biotech</span>
+          <span class="bat-abbr">FA</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell" id="mod-fa-cl" onclick="selectMod('fa','cl')"><span class="mat">person_add</span></div>
+          <div class="mod-cell" id="mod-fa-op" onclick="selectMod('fa','op')"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
       </div>
-    </div>
-    <div class="acc-children" id="children-wpb">
-      <div class="acc-child" onclick="selectView('wpb', null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" onclick="selectView('wpb','graph1')"><div class="acc-dot"></div>Posture Timeline Graph</div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 2 — coming soon</div>
-    </div>
 
-    <!-- Attorney Performance -->
-    <div class="acc-row" id="acc-apb" data-battery="apb" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">taunt</span></div>
-      <div class="acc-label">Attorney Performance</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+      <div class="bat-sq" id="sq-sc">
+        <div class="bat-main" onclick="selectBatteryBase('sc')">
+          <span class="mat bat-main-icon">newspaper</span>
+          <span class="bat-abbr">SC</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell" id="mod-sc-cl" onclick="selectMod('sc','cl')"><span class="mat">person_add</span></div>
+          <div class="mod-cell" id="mod-sc-op" onclick="selectMod('sc','op')"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
       </div>
-    </div>
-    <div class="acc-children" id="children-apb">
-      <div class="acc-child" onclick="selectView('apb', null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" onclick="selectView('apb','graph1')"><div class="acc-dot"></div>Performance Graph</div>
-    </div>
 
-    <!-- Jury Selection -->
-    <div class="acc-row" id="acc-jsb" data-battery="jsb" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">crowdsource</span></div>
-      <div class="acc-label">Jury Selection</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+      <div class="sh-divider"></div>
+
+      <div class="bat-sq" id="sq-wpb">
+        <div class="bat-main" onclick="selectBatteryBase('wpb')">
+          <span class="mat bat-main-icon">account_box</span>
+          <span class="bat-abbr">WPB</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell disabled"><span class="mat">person_add</span></div>
+          <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
       </div>
-    </div>
-    <div class="acc-children" id="children-jsb">
-      <div class="acc-child" onclick="selectView('jsb','client')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" onclick="selectView('jsb','opposition')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-      <div class="acc-divider"></div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 1 — coming soon</div>
-    </div>
 
-    <!-- Entity Extraction -->
-    <div class="acc-row" id="acc-eeb" data-battery="eeb" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">scan</span></div>
-      <div class="acc-label">Entity Extraction</div>
-      <div class="acc-chev">
-        <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
+      <div class="bat-sq" id="sq-apb">
+        <div class="bat-main" onclick="selectBatteryBase('apb')">
+          <span class="mat bat-main-icon">taunt</span>
+          <span class="bat-abbr">APB</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell disabled"><span class="mat">person_add</span></div>
+          <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
       </div>
-    </div>
-    <div class="acc-children" id="children-eeb">
-      <div class="acc-child" onclick="selectView('eeb', null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child soon"><div class="acc-dot"></div>Graph 1 — coming soon</div>
+
+      <div class="bat-sq" id="sq-jsb">
+        <div class="bat-main" onclick="selectBatteryBase('jsb')">
+          <span class="mat bat-main-icon">crowdsource</span>
+          <span class="bat-abbr">JSB</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell" id="mod-jsb-cl" onclick="selectMod('jsb','cl')"><span class="mat">person_add</span></div>
+          <div class="mod-cell" id="mod-jsb-op" onclick="selectMod('jsb','op')"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
+      </div>
+
+      <div class="bat-sq" id="sq-eeb">
+        <div class="bat-main" onclick="selectBatteryBase('eeb')">
+          <span class="mat bat-main-icon">scan</span>
+          <span class="bat-abbr">EEB</span>
+        </div>
+        <div class="bat-mods">
+          <div class="mod-cell disabled"><span class="mat">person_add</span></div>
+          <div class="mod-cell disabled"><span class="mat">person_remove</span></div>
+          <div class="mod-cell disabled"><div class="mod-soon"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /subheader -->
+
+    <div class="content-area">
+      <div class="welcome" id="welcome-screen">
+        <div class="welcome-firm">Artfu Research</div>
+        <div class="welcome-case">CA15</div>
+        <div class="welcome-parties">Plaintiff Name</div>
+        <div class="welcome-v">v.</div>
+        <div class="welcome-deponent">Defendant Name</div>
+        <div class="welcome-meta">Benjamin Gibson · Deposition · 395 Exchanges</div>
+        <div class="welcome-hint"><span class="mat">chevron_right</span>Select a battery from the left column to begin</div>
+      </div>
+      <iframe id="main-content-frame"></iframe>
     </div>
 
-  </div><!-- /dropdown-left -->
+  </div><!-- /center-area -->
 
-  <!-- ── RIGHT DROPDOWN: Pair Navigator ──────────────────────────────── -->
-  <div class="dropdown dropdown-right" id="dropdown-right">
+</div><!-- /body-row -->
 
-    <!-- Battery accordion for pair browsing -->
-    <div class="acc-section-label">Browse By Battery</div>
-
-    <!-- EM -->
-    <div class="acc-row" id="racc-em" data-rbattery="em" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">cognition</span></div>
-      <div class="acc-label" style="font-size:9px;">Epistemic Motion</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-em">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('em',null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('em','cl')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('em','op')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-    </div>
-
-    <!-- FA -->
-    <div class="acc-row" id="racc-fa" data-rbattery="fa" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">biotech</span></div>
-      <div class="acc-label" style="font-size:9px;">Forensic Analysis</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-fa">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('fa',null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('fa','cl')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('fa','op')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-    </div>
-
-    <!-- SC -->
-    <div class="acc-row" id="racc-sc" data-rbattery="sc" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">newspaper</span></div>
-      <div class="acc-label" style="font-size:9px;">Semantic Content</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-sc">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('sc',null)"><div class="acc-dot"></div>Base</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('sc','cl')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('sc','op')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-    </div>
-
-    <div class="acc-section-label">Evaluative</div>
-
-    <!-- WPB -->
-    <div class="acc-row" id="racc-wpb" data-rbattery="wpb" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">account_box</span></div>
-      <div class="acc-label" style="font-size:9px;">Witness Posture</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-wpb">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('wpb',null)"><div class="acc-dot"></div>Base</div>
-    </div>
-
-    <!-- APB -->
-    <div class="acc-row" id="racc-apb" data-rbattery="apb" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">taunt</span></div>
-      <div class="acc-label" style="font-size:9px;">Attorney Performance</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-apb">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('apb',null)"><div class="acc-dot"></div>Base</div>
-    </div>
-
-    <!-- JSB -->
-    <div class="acc-row" id="racc-jsb" data-rbattery="jsb" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">crowdsource</span></div>
-      <div class="acc-label" style="font-size:9px;">Jury Selection</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-jsb">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('jsb','cl')"><span class="child-mat-icon">person_add</span>Client</div>
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('jsb','op')"><span class="child-mat-icon">person_remove</span>Opposition</div>
-    </div>
-
-    <!-- EEB -->
-    <div class="acc-row" id="racc-eeb" data-rbattery="eeb" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">scan</span></div>
-      <div class="acc-label" style="font-size:9px;">Entity Extraction</div>
-      <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
-    </div>
-    <div class="acc-children" id="rchildren-eeb">
-      <div class="acc-child" style="font-size:9px;padding:6px 10px 6px 32px;" onclick="selectRightFilter('eeb',null)"><div class="acc-dot"></div>Base</div>
-    </div>
-
-    <!-- Pair summary cards -->
-    <div class="pair-summaries-container" id="pair-summaries-container">
-      <div class="placeholder">Select a battery above to load pair summaries.</div>
-    </div>
-
-  </div><!-- /dropdown-right -->
-
-</div><!-- /main-area -->
-
-<!-- ═══ BOTTOM SCHEMA BAR ════════════════════════════════════════════════ -->
+<!-- BOTTOM -->
 <div class="bottom-bar" id="bottom-bar" onclick="toggleBottomDrawer()">
   <div class="bottom-bar-tag">Schema</div>
-  <div class="bottom-bar-preview" id="bottom-bar-preview">
-    <span>Select a battery to load schema overview</span>
-  </div>
-  <div class="bottom-bar-chevron">
-    <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5">
-      <path d="M2 3l3 3 3-3"/>
-    </svg>
-  </div>
+  <div class="bottom-bar-preview" id="bottom-bar-preview"><span>Select a battery to load schema</span></div>
+  <div class="bottom-bar-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M2 3l3 3 3-3"/></svg></div>
 </div>
-
 <div class="bottom-drawer" id="bottom-drawer">
   <div class="bottom-drawer-inner" id="bottom-drawer-inner">
-    <div class="placeholder" style="min-height:60px;padding:16px;">Select a battery to load schema overview.</div>
+    <div class="pair-placeholder" style="height:80px;">Select a battery to load schema overview.</div>
   </div>
 </div>
 
-
-<!-- ═══ SCRIPT ════════════════════════════════════════════════════════════ -->
 <script>
+const BAT_LABELS = {em:'Epistemic Motion',fa:'Forensic Analysis',sc:'Semantic Content',wpb:'Witness Posture',apb:'Attorney Performance',jsb:'Jury Selection',eeb:'Entity Extraction'};
+const HAS_SI = ['em','fa','sc','jsb'];
+const PRIMARY = ['em','fa','sc'];
 
-// ── State ────────────────────────────────────────────────────────────────
-let currentBattery   = null;   // em, fa, sc, wpb, apb, jsb, eeb
-let currentModifier  = null;   // null, 'client', 'opposition', 'graph1'
-let currentPair      = null;   // 1–395
+let currentBattery  = null;
+let currentModifier = null;
+let currentPair     = null;
+let pairsOpen       = false;
+let accOpen         = false;
+let accBattery      = null;  // which battery the accordion is showing
+let bottomOpen      = false;
+let currentSchema   = null;
+const schemaCache   = {};
+let _loadSession    = 0;
 
-let currentSchema    = null;
-const schemaCache    = {};
+// ── LEFT PANEL: open accordion for a battery ─────────────────────────
+function openAccordion(battery) {
+  accBattery = battery;
+  accOpen = true;
 
-// Right-panel filter state (controls pair summaries, independent of left)
-let filterState = { battery: null, si: null };
+  // Mark icon open
+  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('open'));
+  document.getElementById('ibtn-' + battery).classList.add('open');
 
-// Dropdown open state
-let leftOpen  = false;
-let rightOpen = false;
-let bottomOpen = false;
+  // Build accordion content
+  const panel = document.getElementById('acc-panel');
+  const isPrimary = PRIMARY.includes(battery);
+  const hasJSBsides = battery === 'jsb';
 
-// Load session counter (prevents stale pair batches from rendering)
-let _loadSession = 0;
-
-// ── Dropdown toggle ──────────────────────────────────────────────────────
-function toggleDropdown(side) {
-  if (side === 'left') {
-    leftOpen = !leftOpen;
-    if (leftOpen && rightOpen) { rightOpen = false; syncDropdownUI('right'); }
-  } else {
-    rightOpen = !rightOpen;
-    if (rightOpen && leftOpen) { leftOpen = false; syncDropdownUI('left'); }
-  }
-  syncDropdownUI(side);
-  document.getElementById('scrim').classList.toggle('active', leftOpen || rightOpen);
-}
-
-function syncDropdownUI(side) {
-  const isOpen = side === 'left' ? leftOpen : rightOpen;
-  document.getElementById(`dropdown-${side}`).classList.toggle('open', isOpen);
-  document.getElementById(`btn-${side}`).classList.toggle('open', isOpen);
-}
-
-function closeAllDropdowns() {
-  leftOpen = false; rightOpen = false;
-  syncDropdownUI('left'); syncDropdownUI('right');
-  document.getElementById('scrim').classList.remove('active');
-}
-
-// ── Bottom drawer ────────────────────────────────────────────────────────
-function toggleBottomDrawer() {
-  bottomOpen = !bottomOpen;
-  document.getElementById('bottom-bar').classList.toggle('open', bottomOpen);
-  document.getElementById('bottom-drawer').classList.toggle('open', bottomOpen);
-}
-
-function openBottomDrawer() {
-  if (!bottomOpen) { bottomOpen = true; document.getElementById('bottom-bar').classList.add('open'); document.getElementById('bottom-drawer').classList.add('open'); }
-}
-
-// ── LEFT accordion: expand/collapse ──────────────────────────────────────
-function accSelect(row) {
-  const battery = row.getAttribute('data-battery');
-  const isOpen  = row.classList.contains('open');
-
-  // Collapse all
-  document.querySelectorAll('#dropdown-left .acc-row').forEach(r => r.classList.remove('open', 'active'));
-  document.querySelectorAll('#dropdown-left .acc-children').forEach(c => c.classList.remove('open'));
-
-  if (!isOpen) {
-    row.classList.add('open', 'active');
-    document.getElementById('children-' + battery).classList.add('open');
-  }
-}
-
-// ── LEFT child: load view ────────────────────────────────────────────────
-function selectView(battery, modifier) {
-  currentBattery  = battery;
-  currentModifier = modifier;
-
-  // Default to pair 1 if no pair has been selected yet
-  if (!currentPair) currentPair = 1;
-
-  // Update active child styling
-  document.querySelectorAll('#dropdown-left .acc-child').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll(`#children-${battery} .acc-child`).forEach(c => {
-    const cMod = c.getAttribute('onclick');
-    if (!c.classList.contains('soon')) {
-      const matchBase = modifier === null && cMod && cMod.includes("null");
-      const matchMod  = modifier && cMod && cMod.includes(`'${modifier}'`);
-      if (matchBase || matchMod) c.classList.add('active');
-    }
-  });
-
-  updateCrumbs();
-  loadCurrentView();
-  loadBatterySchema(battery, modifier);
-  closeAllDropdowns();
-}
-
-// ── RIGHT accordion ──────────────────────────────────────────────────────
-function raccSelect(row) {
-  const battery = row.getAttribute('data-rbattery');
-  const isOpen  = row.classList.contains('open');
-
-  document.querySelectorAll('#dropdown-right .acc-row').forEach(r => r.classList.remove('open', 'active'));
-  document.querySelectorAll('#dropdown-right .acc-children').forEach(c => c.classList.remove('open'));
-
-  if (!isOpen) {
-    row.classList.add('open', 'active');
-    document.getElementById('rchildren-' + battery).classList.add('open');
-  }
-}
-
-// ── RIGHT child: set filter + load pair summaries ────────────────────────
-function selectRightFilter(battery, si) {
-  filterState.battery = battery;
-  filterState.si      = si;
-
-  // Mark active child in right accordion
-  document.querySelectorAll('#dropdown-right .acc-child').forEach(c => c.classList.remove('active'));
-  const parentId = 'rchildren-' + battery;
-  document.querySelectorAll(`#${parentId} .acc-child`).forEach(c => {
-    const fn = c.getAttribute('onclick') || '';
-    const matchNull = si === null && fn.includes('null');
-    const matchSI   = si && fn.includes(`'${si}'`);
-    if (matchNull || matchSI) c.classList.add('active');
-  });
-
-  updatePairSummaries();
-}
-
-// ── Clicking a pair card loads it into the center ────────────────────────
-function loadPairFromSummary(pairNum) {
-  currentPair = pairNum;
-
-  // Only remap battery from right-panel filter if the left panel has nothing selected yet
-  if (!currentBattery) {
-    const evalMap = { wpb: 'wpb', apb: 'apb', jsb: 'jsb', eeb: 'eeb' };
-    const primaryBatteries = ['em','fa','sc'];
-
-    if (evalMap[filterState.battery]) {
-      const bat = evalMap[filterState.battery];
-      const mod = (bat === 'jsb') ? (filterState.si === 'cl' ? 'client' : 'opposition') : null;
-      currentBattery  = bat;
-      currentModifier = mod;
-    } else if (primaryBatteries.includes(filterState.battery)) {
-      currentBattery  = filterState.battery;
-      currentModifier = filterState.si === 'cl' ? 'client' : filterState.si === 'op' ? 'opposition' : null;
-    }
-    syncLeftAccordion();
-    loadBatterySchema(currentBattery, currentModifier);
-  }
-
-  updateCrumbs();
-  loadCurrentView();
-  highlightPair(pairNum);
-  closeAllDropdowns();
-}
-
-function syncLeftAccordion() {
-  if (!currentBattery) return;
-  document.querySelectorAll('#dropdown-left .acc-row').forEach(r => r.classList.remove('open','active'));
-  document.querySelectorAll('#dropdown-left .acc-children').forEach(c => c.classList.remove('open'));
-  const row = document.getElementById('acc-' + currentBattery);
-  if (row) { row.classList.add('open','active'); }
-  const children = document.getElementById('children-' + currentBattery);
-  if (children) children.classList.add('open');
-}
-
-// ── Build iframe src path ────────────────────────────────────────────────
-function getBatteryPath(battery, pair, modifier) {
-  const p = String(pair).padStart(4, '0');
-  const map = {
-    'em':             `epistemic_motion/pair_${p}_em.html`,
-    'em_client':      `strategic_interpretation/call7_${p}_em_si.html`,
-    'em_opposition':  `strategic_interpretation/call7_${p}_em_si_OPPOSITION.html`,
-    'fa':             `forensic_analysis/pair_${p}_fa.html`,
-    'fa_client':      `strategic_interpretation/call7_${p}_fa_si.html`,
-    'fa_opposition':  `strategic_interpretation/call7_${p}_fa_si_OPPOSITION.html`,
-    'sc':             `semantic_content/pair_${p}_sc.html`,
-    'sc_client':      `strategic_interpretation/call7_${p}_sc_si.html`,
-    'sc_opposition':  `strategic_interpretation/call7_${p}_sc_si_OPPOSITION.html`,
-    'wpb':            `witness_posture/pair_${p}_wpb.html`,
-    'apb':            `attorney_performance/pair_${p}_apb.html`,
-    'jsb_client':     `juror_profiles/pair_${p}_jpb_prosecution.html`,
-    'jsb_opposition': `juror_profiles/pair_${p}_jpb_defense.html`,
-    'eeb':            `entity_extraction/pair_${p}_eeb.html`,
-  };
-  let key = battery;
-  if (modifier && modifier !== 'graph1' && ['em','fa','sc','jsb'].includes(battery)) {
-    key = battery + '_' + modifier;
-  }
-  return map[key] || null;
-}
-
-// ── Load center iframe ───────────────────────────────────────────────────
-function loadCurrentView() {
-  const iframe = document.getElementById('main-content-frame');
-
-  if (!currentPair || !currentBattery) {
-    iframe.srcdoc = blankPrompt('Select a battery and pair to begin.');
-    return;
-  }
-
-  if (currentBattery === 'jsb' && !currentModifier) {
-    iframe.srcdoc = blankPrompt('Select Client or Opposition to view Jury Selection.');
-    return;
-  }
-
-  // Graph placeholder (real graphs are separate files — handled same as HTML batteries)
-  if (currentModifier === 'graph1') {
-    iframe.srcdoc = blankPrompt(`${batteryLabel(currentBattery)} · Graph — loading...`);
-    // TODO: swap srcdoc for iframe.src pointing to the graph file when available
-    return;
-  }
-
-  const path = getBatteryPath(currentBattery, currentPair, currentModifier);
-  if (!path) { iframe.srcdoc = blankPrompt('View not available.'); return; }
-
-  // Clear srcdoc first — some browsers ignore iframe.src if srcdoc is still set
-  iframe.removeAttribute('srcdoc');
-  iframe.src = path;
-  iframe.onload = function() {
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!iframeDoc) return;
-    injectIframeStyles(iframeDoc);
-    wireIframeClicks(iframeDoc);
-  };
-}
-
-function blankPrompt(msg) {
-  return `<!DOCTYPE html><html><head><style>body{background:#1F2020;color:#989A89;font-family:'DM Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:40px;}</style></head><body><div>${msg}</div></body></html>`;
-}
-
-function batteryLabel(b) {
-  const labels = { em:'Epistemic Motion', fa:'Forensic Analysis', sc:'Semantic Content', wpb:'Witness Posture', apb:'Attorney Performance', jsb:'Jury Selection', eeb:'Entity Extraction' };
-  return labels[b] || b;
-}
-
-// ── Inject styles + wire clicks inside iframe ────────────────────────────
-function injectIframeStyles(iframeDoc) {
-  const s = iframeDoc.createElement('style');
-  s.textContent = `
-    .footer { background: #000000 !important; }
-    .col-card, .field-block, .pattern-bar, .sig-bar, .score-row, .summary-block, .panel-call {
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, outline 0.15s;
-    }
-    .col-card:hover { border-color: var(--accent) !important; }
-    .field-block:hover, .pattern-bar:hover, .sig-bar:hover,
-    .score-row:hover, .summary-block:hover, .panel-call:hover { outline: 1px solid var(--accent); }
-    .col-card.ca-selected { background: #000 !important; border-color: var(--accent) !important; }
-    .field-block.ca-selected, .pattern-bar.ca-selected, .sig-bar.ca-selected,
-    .score-row.ca-selected, .summary-block.ca-selected, .panel-call.ca-selected {
-      background: #000 !important; outline: 1px solid var(--accent);
-    }
-  `;
-  iframeDoc.head.appendChild(s);
-}
-
-function wireIframeClicks(iframeDoc) {
-  const CLICKABLE = '.col-card, .field-block, .pattern-bar, .sig-bar, .score-row, .summary-block, .panel-call';
-
-  function deselectAll() {
-    iframeDoc.querySelectorAll('.ca-selected').forEach(el => el.classList.remove('ca-selected'));
-  }
-
-  iframeDoc.querySelectorAll(CLICKABLE).forEach(el => {
-    const fieldId = el.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
-    el.addEventListener('click', function(e) {
-      e.stopPropagation();
-      deselectAll();
-      el.classList.add('ca-selected');
-      if (fieldId) window.parent.postMessage({ type: 'fieldClick', fieldId }, '*');
-    });
-  });
-
-  iframeDoc.addEventListener('click', function(e) {
-    if (!e.target.closest(CLICKABLE)) {
-      deselectAll();
-      if (currentSchema) displaySchemaOverview();
-    }
-  });
-}
-
-// ── Breadcrumb update ────────────────────────────────────────────────────
-function updateCrumbs() {
-  const pairEl    = document.getElementById('crumb-pair');
-  const batteryEl = document.getElementById('crumb-battery');
-
-  pairEl.textContent    = currentPair ? `Pair ${String(currentPair).padStart(3,'0')}` : 'Pair —';
-
-  let bLabel = currentBattery ? batteryLabel(currentBattery) : '—';
-  if (currentModifier && currentModifier !== 'null') {
-    const modLabels = { client:'Client', opposition:'Opposition', graph1:'Graph' };
-    bLabel += ' · ' + (modLabels[currentModifier] || currentModifier);
-  }
-  batteryEl.textContent = bLabel;
-}
-
-// ── Pair summary highlight ────────────────────────────────────────────────
-function highlightPair(pairNum) {
-  document.querySelectorAll('.pair-block').forEach(b => b.classList.remove('selected'));
-  const block = document.querySelector(`.pair-block[data-pair="${pairNum}"]`);
-  if (block) { block.classList.add('selected'); block.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
-}
-
-// ── Pair summaries (right panel) ─────────────────────────────────────────
-async function updatePairSummaries() {
-  const container = document.getElementById('pair-summaries-container');
-
-  if (!filterState.battery) {
-    container.innerHTML = '<div class="placeholder">Select a battery above to load pair summaries.</div>';
-    return;
-  }
-
-  if (filterState.battery === 'jsb' && !filterState.si) {
-    container.innerHTML = '<div class="placeholder">Select Client or Opposition perspective to view Jury Selection summaries.</div>';
-    return;
-  }
-
-  const session = ++_loadSession;
-
-  container.innerHTML = `<div class="placeholder"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;"><div class="pair-load-spinner"></div><div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Loading pairs…</div></div></div>`;
-
-  const BATCH = 20;
-  const total = 395;
-  let firstBatch = true;
-
-  try {
-    for (let start = 1; start <= total; start += BATCH) {
-      if (session !== _loadSession) return;
-      const nums = Array.from({ length: Math.min(BATCH, total - start + 1) }, (_, i) => start + i);
-      const results = await Promise.all(nums.map(n => renderPairSummary(n)));
-      if (session !== _loadSession) return;
-
-      const html = results.filter(Boolean).join('');
-      if (!html) continue;
-
-      if (firstBatch) { container.innerHTML = html; firstBatch = false; }
-      else container.insertAdjacentHTML('beforeend', html);
-
-      if (currentPair) highlightPair(currentPair);
-    }
-    if (firstBatch && session === _loadSession) {
-      container.innerHTML = '<div class="placeholder">No summaries available.</div>';
-    }
-  } catch(err) {
-    if (session !== _loadSession) return;
-    container.innerHTML = '<div class="placeholder">Error loading summaries.</div>';
-  }
-}
-
-async function renderPairSummary(pairNum) {
-  let data;
-  const bat = filterState.battery;
-  const si  = filterState.si;
-
-  if      (bat === 'wpb') data = await extractWPBSummary(pairNum);
-  else if (bat === 'apb') data = await extractAPBSummary(pairNum);
-  else if (bat === 'jsb') data = await extractJURSummary(pairNum, si);
-  else if (bat === 'eeb') data = await extractENTSummary(pairNum);
-  else if (si)            data = await extractStrategicSummary(pairNum, bat, si);
-  else if (bat)           data = await extractPrimarySummary(pairNum, bat);
-
-  if (!data) return '';
-  return `<div class="pair-block" data-pair="${pairNum}" onclick="loadPairFromSummary(${pairNum})">
-    <div class="pair-header">
-      <span class="pair-num">PAIR ${pairNum}</span>
-      <span class="pair-loc">Pg ${data.page}, Ln ${data.line}</span>
+  let html = `<div class="acc-bat-header">
+    <div class="acc-bat-title">
+      <span class="mat">${batIcon(battery)}</span>
+      ${BAT_LABELS[battery]}
     </div>
-    <div class="pair-content">${data.content}</div>
+  </div>`;
+
+  html += `<div class="acc-section-label">View</div>`;
+
+  // Base — always first (except JSB which requires a side)
+  if (!hasJSBsides) {
+    html += accChild('base', battery, null, 'Base', 'adjust');
+  }
+
+  // Client / Opposition (SI or JSB sides)
+  if (HAS_SI.includes(battery)) {
+    html += accChild('cl', battery, 'client', 'Client', 'person_add');
+    html += accChild('op', battery, 'opposition', 'Opposition', 'person_remove');
+  }
+
+  // Graph
+  html += `<div class="acc-divider"></div>`;
+  html += `<div class="acc-child soon"><div class="acc-dot"></div>Graph — coming soon</div>`;
+
+  panel.innerHTML = html;
+
+  // Slide accordion in (remove hidden), expand left-side to show panel
+  panel.style.display = 'flex';
+  panel.style.flexDirection = 'column';
+  panel.classList.remove('hidden');
+  document.getElementById('left-side').classList.remove('pairs-collapsed');
+  // Make sure pair column is also expanded
+  pairsOpen = true;
+  document.getElementById('collapse-btn').classList.add('pairs-open');
+}
+
+function accChild(id, battery, modifier, label, icon) {
+  const isActive = currentBattery === battery && currentModifier === modifier;
+  return `<div class="acc-child${isActive?' active':''}" onclick="selectFromAccordion('${battery}','${modifier === null ? 'null' : modifier}')">
+    <span class="mat" style="font-size:13px;color:inherit">${icon}</span>${label}
   </div>`;
 }
 
-async function extractPrimarySummary(pair, battery) {
-  const p = String(pair).padStart(4,'0');
-  const paths = { em:`epistemic_motion/pair_${p}_em.html`, fa:`forensic_analysis/pair_${p}_fa.html`, sc:`semantic_content/pair_${p}_sc.html` };
-  try {
-    const res = await fetch(paths[battery]);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const patEl = doc.querySelector('.pattern-declaration');
-    patEl?.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(e => e.remove());
-    const pattern   = patEl?.textContent.trim();
-    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
-    const meta      = doc.querySelector('.header-meta')?.textContent;
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="pair-pattern">${pattern||'Pattern not found'}</div><div class="pair-reasoning">${reasoning||''}</div>` };
-  } catch { return null; }
+function batIcon(b) {
+  const m = {em:'cognition',fa:'biotech',sc:'newspaper',wpb:'account_box',apb:'taunt',jsb:'crowdsource',eeb:'scan'};
+  return m[b] || 'circle';
 }
 
-async function extractStrategicSummary(pair, primary, perspective) {
+// ── SELECT FROM ACCORDION ────────────────────────────────────────────
+function selectFromAccordion(battery, modifierStr) {
+  const modifier = modifierStr === 'null' ? null : modifierStr;
+  currentBattery  = battery;
+  currentModifier = modifier;
+  if (!currentPair) currentPair = 1;
+
+  // Mark active in accordion
+  document.querySelectorAll('.acc-child').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  // Slide accordion away, reveal pairs
+  closeAccordion();
+
+  // Load pairs for this battery
+  loadPairSummaries(battery, modifier);
+  document.getElementById('pair-panel-bat').textContent = BAT_LABELS[battery] || battery;
+  document.getElementById('pair-panel-mod').textContent = modifier ? modLabel(modifier) : 'Base';
+
+  // Mark pair-active icon
+  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active','open'));
+  document.getElementById('ibtn-' + battery).classList.add('pair-active');
+
+  // Sync subheader
+  syncSubheader();
+  updateCrumbs();
+
+  // Load view
+  showIframe();
+  loadCurrentView();
+  loadBatterySchema(battery, modifier);
+}
+
+function modLabel(mod) {
+  const m = {client:'Client',opposition:'Opposition',graph1:'Graph'};
+  return m[mod] || mod;
+}
+
+function closeAccordion() {
+  accOpen = false;
+  document.getElementById('acc-panel').classList.add('hidden');
+  document.getElementById('pair-panel').style.display = 'flex';
+  // Keep left-side expanded (pairs remain visible)
+  document.getElementById('left-side').classList.remove('pairs-collapsed');
+}
+
+// ── TOGGLE PAIR COLUMN ───────────────────────────────────────────────
+function togglePairs() {
+  if (accOpen) {
+    // If accordion is open, close it first
+    closeAccordion();
+    return;
+  }
+  pairsOpen = !pairsOpen;
+  document.getElementById('left-side').classList.toggle('pairs-collapsed', !pairsOpen);
+  document.getElementById('collapse-btn').classList.toggle('pairs-open', pairsOpen);
+}
+
+// ── SUBHEADER: select base ───────────────────────────────────────────
+function selectBatteryBase(battery) {
+  currentBattery  = battery;
+  currentModifier = null;
+  if (!currentPair) currentPair = 1;
+  syncSubheader();
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  loadBatterySchema(battery, null);
+  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active','open'));
+  document.getElementById('ibtn-' + battery)?.classList.add('pair-active');
+}
+
+// ── SUBHEADER: select modifier ───────────────────────────────────────
+function selectMod(battery, mod) {
+  currentBattery  = battery;
+  currentModifier = mod === 'cl' ? 'client' : mod === 'op' ? 'opposition' : 'graph1';
+  if (!currentPair) currentPair = 1;
+  syncSubheader();
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  const sk = mod === 'cl' ? 'si' : mod === 'op' ? 'si_opp' : battery;
+  loadBatterySchema(sk, null);
+  document.querySelectorAll('.bat-icon-btn').forEach(b => b.classList.remove('pair-active','open'));
+  document.getElementById('ibtn-' + battery)?.classList.add('pair-active');
+}
+
+function syncSubheader() {
+  document.querySelectorAll('.bat-sq').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.mod-cell').forEach(c => c.classList.remove('active-cl','active-op','active-gr'));
+  if (!currentBattery) return;
+  document.getElementById('sq-' + currentBattery)?.classList.add('active');
+  if (currentModifier === 'client')     document.getElementById('mod-' + currentBattery + '-cl')?.classList.add('active-cl');
+  else if (currentModifier === 'opposition') document.getElementById('mod-' + currentBattery + '-op')?.classList.add('active-op');
+  else if (currentModifier === 'graph1') document.getElementById('mod-' + currentBattery + '-gr')?.classList.add('active-gr');
+}
+
+// ── LOAD PAIR ────────────────────────────────────────────────────────
+function loadPair(pairNum) {
+  currentPair = pairNum;
+  updateCrumbs();
+  showIframe();
+  loadCurrentView();
+  highlightPair(pairNum);
+}
+
+function showIframe() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('main-content-frame').style.display = 'block';
+}
+
+function getBatteryPath(battery, pair, modifier) {
   const p = String(pair).padStart(4,'0');
-  const suffix = perspective === 'op' ? '_OPPOSITION' : '';
+  const map = {
+    'em':`epistemic_motion/pair_${p}_em.html`,
+    'em_client':`strategic_interpretation/call7_${p}_em_si.html`,
+    'em_opposition':`strategic_interpretation/call7_${p}_em_si_OPPOSITION.html`,
+    'fa':`forensic_analysis/pair_${p}_fa.html`,
+    'fa_client':`strategic_interpretation/call7_${p}_fa_si.html`,
+    'fa_opposition':`strategic_interpretation/call7_${p}_fa_si_OPPOSITION.html`,
+    'sc':`semantic_content/pair_${p}_sc.html`,
+    'sc_client':`strategic_interpretation/call7_${p}_sc_si.html`,
+    'sc_opposition':`strategic_interpretation/call7_${p}_sc_si_OPPOSITION.html`,
+    'wpb':`witness_posture/pair_${p}_wpb.html`,
+    'apb':`attorney_performance/pair_${p}_apb.html`,
+    'jsb_client':`juror_profiles/pair_${p}_jpb_prosecution.html`,
+    'jsb_opposition':`juror_profiles/pair_${p}_jpb_defense.html`,
+    'eeb':`entity_extraction/pair_${p}_eeb.html`,
+  };
+  let key = battery;
+  if (modifier && modifier !== 'graph1' && ['em','fa','sc','jsb'].includes(battery)) key = battery + '_' + modifier;
+  return map[key] || null;
+}
+
+function loadCurrentView() {
+  if (!currentPair || !currentBattery) return;
+  const iframe = document.getElementById('main-content-frame');
+  if (currentBattery === 'jsb' && !currentModifier) {
+    iframe.removeAttribute('src'); iframe.srcdoc = blank('Select Client or Opposition to view Jury Selection.'); return;
+  }
+  if (currentModifier === 'graph1') {
+    iframe.removeAttribute('src'); iframe.srcdoc = blank(`${BAT_LABELS[currentBattery]} · Graph — coming soon.`); return;
+  }
+  const path = getBatteryPath(currentBattery, currentPair, currentModifier);
+  if (!path) { iframe.removeAttribute('src'); iframe.srcdoc = blank('View not available.'); return; }
+  iframe.removeAttribute('srcdoc');
+  iframe.src = path;
+  iframe.onload = function() {
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) return;
+    injectStyles(doc); wireClicks(doc);
+  };
+}
+
+function blank(msg) {
+  return `<!DOCTYPE html><html><head><style>body{background:#1F2020;color:#989A89;font-family:'DM Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:40px;line-height:1.7;}</style></head><body><div>${msg}</div></body></html>`;
+}
+function injectStyles(doc) {
+  const s = doc.createElement('style');
+  s.textContent = `.footer{background:#000!important;}.col-card,.field-block,.pattern-bar,.sig-bar,.score-row,.summary-block,.panel-call{cursor:pointer;transition:background .15s,border-color .15s,outline .15s;}.col-card:hover{border-color:var(--accent)!important;}.field-block:hover,.pattern-bar:hover,.sig-bar:hover,.score-row:hover,.summary-block:hover,.panel-call:hover{outline:1px solid var(--accent);}.col-card.ca-sel{background:#000!important;border-color:var(--accent)!important;}.field-block.ca-sel,.pattern-bar.ca-sel,.sig-bar.ca-sel,.score-row.ca-sel,.summary-block.ca-sel,.panel-call.ca-sel{background:#000!important;outline:1px solid var(--accent);}`;
+  doc.head.appendChild(s);
+}
+function wireClicks(doc) {
+  const SEL = '.col-card,.field-block,.pattern-bar,.sig-bar,.score-row,.summary-block,.panel-call';
+  const desel = () => doc.querySelectorAll('.ca-sel').forEach(e => e.classList.remove('ca-sel'));
+  doc.querySelectorAll(SEL).forEach(el => {
+    const fid = el.querySelector('[data-field-id]')?.getAttribute('data-field-id') || null;
+    el.addEventListener('click', e => { e.stopPropagation(); desel(); el.classList.add('ca-sel'); if (fid) window.parent.postMessage({type:'fieldClick',fieldId:fid},'*'); });
+  });
+  doc.addEventListener('click', e => { if (!e.target.closest(SEL)) { desel(); if (currentSchema) displaySchemaOverview(); } });
+}
+
+function highlightPair(n) {
+  document.querySelectorAll('.pair-block').forEach(b => b.classList.remove('selected'));
+  const b = document.querySelector(`.pair-block[data-pair="${n}"]`);
+  if (b) { b.classList.add('selected'); b.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+}
+
+function updateCrumbs() {
+  const pe = document.getElementById('crumb-pair');
+  const be = document.getElementById('crumb-battery');
+  const se = document.getElementById('crumb-sep');
+  pe.textContent = currentPair ? `Pair ${String(currentPair).padStart(3,'0')}` : '';
+  if (currentBattery) {
+    let l = BAT_LABELS[currentBattery]||currentBattery;
+    if (currentModifier) { const ml={client:'Client',opposition:'Opposition',graph1:'Graph'}; l += ' · '+(ml[currentModifier]||currentModifier); }
+    be.textContent = l; be.style.display=''; se.style.display='';
+  } else { be.style.display='none'; se.style.display='none'; }
+}
+
+// ── PAIR SUMMARIES ────────────────────────────────────────────────────
+async function loadPairSummaries(battery, modifier) {
+  const container = document.getElementById('pair-list');
+  const session = ++_loadSession;
+  container.innerHTML = `<div class="pair-placeholder"><div class="pair-spinner"></div><div>Loading pairs…</div></div>`;
+  const BATCH=20; const total=395; let first=true;
   try {
-    const res = await fetch(`strategic_interpretation/call7_${p}_${primary}_si${suffix}.html`);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const sigEl = doc.querySelector('.sig-declaration');
-    sigEl?.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(e => e.remove());
-    const signature = sigEl?.textContent.trim();
-    const summaryLabel = Array.from(doc.querySelectorAll('.summary-label')).find(el => el.textContent.includes('Strategic Summary'));
-    const summary   = summaryLabel?.nextElementSibling?.textContent.trim();
-    let cl = '?', op = '?';
-    doc.querySelectorAll('.score-row').forEach(row => {
-      const lbl = row.querySelector('.score-label')?.textContent;
-      const val = row.querySelector('.tag')?.textContent.trim().split('/')[0];
-      if (lbl?.includes('Client')) cl = val||'?';
-      else if (lbl?.includes('Opposition')) op = val||'?';
+    for (let s=1; s<=total; s+=BATCH) {
+      if (session!==_loadSession) return;
+      const nums = Array.from({length:Math.min(BATCH,total-s+1)},(_,i)=>s+i);
+      const results = await Promise.all(nums.map(n=>renderPairSummary(n,battery,modifier)));
+      if (session!==_loadSession) return;
+      const html = results.filter(Boolean).join('');
+      if (!html) continue;
+      if (first) { container.innerHTML=html; first=false; } else container.insertAdjacentHTML('beforeend',html);
+      if (currentPair) highlightPair(currentPair);
+    }
+    if (first&&session===_loadSession) container.innerHTML='<div class="pair-placeholder">No summaries available.</div>';
+  } catch { if (session!==_loadSession) return; container.innerHTML='<div class="pair-placeholder">Error loading.</div>'; }
+}
+
+async function renderPairSummary(n, battery, modifier) {
+  let d;
+  if (modifier==='client'||modifier==='opposition') d=await extractStrategic(n,battery,modifier);
+  else if (battery==='wpb') d=await extractWPB(n);
+  else if (battery==='apb') d=await extractAPB(n);
+  else if (battery==='jsb') d=await extractJUR(n, modifier||'client');
+  else if (battery==='eeb') d=await extractENT(n);
+  else d=await extractPrimary(n,battery);
+  if (!d) return '';
+  return `<div class="pair-block" data-pair="${n}" onclick="loadPair(${n})"><div class="pair-header"><span class="pair-num">PAIR ${n}</span><span class="pair-loc">p.${d.page} l.${d.line}</span></div><div>${d.content}</div></div>`;
+}
+
+async function extractPrimary(pair, battery) {
+  const p=String(pair).padStart(4,'0');
+  const paths={em:`epistemic_motion/pair_${p}_em.html`,fa:`forensic_analysis/pair_${p}_fa.html`,sc:`semantic_content/pair_${p}_sc.html`};
+  try {
+    const doc=new DOMParser().parseFromString(await(await fetch(paths[battery])).text(),'text/html');
+    const pe=doc.querySelector('.pattern-declaration'); pe?.querySelectorAll('.info-icon,.material-symbols-outlined').forEach(e=>e.remove());
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',
+      content:`<div class="pair-pattern">${pe?.textContent.trim()||'—'}</div><div class="pair-reasoning">${doc.querySelector('.pattern-reasoning')?.textContent.trim()||''}</div>`};
+  } catch {return null;}
+}
+
+async function extractStrategic(pair, battery, modifier) {
+  const p=String(pair).padStart(4,'0');
+  const suffix=modifier==='opposition'?'_OPPOSITION':'';
+  try {
+    const doc=new DOMParser().parseFromString(await(await fetch(`strategic_interpretation/call7_${p}_${battery}_si${suffix}.html`)).text(),'text/html');
+    const sigEl=doc.querySelector('.sig-declaration'); sigEl?.querySelectorAll('.info-icon,.material-symbols-outlined').forEach(e=>e.remove());
+    const sig=sigEl?.textContent.trim();
+    const summaryLabel=Array.from(doc.querySelectorAll('.summary-label')).find(el=>el.textContent.includes('Strategic Summary'));
+    const summary=summaryLabel?.nextElementSibling?.textContent.trim();
+    let cl='?',op='?';
+    doc.querySelectorAll('.score-row').forEach(row=>{
+      const lbl=row.querySelector('.score-label')?.textContent;
+      const val=row.querySelector('.tag')?.textContent.trim().split('/')[0];
+      if(lbl?.includes('Client')) cl=val||'?'; else if(lbl?.includes('Opposition')) op=val||'?';
     });
-    const meta = doc.querySelector('.header-meta')?.textContent;
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="pair-scores" style="margin-bottom:6px;"><div class="pair-score-item"><span class="pair-score-value">CL:${cl} | OP:${op}</span></div></div><div class="pair-pattern">Signature: ${signature||'Not found'}</div><div class="pair-summary">${summary||''}</div>` };
-  } catch { return null; }
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',
+      content:`<div class="pair-scores"><span class="pair-score-value">CL:${cl} | OP:${op}</span></div><div class="pair-pattern">${sig||'—'}</div><div class="pair-reasoning">${summary||''}</div>`};
+  } catch {return null;}
 }
 
-async function extractWPBSummary(pair) {
-  const p = String(pair).padStart(4,'0');
+async function extractWPB(pair) {
+  const p=String(pair).padStart(4,'0');
   try {
-    const res = await fetch(`witness_posture/pair_${p}_wpb.html`);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const patEl = doc.querySelector('.pattern-declaration');
-    patEl?.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(e => e.remove());
-    const pattern   = patEl?.textContent.trim();
-    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
-    const score     = doc.querySelector('.grand-total-score')?.textContent.trim();
-    const meta      = doc.querySelector('.header-meta')?.textContent;
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="pair-pattern">${pattern||'Pattern not found'}</div><div class="pair-reasoning">${reasoning||''}</div><div class="pair-scores"><div class="pair-score-item"><span class="pair-score-label">Score:</span><span class="pair-score-value">${score||'N/A'}</span></div></div>` };
-  } catch { return null; }
+    const doc=new DOMParser().parseFromString(await(await fetch(`witness_posture/pair_${p}_wpb.html`)).text(),'text/html');
+    const pe=doc.querySelector('.pattern-declaration'); pe?.querySelectorAll('.info-icon,.material-symbols-outlined').forEach(e=>e.remove());
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',
+      content:`<div class="pair-pattern">${pe?.textContent.trim()||'—'}</div><div class="pair-reasoning">${doc.querySelector('.pattern-reasoning')?.textContent.trim()||''}</div><div class="pair-scores"><span class="pair-score-value">${doc.querySelector('.grand-total-score')?.textContent.trim()||'N/A'}</span></div>`};
+  } catch {return null;}
 }
 
-async function extractAPBSummary(pair) {
-  const p = String(pair).padStart(4,'0');
+async function extractAPB(pair) {
+  const p=String(pair).padStart(4,'0');
   try {
-    const res = await fetch(`attorney_performance/pair_${p}_apb.html`);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const patEl = doc.querySelector('.pattern-declaration');
-    patEl?.querySelectorAll('.info-icon, .material-symbols-outlined').forEach(e => e.remove());
-    const pattern   = patEl?.textContent.trim();
-    const reasoning = doc.querySelector('.pattern-reasoning')?.textContent.trim();
-    const score     = doc.querySelector('.grand-total-score')?.textContent.trim();
-    const meta      = doc.querySelector('.header-meta')?.textContent;
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="pair-pattern">${pattern||'Pattern not found'}</div><div class="pair-reasoning">${reasoning||''}</div><div class="pair-scores"><div class="pair-score-item"><span class="pair-score-label">Score:</span><span class="pair-score-value">${score||'N/A'}</span></div></div>` };
-  } catch { return null; }
+    const doc=new DOMParser().parseFromString(await(await fetch(`attorney_performance/pair_${p}_apb.html`)).text(),'text/html');
+    const pe=doc.querySelector('.pattern-declaration'); pe?.querySelectorAll('.info-icon,.material-symbols-outlined').forEach(e=>e.remove());
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',
+      content:`<div class="pair-pattern">${pe?.textContent.trim()||'—'}</div><div class="pair-reasoning">${doc.querySelector('.pattern-reasoning')?.textContent.trim()||''}</div><div class="pair-scores"><span class="pair-score-value">${doc.querySelector('.grand-total-score')?.textContent.trim()||'N/A'}</span></div>`};
+  } catch {return null;}
 }
 
-async function extractJURSummary(pair, perspective) {
-  const p = String(pair).padStart(4,'0');
-  const suffix = perspective === 'op' ? '_defense' : '_prosecution';
+async function extractJUR(pair, perspective) {
+  const p=String(pair).padStart(4,'0');
+  const suffix=perspective==='opposition'?'_defense':'_prosecution';
   try {
-    const res = await fetch(`juror_profiles/pair_${p}_jpb${suffix}.html`);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const wPat = doc.querySelector('#tab-wants .pattern-declaration')?.textContent.trim();
-    const wRea = doc.querySelector('#tab-wants .pattern-reasoning')?.textContent.trim();
-    const dPat = doc.querySelector('#tab-donts .pattern-declaration')?.textContent.trim();
-    const dRea = doc.querySelector('#tab-donts .pattern-reasoning')?.textContent.trim();
-    const meta = doc.querySelector('.header-meta')?.textContent;
-    const perspLabel = perspective === 'op' ? 'OPPOSITION' : 'CLIENT';
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="jur-label">${perspLabel} PREFERENCES</div><div class="jur-section"><div class="pair-pattern">Want: ${wPat||'?'}</div><div class="pair-reasoning">${wRea||''}</div></div><div class="jur-section"><div class="pair-pattern">Don't Want: ${dPat||'?'}</div><div class="pair-reasoning">${dRea||''}</div></div>` };
-  } catch { return null; }
+    const doc=new DOMParser().parseFromString(await(await fetch(`juror_profiles/pair_${p}_jpb${suffix}.html`)).text(),'text/html');
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',
+      content:`<div class="jur-section"><div class="pair-pattern">Want: ${doc.querySelector('#tab-wants .pattern-declaration')?.textContent.trim()||'?'}</div></div><div class="jur-section"><div class="pair-pattern">Avoid: ${doc.querySelector('#tab-donts .pattern-declaration')?.textContent.trim()||'?'}</div></div>`};
+  } catch {return null;}
 }
 
-async function extractENTSummary(pair) {
-  const p = String(pair).padStart(4,'0');
+async function extractENT(pair) {
+  const p=String(pair).padStart(4,'0');
   try {
-    const res = await fetch(`entity_extraction/pair_${p}_eeb.html`);
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-    const meta = doc.querySelector('.header-meta')?.textContent;
-    return { page: meta?.match(/p\.(\d+)/)?.[1]||'?', line: meta?.match(/l\.(\d+)/)?.[1]||'?',
-      content: `<div class="entity-summary"><div class="entity-count">19 entities • 15 high • 4 medium • 0 low</div><div>persons ×4, attributions ×3, thoughts ×2, companies ×2</div></div>` };
-  } catch { return null; }
+    const doc=new DOMParser().parseFromString(await(await fetch(`entity_extraction/pair_${p}_eeb.html`)).text(),'text/html');
+    const meta=doc.querySelector('.header-meta')?.textContent;
+    return {page:meta?.match(/p\.(\d+)/)?.[1]||'?',line:meta?.match(/l\.(\d+)/)?.[1]||'?',content:`<div class="entity-summary"><div class="entity-count">Entities extracted</div></div>`};
+  } catch {return null;}
 }
 
-// ── Schema loading ───────────────────────────────────────────────────────
-const batterySchemaMap = {
-  em:     'schemas/em_schema.json',
-  fa:     'schemas/forensic_analysis_schema.json',
-  sc:     'schemas/semantic_content_schema.json',
-  si:     'schemas/strategic_interpretation_schema.json',
-  si_opp: 'schemas/strategic_interpretation_opposition_schema.json',
-  wpb:    'schemas/witness_posture_schema.json',
-  apb:    'schemas/attorney_performance_schema.json',
-  jsb:    'schemas/juror_profile_schema.json',
-  eeb:    'schemas/entity_extraction_schema.json'
-};
+// ── BOTTOM / SCHEMA ───────────────────────────────────────────────────
+function toggleBottomDrawer() {
+  bottomOpen=!bottomOpen;
+  document.getElementById('bottom-bar').classList.toggle('open',bottomOpen);
+  document.getElementById('bottom-drawer').classList.toggle('open',bottomOpen);
+}
+function openBottomDrawer() {
+  if(!bottomOpen){bottomOpen=true;document.getElementById('bottom-bar').classList.add('open');document.getElementById('bottom-drawer').classList.add('open');}
+}
+
+const schemaMap={em:'schemas/em_schema.json',fa:'schemas/forensic_analysis_schema.json',sc:'schemas/semantic_content_schema.json',si:'schemas/strategic_interpretation_schema.json',si_opp:'schemas/strategic_interpretation_opposition_schema.json',wpb:'schemas/witness_posture_schema.json',apb:'schemas/attorney_performance_schema.json',jsb:'schemas/juror_profile_schema.json',eeb:'schemas/entity_extraction_schema.json'};
 
 async function loadBatterySchema(battery, modifier) {
-  let key = battery;
-  if (modifier === 'client')     key = 'si';
-  if (modifier === 'opposition') key = 'si_opp';
-
-  if (schemaCache[key]) { currentSchema = schemaCache[key]; displaySchemaOverview(); return; }
-
-  const path = batterySchemaMap[key];
-  if (!path) { displaySchemaPlaceholder(); return; }
-
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error();
-    const schema = await res.json();
-    schemaCache[key] = schema;
-    currentSchema = schema;
-    displaySchemaOverview();
-  } catch { displaySchemaPlaceholder(); }
+  let key=battery;
+  if(modifier==='client') key='si';
+  if(modifier==='opposition') key='si_opp';
+  if(schemaCache[key]){currentSchema=schemaCache[key];displaySchemaOverview();return;}
+  const path=schemaMap[key]; if(!path){displaySchemaPlaceholder();return;}
+  try{const res=await fetch(path);if(!res.ok)throw new Error();const s=await res.json();schemaCache[key]=s;currentSchema=s;displaySchemaOverview();}
+  catch{displaySchemaPlaceholder();}
 }
 
 function displaySchemaOverview() {
-  if (!currentSchema) { displaySchemaPlaceholder(); return; }
-  updateBottomBarPreview(`${currentSchema.battery_name} · Overview`);
-  renderBottomDrawer(null, null);
+  if(!currentSchema){displaySchemaPlaceholder();return;}
+  document.getElementById('bottom-bar-preview').innerHTML=`<span class="lit">${currentSchema.battery_name} · Overview</span>`;
+  document.getElementById('bottom-drawer-inner').innerHTML=`<div class="bottom-drawer-banner"><div class="bottom-drawer-title">${currentSchema.battery_name} · Overview</div></div><div class="bottom-drawer-cols"><div class="schema-card" style="grid-column:1/4"><div class="schema-card-body">${currentSchema.battery_overview||'—'}</div></div></div>`;
 }
-
 function displaySchemaPlaceholder() {
-  updateBottomBarPreview('Schema not yet available for this battery');
-  document.getElementById('bottom-drawer-inner').innerHTML =
-    '<div class="placeholder" style="min-height:60px;padding:16px;">Schema for this battery will be available soon.</div>';
-}
-
-function updateBottomBarPreview(text) {
-  document.getElementById('bottom-bar-preview').innerHTML = `<span class="preview-active">${text}</span>`;
-}
-
-// Render bottom drawer content: overview or field detail
-function renderBottomDrawer(fieldId, field) {
-  const inner = document.getElementById('bottom-drawer-inner');
-
-  if (!field) {
-    // Overview
-    if (!currentSchema) return;
-    inner.innerHTML = `
-      <div class="bottom-drawer-banner">
-        <div class="bottom-drawer-title">${currentSchema.battery_name} · Overview</div>
-      </div>
-      <div class="bottom-drawer-cols">
-        <div class="schema-card" style="grid-column:1/4;">
-          <div class="schema-card-body">${currentSchema.battery_overview || '—'}</div>
-        </div>
-      </div>`;
-    return;
-  }
-
-  // Field detail
-  const definition   = field.definition || field.description || '—';
-  const whyItMatters = field.why_it_matters || '—';
-  const callLabel    = field.call !== undefined ? `Call ${field.call}` : '';
-  const section      = field.parent_section || '';
-  const liveValue    = getLiveValue(fieldId);
-  const activeValueHTML = renderActiveValue(field, liveValue);
-
-  inner.innerHTML = `
-    <div class="bottom-drawer-banner">
-      <div class="bottom-drawer-title">${[callLabel, section, field.label].filter(Boolean).join(' · ')}</div>
-      ${activeValueHTML ? `<div class="bottom-drawer-value">${activeValueHTML}</div>` : ''}
-    </div>
-    <div class="bottom-drawer-cols">
-      <div class="schema-card">
-        <div class="schema-card-label">What it measures</div>
-        <div class="schema-card-body">${definition}</div>
-      </div>
-      <div class="schema-card">
-        <div class="schema-card-label">How to read this</div>
-        <div class="schema-card-body">${field.scale_description || field.value_description || '—'}</div>
-      </div>
-      <div class="schema-card">
-        <div class="schema-card-label">Why it matters</div>
-        <div class="schema-card-body">${whyItMatters}</div>
-      </div>
-    </div>`;
+  document.getElementById('bottom-bar-preview').innerHTML='<span>Schema not available</span>';
+  document.getElementById('bottom-drawer-inner').innerHTML='<div class="pair-placeholder" style="height:80px;">Schema coming soon.</div>';
 }
 
 function displayFieldSchema(fieldId) {
-  if (!currentSchema) return;
-
-  let field = null;
-  if (currentSchema.pattern_field?.id === fieldId) field = currentSchema.pattern_field;
-  if (!field && Array.isArray(currentSchema.fields)) field = currentSchema.fields.find(f => f.id === fieldId) || null;
-  if (!field && currentSchema.demographic_fields?.[fieldId]) {
-    const raw = currentSchema.demographic_fields[fieldId];
-    field = { id: fieldId, label: fieldId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), call:'A',
-      definition: raw.description||'', why_it_matters:'Demographic profile field used in voir dire strategy.',
-      parent_section:'Demographic Profile', enum_values: raw.values ? Object.fromEntries(raw.values.map(v=>[v.toLowerCase(),v])) : null, value_description: raw.format||null };
-  }
-  if (!field && currentSchema.enrichment_fields?.[fieldId]) {
-    const raw = currentSchema.enrichment_fields[fieldId];
-    field = { id: fieldId, label: fieldId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), call:'B',
-      definition: raw.description||'', why_it_matters: raw.note||'Enrichment field used in juror profiling.',
-      parent_section:'Juror Enrichment', enum_values: raw.values ? Object.fromEntries(raw.values.map(v=>[v.toLowerCase(),v])) : null, value_description: raw.format||null };
-  }
-  if (!field) return;
-
-  const liveValue = getLiveValue(fieldId);
-  const activeValueHTML = renderActiveValue(field, liveValue);
-
-  updateBottomBarPreview(`${field.label}${activeValueHTML ? ' · ' + activeValueHTML : ''}`);
-  renderBottomDrawer(fieldId, field);
+  if(!currentSchema) return;
+  let field=null;
+  if(currentSchema.pattern_field?.id===fieldId) field=currentSchema.pattern_field;
+  if(!field&&Array.isArray(currentSchema.fields)) field=currentSchema.fields.find(f=>f.id===fieldId)||null;
+  if(!field&&currentSchema.demographic_fields?.[fieldId]){const r=currentSchema.demographic_fields[fieldId];field={id:fieldId,label:fieldId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),call:'A',definition:r.description||'',why_it_matters:'Demographic field.',parent_section:'Demographic Profile',enum_values:r.values?Object.fromEntries(r.values.map(v=>[v.toLowerCase(),v])):null,value_description:r.format||null};}
+  if(!field&&currentSchema.enrichment_fields?.[fieldId]){const r=currentSchema.enrichment_fields[fieldId];field={id:fieldId,label:fieldId.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),call:'B',definition:r.description||'',why_it_matters:r.note||'Enrichment field.',parent_section:'Juror Enrichment',enum_values:r.values?Object.fromEntries(r.values.map(v=>[v.toLowerCase(),v])):null,value_description:r.format||null};}
+  if(!field) return;
+  const lv=getLiveValue(fieldId); const av=renderActiveValue(field,lv);
+  const cl=field.call!==undefined?`Call ${field.call}`:''; const sec=field.parent_section||'';
+  document.getElementById('bottom-bar-preview').innerHTML=`<span class="lit">${field.label}${av?' · '+av:''}</span>`;
+  document.getElementById('bottom-drawer-inner').innerHTML=`<div class="bottom-drawer-banner"><div class="bottom-drawer-title">${[cl,sec,field.label].filter(Boolean).join(' · ')}</div>${av?`<div class="bottom-drawer-value">${av}</div>`:''}</div><div class="bottom-drawer-cols"><div class="schema-card"><div class="schema-card-label">What it measures</div><div class="schema-card-body">${field.definition||field.description||'—'}</div></div><div class="schema-card"><div class="schema-card-label">How to read this</div><div class="schema-card-body">${field.scale_description||field.value_description||'—'}</div></div><div class="schema-card"><div class="schema-card-label">Why it matters</div><div class="schema-card-body">${field.why_it_matters||'—'}</div></div></div>`;
   openBottomDrawer();
-
-  // Pulse bottom bar
-  const bar = document.getElementById('bottom-bar');
-  bar.classList.remove('schema-pulse');
-  void bar.offsetWidth;
-  bar.classList.add('schema-pulse');
+  const bar=document.getElementById('bottom-bar');bar.classList.remove('schema-pulse');void bar.offsetWidth;bar.classList.add('schema-pulse');
 }
 
 function getLiveValue(fieldId) {
-  try {
-    const iframe = document.getElementById('main-content-frame');
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    const icon = iframeDoc.querySelector(`[data-field-id="${fieldId}"]`);
-    if (!icon) return null;
-    let node = icon.parentElement;
-    while (node && node !== iframeDoc.body) {
-      const valueEl = node.querySelector('[data-field-value]');
-      if (valueEl) return valueEl.getAttribute('data-field-value');
-      node = node.parentElement;
-    }
-    return null;
-  } catch { return null; }
+  try{const iframe=document.getElementById('main-content-frame');const doc=iframe.contentDocument||iframe.contentWindow?.document;const icon=doc?.querySelector(`[data-field-id="${fieldId}"]`);if(!icon)return null;let node=icon.parentElement;while(node&&node!==doc.body){const v=node.querySelector('[data-field-value]');if(v)return v.getAttribute('data-field-value');node=node.parentElement;}return null;}catch{return null;}
 }
-
-function renderActiveValue(field, liveValue) {
-  if (!liveValue || liveValue === '' || liveValue === 'null') return '';
-  if (field.scale_values) {
-    const num = parseFloat(liveValue);
-    for (const k of [liveValue, String(Math.round(num)), String(Math.floor(num)), `${Math.floor(num)}_to_${Math.ceil(num)}`]) {
-      if (field.scale_values[k]) return `${liveValue}: ${field.scale_values[k].split('.')[0]}.`;
-    }
-  }
-  if (field.enum_values) {
-    const key = liveValue.toString().toLowerCase();
-    if (field.enum_values[key]) return `${liveValue}: ${field.enum_values[key].split('.')[0]}.`;
-  }
+function renderActiveValue(field,lv) {
+  if(!lv||lv===''||lv==='null') return '';
+  if(field.scale_values){const num=parseFloat(lv);for(const k of[lv,String(Math.round(num)),String(Math.floor(num)),`${Math.floor(num)}_to_${Math.ceil(num)}`]){if(field.scale_values[k])return `${lv}: ${field.scale_values[k].split('.')[0]}.`;}}
+  if(field.enum_values){const k=lv.toString().toLowerCase();if(field.enum_values[k])return `${lv}: ${field.enum_values[k].split('.')[0]}.`;}
   return '';
 }
 
-// ── Message listener (fieldClick from iframe) ────────────────────────────
 window.addEventListener('message', function(e) {
-  if (!e.data || e.data.type !== 'fieldClick') return;
-  const fieldId = e.data.fieldId;
-  if (!fieldId || !currentSchema) return;
-  displayFieldSchema(fieldId);
+  if(!e.data||e.data.type!=='fieldClick') return;
+  if(!e.data.fieldId||!currentSchema) return;
+  displayFieldSchema(e.data.fieldId);
 });
 
-// ── Init ─────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', function() {
-  updateCrumbs();
-  // Leave iframe blank — content loads when user selects a battery and pair
-});
-
+window.addEventListener('DOMContentLoaded', updateCrumbs);
 </script>
 </body>
 </html>
