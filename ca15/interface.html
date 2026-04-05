@@ -4,19 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA15 Analysis Interface · Benjamin Gibson Deposition</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
     --bg: #1F2020;
     --surface: #272828;
     --surface2: #2e2f2f;
     --border: #3a3b3b;
-    --accent: #c8a96e;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
   }
 
   * { 
@@ -61,10 +62,10 @@
   }
 
   .panel-title {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--accent);
     text-align: center;
@@ -159,10 +160,10 @@
   }
 
   .section-label {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-dim);
     margin-bottom: 8px;
@@ -217,7 +218,7 @@
   }
 
   .filter-group-label {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -397,13 +398,13 @@
       <div class="battery-section">
         <div class="section-label">PRIMARY</div>
         <button class="battery-btn active" id="btn-em" onclick="selectBattery('em')">
-          EM Battery
+          Epistemic Motion
         </button>
         <button class="battery-btn" id="btn-fa" onclick="selectBattery('fa')">
-          FA Battery
+          Forensic Analysis
         </button>
         <button class="battery-btn" id="btn-sc" onclick="selectBattery('sc')">
-          SC Battery
+          Semantic Content
         </button>
       </div>
 
@@ -707,22 +708,22 @@ function getLiveValue(fieldId) {
   }
 }
 
-// ── Render the active-value block for the bottom panel ──
+// ── Render the active-value block for the bottom panel (col 1) ──
 function renderActiveValue(field, liveValue) {
+  // No live value — return nothing, show no callout
   if (!liveValue || liveValue === '' || liveValue === 'null') {
-    // Null state
-    const nullText = field.null_explanation || 'This field does not apply to this specific exchange.';
-    return `
-      <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--border);">
-        <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px;">This exchange</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic;">${nullText}</div>
-      </div>`;
+    return '';
   }
 
-  // Try scale_values (numeric — exact integer key match)
+  // Try scale_values (numeric)
   if (field.scale_values) {
-    // Normalise: try exact, then rounded int
-    const tryKeys = [liveValue, String(Math.round(parseFloat(liveValue)))];
+    const num = parseFloat(liveValue);
+    const tryKeys = [
+      liveValue,                          // exact string e.g. "4.0"
+      String(Math.round(num)),            // rounded int e.g. "4"
+      String(Math.floor(num)),            // floor e.g. "4" from 4.5
+      `${Math.floor(num)}_to_${Math.ceil(num)}` // range e.g. "2_to_3"
+    ];
     for (const k of tryKeys) {
       if (field.scale_values[k]) {
         return `
@@ -734,9 +735,9 @@ function renderActiveValue(field, liveValue) {
     }
   }
 
-  // Try enum_values (boolean/categorical)
+  // Try enum_values (boolean/categorical — only show the matched one)
   if (field.enum_values) {
-    const key = liveValue.toLowerCase();
+    const key = liveValue.toString().toLowerCase();
     if (field.enum_values[key]) {
       return `
         <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--accent);">
@@ -746,94 +747,11 @@ function renderActiveValue(field, liveValue) {
     }
   }
 
-  // Fallback: show value_description or scale_description
-  const desc = field.value_description || field.scale_description || null;
-  if (desc) {
-    return `
-      <div style="margin-top: 8px; padding: 8px 10px; background: var(--surface2); border-radius: 3px; border-left: 2px solid var(--border);">
-        <div style="font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px;">How to read this</div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.5;">${desc}</div>
-      </div>`;
-  }
-
+  // No match found — return nothing
   return '';
 }
 
-function displayFieldSchema(fieldId) {
-  const panel = document.querySelector('.bottom-panel .panel-content');
-  if (!currentSchema) return;
-
-  let field = null;
-
-  // 1. pattern_field
-  if (currentSchema.pattern_field && currentSchema.pattern_field.id === fieldId) {
-    field = currentSchema.pattern_field;
-  }
-
-  // 2. standard fields[] array
-  if (!field && Array.isArray(currentSchema.fields)) {
-    field = currentSchema.fields.find(f => f.id === fieldId) || null;
-  }
-
-  // 3. JPB demographic_fields dict
-  if (!field && currentSchema.demographic_fields && currentSchema.demographic_fields[fieldId]) {
-    const raw = currentSchema.demographic_fields[fieldId];
-    field = {
-      id: fieldId,
-      label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      call: 'A',
-      definition: raw.description || '',
-      why_it_matters: 'Demographic profile field used in voir dire strategy and juror activation mapping.',
-      parent_section: 'Demographic Profile',
-      enum_values: raw.values ? Object.fromEntries(raw.values.map(v => [v.toLowerCase(), v])) : null,
-      value_description: raw.format || null
-    };
-  }
-
-  // 4. JPB enrichment_fields dict
-  if (!field && currentSchema.enrichment_fields && currentSchema.enrichment_fields[fieldId]) {
-    const raw = currentSchema.enrichment_fields[fieldId];
-    field = {
-      id: fieldId,
-      label: fieldId.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      call: 'B',
-      definition: raw.description || '',
-      why_it_matters: raw.note || 'Enrichment field used in psychological and strategic profiling of juror types.',
-      parent_section: 'Juror Enrichment',
-      enum_values: raw.values ? Object.fromEntries(raw.values.map(v => [v.toLowerCase(), v])) : null,
-      value_description: raw.format || null
-    };
-  }
-
-  if (!field) {
-    console.log(`Field "${fieldId}" not found in schema`);
-    return;
-  }
-
-  // Normalise keys across old and new schema shapes
-  const definition  = field.definition || field.description || '—';
-  const whyItMatters = field.why_it_matters || '—';
-  const callLabel   = field.call !== undefined ? `Call ${field.call}` : '';
-  const section     = field.parent_section || '';
-
-  // Get the live value from the iframe
-  const liveValue = getLiveValue(fieldId);
-  const activeValueHTML = renderActiveValue(field, liveValue);
-
-  panel.innerHTML = `
-    <div style="padding: 10px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; height: 100%; overflow: auto;">
-
-      <!-- COL 1: What it is -->
-      <div>
-        <div style="font-family: 'Syne', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px;">
-          ${field.label}
-          ${callLabel ? `<span style="font-size: 7px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">${callLabel}${section ? ' · ' + section : ''}</span>` : ''}
-        </div>
-        <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${definition}</div>
-        ${activeValueHTML}
-      </div>
-
-      <!-- COL 2: Scale / how to read it -->
+<!-- COL 2: Scale / how to read it -->
       <div>
         ${field.scale_description ? `
           <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How it's scored</div>
@@ -843,23 +761,6 @@ function displayFieldSchema(fieldId) {
           <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 4px;">How to read this</div>
           <div style="font-size: 8px; color: var(--text-dim); line-height: 1.6;">${field.value_description}</div>
         ` : ''}
-        ${field.value_type === 'numeric' && field.scale_values ? `
-          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 6px;">Score reference</div>
-          ${Object.entries(field.scale_values).map(([k, v]) => `
-            <div style="display:flex; gap:8px; margin-bottom:4px; align-items:flex-start;">
-              <div style="font-size:8px; color:var(--accent); min-width:24px; flex-shrink:0; font-weight:600;">${k}</div>
-              <div style="font-size:8px; color:var(--text-dim); line-height:1.4;">${v}</div>
-            </div>`).join('')}
-        ` : ''}
-        ${field.value_type === 'boolean' && field.enum_values ? `
-          <div style="font-size: 8px; font-weight: 600; color: var(--text-bright); margin-bottom: 6px;">Possible values</div>
-          ${Object.entries(field.enum_values).map(([k, v]) => `
-            <div style="display:flex; gap:8px; margin-bottom:6px; align-items:flex-start;">
-              <div style="font-size:8px; color:var(--accent); min-width:40px; flex-shrink:0; font-weight:600;">${k}</div>
-              <div style="font-size:8px; color:var(--text-dim); line-height:1.4;">${v}</div>
-            </div>`).join('')}
-        ` : ''}
-        ${field.value_description && !field.scale_description && !field.scale_values && !field.enum_values ? '' : ''}
       </div>
 
       <!-- COL 3: Why it matters + back button -->
