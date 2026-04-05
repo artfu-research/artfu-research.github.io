@@ -510,7 +510,7 @@
 <div class="top-bar">
 
   <button class="top-btn" id="btn-left" onclick="toggleDropdown('left')">
-    <span class="mat-icon">cognition</span>
+    <span class="mat-icon">network_intel_node</span>
     Battery Nav
   </button>
 
@@ -526,7 +526,7 @@
 
   <button class="top-btn" id="btn-right" onclick="toggleDropdown('right')">
     Pair Navigator
-    <span class="mat-icon">scan</span>
+    <span class="mat-icon">conversation</span>
   </button>
 
 </div>
@@ -547,7 +547,7 @@
 
     <!-- Epistemic Motion -->
     <div class="acc-row" id="acc-em" data-battery="em" onclick="accSelect(this)">
-      <div class="acc-icon"><span class="mat-icon">cognition</span></div>
+      <div class="acc-icon"><span class="mat-icon">network_intel_node</span></div>
       <div class="acc-label">Epistemic Motion</div>
       <div class="acc-chev">
         <svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg>
@@ -670,7 +670,7 @@
 
     <!-- EM -->
     <div class="acc-row" id="racc-em" data-rbattery="em" onclick="raccSelect(this)" style="height:34px;">
-      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">cognition</span></div>
+      <div class="acc-icon" style="width:32px;height:34px;"><span class="mat-icon" style="font-size:14px;">network_intel_node</span></div>
       <div class="acc-label" style="font-size:9px;">Epistemic Motion</div>
       <div class="acc-chev"><svg viewBox="0 0 10 10" fill="none" stroke="#6b6d61" stroke-width="1.5"><path d="M3 2l4 3-4 3"/></svg></div>
     </div>
@@ -854,9 +854,11 @@ function selectView(battery, modifier) {
   currentBattery  = battery;
   currentModifier = modifier;
 
+  // Default to pair 1 if no pair has been selected yet
+  if (!currentPair) currentPair = 1;
+
   // Update active child styling
   document.querySelectorAll('#dropdown-left .acc-child').forEach(c => c.classList.remove('active'));
-  // Find and mark the matching child
   document.querySelectorAll(`#children-${battery} .acc-child`).forEach(c => {
     const cMod = c.getAttribute('onclick');
     if (!c.classList.contains('soon')) {
@@ -908,25 +910,26 @@ function selectRightFilter(battery, si) {
 function loadPairFromSummary(pairNum) {
   currentPair = pairNum;
 
-  // Map right-panel filter to a left-panel view
-  const evalMap = { wpb: 'wpb', apb: 'apb', jsb: 'jsb', eeb: 'eeb' };
-  const primaryBatteries = ['em','fa','sc'];
+  // Only remap battery from right-panel filter if the left panel has nothing selected yet
+  if (!currentBattery) {
+    const evalMap = { wpb: 'wpb', apb: 'apb', jsb: 'jsb', eeb: 'eeb' };
+    const primaryBatteries = ['em','fa','sc'];
 
-  if (evalMap[filterState.battery]) {
-    const bat = evalMap[filterState.battery];
-    const mod = (bat === 'jsb') ? (filterState.si === 'cl' ? 'client' : 'opposition') : null;
-    currentBattery  = bat;
-    currentModifier = mod;
-  } else if (primaryBatteries.includes(filterState.battery)) {
-    currentBattery  = filterState.battery;
-    currentModifier = filterState.si === 'cl' ? 'client' : filterState.si === 'op' ? 'opposition' : null;
+    if (evalMap[filterState.battery]) {
+      const bat = evalMap[filterState.battery];
+      const mod = (bat === 'jsb') ? (filterState.si === 'cl' ? 'client' : 'opposition') : null;
+      currentBattery  = bat;
+      currentModifier = mod;
+    } else if (primaryBatteries.includes(filterState.battery)) {
+      currentBattery  = filterState.battery;
+      currentModifier = filterState.si === 'cl' ? 'client' : filterState.si === 'op' ? 'opposition' : null;
+    }
+    syncLeftAccordion();
+    loadBatterySchema(currentBattery, currentModifier);
   }
 
-  // Sync left accordion to show correct open state
-  syncLeftAccordion();
   updateCrumbs();
   loadCurrentView();
-  loadBatterySchema(currentBattery, currentModifier);
   highlightPair(pairNum);
   closeAllDropdowns();
 }
