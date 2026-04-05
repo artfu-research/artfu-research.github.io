@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="clarify timing irrelevance">clarify timing irrelevance</div>
           <div class="field-reasoning">The witness moves from an uncertain, debated time frame to asserting that the specific timing does not affect the case outcome. This shift shows a change in the understanding of the event’s relevance.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="event timing confusion">event timing confusion</div>
           <div class="field-reasoning">The core issue being addressed is the exact time of the event, which was initially unclear and later clarified. The transformation focuses on resolving that specific concept.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 established a frame that the witness needed to clarify the timing of events, referencing Porter's deposition and other witnesses’ recollections, thereby making it necessary for Turn 2 to address the specific time window and reconcile differing accounts.</div>
           <div class="field-reasoning">The question explicitly asks about the timing and cites Porter's testimony and other witnesses, creating a constraint that the answer must address the precise time range and its significance.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1 by correcting the implied time (1 p.m.) to a pre‑noon window, clarifying that the exact hour is immaterial to the outcome, and thereby recontextualizing the original question as a broader inquiry about timing rather than a precise moment.</div>
           <div class="field-reasoning">The answer acknowledges the question’s framing, corrects it to a specific time range, and emphasizes that the difference between 10 a.m. and 12 p.m. does not alter the case’s outcome, shifting the focus from a narrow detail to a general timeline.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="3.0">3.0</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -433,7 +446,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The question narrows the discussion to the timing of the event, highlights transcript issues, references Porter's deposition, and notes that other witnesses place the event after lunch, establishing a pre‑noon boundary.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -462,7 +475,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The answer resolves the exact time, states that the precise hour is irrelevant to outcomes, and aligns Porter’s testimony with Juan’s recollection, opening the possibility of agreement and clarifying the pre‑noon timeframe.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">transcript weirdness</div><div class="tag tag-blue encoding-tag">Porter's deposition</div><div class="tag tag-blue encoding-tag">pre‑noon vs post‑lunch timing</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">frustration with transcript</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">other witnesses’ statements</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">importance of event timing</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">pre‑noon timing</div><div class="tag tag-green encoding-tag">10 vs 12 irrelevant</div><div class="tag tag-green encoding-tag">outcomes unchanged</div><div class="tag tag-green encoding-tag">Porter vs Juan recollection</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">question about timing</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">disagreement between witnesses</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">event consistency</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">outcome unaffected by exact time</div>
           <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly names transcript issues, Porter's testimony, and timing, while implicitly conveying frustration and the significance of timing. Turn 2 explicitly states the time range, the irrelevance of exact hour, and the comparison of recollections, implicitly indicating the question’s focus and the potential for agreement.</div>
@@ -474,19 +487,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: time alignment</div><div class="field-reasoning">Both speakers focus on the timing of the event, with Ms. Easterling noting it occurred after lunch and Gibson specifying times around lunch, indicating a move toward a shared chronological frame.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: conflicting timing</div><div class="field-reasoning">Ms. Easterling asserts the event was after lunch, while Gibson indicates it could have been before or at lunch, creating a discrepancy in their temporal accounts.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: outcome irrelevance</div><div class="field-reasoning">Gibson introduces a new point that the exact timing does not alter the case outcome, a concept not present in Ms. Easterling’s question, thus emerging from the interaction.</div>
         </div>
@@ -497,9 +510,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">pre-noon timing</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">time difference irrelevant</div>
@@ -508,7 +521,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now sees that the event occurred before noon and that the exact hour is not critical. Benjamin clarifies that the question was framed as 1 p.m., but the event was still pre‑noon and the outcome is unaffected.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">pre-noon timing</div>
@@ -523,7 +536,7 @@
           <div class="field-reasoning" style="margin-top:6px;">These concepts anchor the discussion, reinforcing coherence about the timing and its impact on the case outcome.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">relevance</div>

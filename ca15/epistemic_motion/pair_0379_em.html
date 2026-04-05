@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="confirming sameness">confirming sameness</div>
           <div class="field-reasoning">The answer indicates that the underlying action is identical in both versions, shifting the understanding from potential uncertainty to a clear confirmation.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="underlying action">underlying action</div>
           <div class="field-reasoning">The content of the answer centers on the concept of the underlying action being the same, making it the focal point of the epistemic shift.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 functioned as a neutral cue that allowed the witness to proceed with an answer, without imposing specific content.</div>
           <div class="field-reasoning">The brief utterance signals readiness to continue, thereby enabling the witness to respond. It does not impose constraints on the content of the answer.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1 as a simple prompt for continuation, revealing that Turn 1 was not a substantive statement but merely a procedural cue.</div>
           <div class="field-reasoning">The witness’s answer focuses on the underlying action, indicating that the earlier 'Okay' was a procedural marker rather than a substantive contribution.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -429,7 +442,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The examiner’s brief acknowledgment signals a readiness to proceed, narrowing the focus to the immediate topic. The witness’s assertion that the underlying action is the same across versions directly limits the discussion to a comparison of those versions and fixes the content that the actions are identical.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -450,7 +463,7 @@
           <div class="field-reasoning" style="margin-top:6px;">By stating the sameness, the witness opens the door for follow‑up questions that seek to clarify what the underlying action is and how the two versions differ or align. The answer also invites deeper exploration of the context surrounding those versions.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">Acknowledgment</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Proceeding</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Confirmation</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">Underlying action</div><div class="tag tag-green encoding-tag">Same</div><div class="tag tag-green encoding-tag">Both versions</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Comparison</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Uniformity</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">Version context</div>
           <div class="field-reasoning" style="margin-top:6px;">The first turn explicitly conveys acknowledgment, while implicitly indicating readiness to continue. The second turn explicitly states the sameness of the underlying action across versions, and implicitly signals that a comparison has been made, that uniformity exists, and that there is contextual information about the versions.</div>
@@ -462,19 +475,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: minimal prompt</div><div class="field-reasoning">The examiner's utterance was a brief acknowledgement with no substantive content, while the witness provided a detailed statement, indicating no movement toward a shared structure.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: no divergence</div><div class="field-reasoning">Neither turn introduced conflicting positions; the witness did not contradict the examiner, so there was no divergence.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: new content</div><div class="field-reasoning">The witness's statement introduced a substantive claim that was absent in the examiner's minimal reply, creating a new informational structure.</div>
         </div>
@@ -485,9 +498,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">underlying action same</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">acknowledgment of answer</div>
@@ -496,7 +509,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling’s brief reply signals she has heard and accepts the explanation that the underlying action is identical in both versions. Benjamin Gibson’s statement clarifies the sameness and, by being met with an acknowledgment, he now knows the questioner is ready to move on.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">underlying action</div>
@@ -511,7 +524,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The notion that the action is the same across versions is central to the case and will shape subsequent questions. The fact that Ms. Easterling acknowledges the answer keeps the conversation on track.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">consistency</div>

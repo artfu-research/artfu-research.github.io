@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="action review clarified">action review clarified</div>
           <div class="field-reasoning">The witness shifts from an unspecified action to a clear description of reviewing prior reports, moving from unknown to known.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="witness action review">witness action review</div>
           <div class="field-reasoning">The focus is on the specific activity the witness performed—reviewing documents—within the context of the question.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">The question demanded a description of actions, which constrained the witness to focus on specific activities and enabled him to detail his review of reports and materials.</div>
           <div class="field-reasoning">The open-ended query limited the response to an account of what the witness did, thereby shaping the content of the answer toward his review process.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">The witness’s answer reframes the question as an inquiry into his document‑review process, clarifying that the action in question was the preparation and refreshing of evidence.</div>
           <div class="field-reasoning">By specifying the nature of his work, the answer contextualizes the original question within the framework of document analysis rather than a broader set of activities.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="4.0">4.0</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="4.0">4.0</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -433,7 +446,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The attorney’s question establishes the scope of the witness’s answer, while the witness’s reply specifies the activity, the time reference, and the type of materials involved, thereby narrowing what can be coherently said next.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -454,7 +467,7 @@
           <div class="field-reasoning" style="margin-top:6px;">By describing the review and materials, the witness opens avenues for the attorney to ask for more detail, background, and clarification of the review process.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">question about action</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">expectation of action</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">review</div><div class="tag tag-green encoding-tag">reports</div><div class="tag tag-green encoding-tag">depositions</div><div class="tag tag-green encoding-tag">refresh</div><div class="tag tag-green encoding-tag">initial report</div><div class="tag tag-green encoding-tag">July</div><div class="tag tag-green encoding-tag">summer</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">preparation</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">case relevance</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">timeline</div>
           <div class="field-reasoning" style="margin-top:6px;">The first turn explicitly asks about the witness’s actions, implicitly signaling that a description of those actions is expected. The second turn explicitly lists the review activities and materials, while implicitly indicating that the witness is preparing for the deposition and that the materials are relevant to the case timeline.</div>
@@ -466,19 +479,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: answering, action</div><div class="field-reasoning">The attorney asks for an explanation of what the witness did, and the witness provides a direct description of his review activities, thereby aligning the frames and moving toward a shared understanding.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: question clarity</div><div class="field-reasoning">The witness’s response does not diverge from the question; instead, it stays within the scope of the inquiry, so divergence is absent. The clarity of the question prevented any potential divergence.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-reasoning">No new structure or content emerged from the interaction that was not already present in either turn; the exchange simply clarified the witness’s actions.</div>
         </div>
@@ -489,9 +502,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">reviewed materials</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">prepared for deposition</div>
@@ -500,7 +513,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling now knows Gibson spent time reviewing documents to prepare for the deposition. Gibson confirms that his action was a review and preparation for the questioning.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">—</div>
@@ -515,7 +528,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The fact that Gibson reviewed reports and prepared for questioning strengthens the coherence of the narrative and sets up future lines of inquiry.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">review</div>

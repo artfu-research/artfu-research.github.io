@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="certainty established">certainty established</div>
           <div class="field-reasoning">The witness moves from an unknown status regarding prior testimony to a confirmed fact, giving the examiner a clear understanding of his experience.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="prior testifying experience">prior testifying experience</div>
           <div class="field-reasoning">The specific concept being clarified is whether the witness has previously testified for a defendant in a personal injury context.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn one posed a yes/no question about prior defendant testimony, constraining turn two to a simple affirmative response and enabling it by providing a clear, answerable query.</div>
           <div class="field-reasoning">The question establishes a binary frame that turn two must respond to with a yes or no, making the affirmative answer the only possible reply.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn two’s affirmative response confirms the question’s focus on prior defendant testimony, reframing the interaction as a confirmation of experience.</div>
           <div class="field-reasoning">The answer directly addresses the query, revealing that the question was indeed about past testimony for a defendant.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="4.0">4.0</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="4.0">4.0</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -429,7 +442,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The question establishes that the witness’s prior testimony for a defendant in a personal injury case is relevant, creating a constraint on the type of testimony. The affirmative answer confirms that such experience exists, solidifying that constraint. The mention of a personal injury case sets a boundary on the case type considered.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -450,7 +463,7 @@
           <div class="field-reasoning" style="margin-top:6px;">By confirming prior testimony, the examiner now has a factual basis to probe specific cases, details of the testimony, and to pursue additional follow‑up questions that were not possible before.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">testified</div><div class="tag tag-blue encoding-tag">defendant</div><div class="tag tag-blue encoding-tag">personal injury case</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">experience</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">Yes</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">testified for defendant</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">personal injury case</div>
           <div class="field-reasoning" style="margin-top:6px;">The question explicitly states the key terms while implying the witness’s experience. The answer explicitly affirms but implicitly confirms that the witness has such experience.</div>
@@ -462,19 +475,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: affirmative</div><div class="field-reasoning">The attorney’s question was a straightforward yes/no inquiry about prior testimony, and the witness’s simple "Yes" directly addressed and confirmed the question, aligning their frames.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: clear question</div><div class="field-reasoning">Because the question was unambiguous, there was no shift toward a conflicting perspective; the clarity of the question prevented any divergence.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-reasoning">No new structure or concept arose from this interaction beyond the simple confirmation of prior testimony.</div>
         </div>
@@ -485,9 +498,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">question about prior testimony</div>
@@ -496,7 +509,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling learns that Gibson has testified for a defendant in a personal injury case. Gibson learns that Ms. Easterling acknowledges his prior testimony.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">defendant testimony</div>
@@ -511,7 +524,7 @@
           <div class="field-reasoning" style="margin-top:6px;">These facts establish Gibson’s prior experience and the context of his testimony, which will guide subsequent questioning.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">experience</div>

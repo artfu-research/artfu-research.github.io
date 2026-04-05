@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="expectation confirmed">expectation confirmed</div>
           <div class="field-reasoning">The question signals uncertainty about the permit receiver’s actions, while the answer affirms that such inspection is part of the role, thereby resolving doubt.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="permit receiver role">permit receiver role</div>
           <div class="field-reasoning">Both turns focus on the duties and responsibilities associated with the permit receiver, making the role the central concept being examined.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 set a concrete, expectation‑based question about a jobsite inspection, thereby constraining Gibson to focus on that element while also allowing him to elaborate on the broader duties of a permit receiver. This framing made Gibson’s detailed discussion of scope, line‑walking, and permit conditions possible and necessary.</div>
           <div class="field-reasoning">The question explicitly asked whether an inspection would be expected, which required Gibson to address that point. His response naturally included the inspection as part of his responsibilities, expanding on the context that the question implied.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Gibson’s answer reframed the original question by positioning the inspection within a larger framework of permit‑receiver responsibilities, revealing that the question was probing a specific task but the answer contextualized it as part of overall jobsite oversight.</div>
           <div class="field-reasoning">Instead of merely confirming the inspection, Gibson described the permit receiver’s role in scope definition and line‑walking, thereby shifting the focus from a single inspection to a continuum of preparatory activities.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="t1_to_t2: +3.00, t2_to_t1: +2.00">t1_to_t2: +3.00, t2_to_t1: +2.00</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="t1_to_t2: +3.00, t2_to_t1: +2.00">t1_to_t2: +3.00, t2_to_t1: +2.00</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -433,7 +446,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The question establishes the permit receiver’s role and the time frame of a morning inspection, while the objection signals a procedural constraint on the question’s form. These limits shape what the witness may discuss. The answer then confirms the role’s responsibilities, extending the scope of permissible content.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -458,7 +471,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The witness’s answer expands the permit receiver’s duties, making explicit the need for scope knowledge and a pre‑work line walk, thereby opening new avenues for questioning about responsibilities and inspection details.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">permit receiver</div><div class="tag tag-blue encoding-tag">jobsite inspection</div><div class="tag tag-blue encoding-tag">morning work</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">expectation</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">objection form</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">scope</div><div class="tag tag-green encoding-tag">installation line</div><div class="tag tag-green encoding-tag">permit conditions</div><div class="tag tag-green encoding-tag">items to install</div><div class="tag tag-green encoding-tag">blind</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">responsibility</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">knowledge</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">pre-work walk</div>
           <div class="field-reasoning" style="margin-top:6px;">Turn 1 explicitly names the role and the inspection task while implicitly signaling an expectation and a procedural objection. Turn 2 explicitly lists technical details and implicitly conveys the broader responsibilities and preparatory actions of the permit receiver.</div>
@@ -470,19 +483,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: role clarification</div><div class="field-reasoning">The question establishes the permit receiver’s expected role, and the answer confirms that role includes inspecting the jobsite, aligning their frames.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-note">Prevented by: question framing</div><div class="field-reasoning">The answer does not move away from the question’s frame; the framing of the question keeps the discussion focused on the permit receiver’s duties.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="false"><span class="tag tag-red">false</span></div><div class="field-reasoning">No new conceptual structure appears that was not already implied by the question or answer.</div>
         </div>
@@ -493,9 +506,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">permit inspection expected</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">role of permit receiver</div>
@@ -504,7 +517,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The question prompts Ms. Easterling to consider the permit receiver's duty to inspect, while Gibson confirms that inspection is part of the role, clarifying expectations.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">permit inspection</div>
@@ -519,7 +532,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The exchange centers on whether a jobsite inspection occurs before work, making the inspection, jobsite walk, and scope knowledge key elements that will influence subsequent questions.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">inspection</div>

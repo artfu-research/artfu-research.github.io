@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #454538;
-    --surface: #3d3e33;
-    --surface2: #363729;
-    --border: #555748;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
     --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
@@ -67,20 +67,20 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-bright);
+    color: var(--text-dim);
   }
   .header-meta {
     font-size: 9px;
@@ -120,7 +120,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    background: linear-gradient(90deg, rgba(165,164,129,0.1) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
     font-size: 8px;
@@ -160,12 +160,25 @@
     padding: 12px 14px;
   }
   .panel-call {
-    font-size: 9px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLUMN CARDS inside panels */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* FIELD STYLES */
@@ -334,21 +347,21 @@
     <!-- CALL 1: EPISTEMIC OBJECT -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 1 · Epistemic Object</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Transformation<span class="material-symbols-outlined info-icon" data-field-id="transformation">live_help</span></div>
           <div class="field-answer" data-field-value="clarified radio norms">clarified radio norms</div>
           <div class="field-reasoning">The question expressed uncertainty about the call's audibility; the answer supplied general knowledge of radio operation, thereby shifting the witness’s understanding from doubt to a clearer grasp of typical radio usage.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Object Of Transformation<span class="material-symbols-outlined info-icon" data-field-id="object_of_transformation">live_help</span></div>
           <div class="field-answer" data-field-value="audibility of call">audibility of call</div>
           <div class="field-reasoning">Both turns focus on whether the call could be heard by multiple people, making the audibility of the call the central concept being clarified.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Scaffolding<span class="material-symbols-outlined info-icon" data-field-id="scaffolding">live_help</span></div>
           <div class="field-row">
             <div class="field-key">T1</div>
@@ -371,15 +384,15 @@
     <!-- CALL 2: BIDIRECTIONAL RELATIONSHIP -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 2 · Bidirectional Relationship</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Question → Answer Relationship<span class="material-symbols-outlined info-icon" data-field-id="t1_to_t2_relationship">live_help</span></div>
           <div class="field-answer">Turn 1 set the frame by asking whether the call was audible to multiple people and whether it was intended to energize a breaker. This constrained Turn 2 to address those specific points—audibility and intent—while also allowing it to elaborate on general radio operation.</div>
           <div class="field-reasoning">The question explicitly references audibility and purpose, so the witness must respond to those aspects. The answer acknowledges the call, admits uncertainty about audibility, and explains typical radio usage, thereby fulfilling the constraints.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Answer → Question Relationship<span class="material-symbols-outlined info-icon" data-field-id="t2_to_t1_relationship">live_help</span></div>
           <div class="field-answer">Turn 2 reframes Turn 1 by shifting focus from a specific confirmation of audibility to a broader explanation of radio protocols and acknowledging uncertainty. It implies that Turn 1’s assumption about audibility may not be fully supported.</div>
           <div class="field-reasoning">The witness does not directly confirm or deny the audibility but instead explains how radios normally work and notes the possibility of background noise, thereby recontextualizing the original question.</div>
@@ -387,14 +400,14 @@
 
       </div>
       <hr class="divider">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Question → Answer<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_q_to_a">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="2.0">2.0</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Alignment: Answer → Question<span class="material-symbols-outlined info-icon" data-field-id="alignment_bidirectional_a_to_q">live_help</span></div>
           <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="1.0">1.0</div>
         </div>
@@ -406,9 +419,9 @@
     <!-- CALL 3: EPISTEMIC CONSEQUENCES -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 3 · Epistemic Consequences</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Constraints Operationalized<span class="material-symbols-outlined info-icon" data-field-id="constraints_operationalized">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Constrained</th></tr></thead>
@@ -437,7 +450,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The question narrows the discussion to audibility, recipient, and breaker intent. The witness’s reply confirms uncertainty about audibility, specifies the recipient, and explains general radio procedure, thereby constraining those aspects.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Enablements Created<span class="material-symbols-outlined info-icon" data-field-id="enablements_created">live_help</span></div>
           <table class="data-table">
           <thead><tr><th>Class</th><th>Type</th><th>Enabled</th></tr></thead>
@@ -462,7 +475,7 @@
           <div class="field-reasoning" style="margin-top:6px;">By naming Raul Ramirez, describing radio norms, and noting background noise, the witness opens up discussion of recipient identity, environmental context, procedural norms, and the breaker’s purpose.</div>
         </div>
 
-        <div>
+        <div class="col-card">
           <div class="field-label">Epistemic Encoding<span class="material-symbols-outlined info-icon" data-field-id="epistemic_encoding">live_help</span></div>
           <div class="encoding-turn-label">TURN 1 (Q):</div><div class="tag tag-blue encoding-tag">call</div><div class="tag tag-blue encoding-tag">audible</div><div class="tag tag-blue encoding-tag">multiple people</div><div class="tag tag-blue encoding-tag">energize breaker</div><div class="tag tag-blue encoding-tag">MOV-2516</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">audibility level</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">call content</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">purpose</div><div class="encoding-turn-label" style="margin-top:8px;">TURN 2 (A):</div><div class="tag tag-green encoding-tag">Raul Ramirez</div><div class="tag tag-green encoding-tag">audible level</div><div class="tag tag-green encoding-tag">radios</div><div class="tag tag-green encoding-tag">plant</div><div class="tag tag-green encoding-tag">call</div><div class="tag tag-green encoding-tag">answer</div><div class="tag tag-green encoding-tag">background noise</div><div class="tag tag-green encoding-tag">people talking</div><div class="tag tag-green encoding-tag">works</div><div class="encoding-implicit-label">Implicit:</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">audibility to others</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">general radio operation</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">background noise presence</div><div class="tag tag-purple encoding-tag" style="opacity:0.7;">purpose of call</div>
           <div class="field-reasoning" style="margin-top:6px;">Turn 1 states concrete facts and poses questions about audibility and intent. Turn 2 supplies explicit facts about the caller and radio operation while implying uncertainty about audibility and the call’s purpose.</div>
@@ -474,19 +487,19 @@
     <!-- CALL 4: EPISTEMIC SHAPE -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 4 · Epistemic Shape</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Convergence<span class="material-symbols-outlined info-icon" data-field-id="convergence">live_help</span></div>
           <div class="field-answer" data-field-value="partial"><span class="tag tag-blue">partial</span></div><div class="field-note">Mechanism: partial alignment</div><div class="field-note">Prevented by: uncertain knowledge</div><div class="field-reasoning">The witness acknowledges uncertainty about audibility yet references the call, indicating a partial alignment of the question and answer frames.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Divergence<span class="material-symbols-outlined info-icon" data-field-id="divergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: uncertain answer</div><div class="field-reasoning">The witness does not confirm the audibility, thereby moving away from the question’s implied assumption and increasing distance between frames.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Emergence<span class="material-symbols-outlined info-icon" data-field-id="emergence">live_help</span></div>
           <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div><div class="field-note">Mechanism: general explanation</div><div class="field-reasoning">The witness introduces general information about radio operation that was not present in either turn, creating a new structure from the interaction.</div>
         </div>
@@ -497,9 +510,9 @@
     <!-- CALL 5: WHAT NOW MATTERS -->
     <div class="panel" style="grid-column: span 3;">
       <div class="panel-call">Call 5 · What Now Matters</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Change In Understanding<span class="material-symbols-outlined info-icon" data-field-id="change_in_understanding">live_help</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:4px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Attorney now knows:</div>
           <div class="tag tag-blue" style="display:block;margin-bottom:3px;">call to Raul</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">audibility uncertain</div><div class="tag tag-blue" style="display:block;margin-bottom:3px;">radio background noise</div>
@@ -508,7 +521,7 @@
           <div class="field-reasoning" style="margin-top:6px;">Ms. Easterling learns that the call was directed to Raul Ramirez and that the level of audibility to others is unknown; Gibson recognizes that the question focuses on whether the call was audible to multiple people and involves the breaker MOV-2516.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">What Matters<span class="material-symbols-outlined info-icon" data-field-id="what_matters">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;">
             <div class="field-key">—</div>
@@ -526,7 +539,7 @@
           <div class="field-reasoning" style="margin-top:6px;">The exchange brings forward the issues of who heard the call, how radios operate, the specific breaker involved, and the recipient of the call, all of which will shape subsequent questioning.</div>
         </div>
 
-        <div class="field-block">
+        <div class="col-card">
           <div class="field-label">Meaning Generated<span class="material-symbols-outlined info-icon" data-field-id="meaning_generated">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;">
             <div class="field-key">audibility</div>
