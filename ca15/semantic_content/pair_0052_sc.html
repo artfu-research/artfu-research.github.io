@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · SC · Pair 052</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252936;
-    --accent: #c8a96e;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
+    --accent: #A5A481;
     --accent2: #5b8fa8;
     --accent3: #7a6e9e;
-    --text: #d4d8e8;
-    --text-dim: #6b7194;
-    --text-bright: #eef0f8;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
     --green: #6ea898;
-    --pattern-color: #c8a96e;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,29 +41,22 @@
     min-height: 100vh;
   }
 
+  /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    text-align: center;
-    border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 9px;
-    cursor: pointer;
-    margin-left: 4px;
-    user-select: none;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
     vertical-align: middle;
-    transition: all 0.15s;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
+  .info-icon:hover { color: #ffffff; }
 
-  .info-icon:active {
-    background: var(--accent);
-    color: var(--bg);
-    transform: scale(0.95);
-  }
-
+  /* HEADER */
   .header {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -73,21 +67,30 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px; font-style: italic;
-    color: var(--text-bright);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
   }
   .header-meta {
-    font-size: 9px; color: var(--text-dim);
-    text-align: right; line-height: 1.8; letter-spacing: 0.05em;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
   }
 
+  /* EXCHANGE */
   .exchange {
     padding: 14px 20px;
     border-bottom: 1px solid var(--border);
@@ -98,36 +101,53 @@
   }
   .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
   .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
-  .turn.a { border-color: var(--green);   background: rgba(110,168,152,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
   .turn-speaker {
-    font-size: 8px; font-weight: 500;
-    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
   }
   .turn.q .turn-speaker { color: var(--accent2); }
   .turn.a .turn-speaker { color: var(--green); }
   .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
+  /* PATTERN BAR */
   .pattern-bar {
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 20px;
-    background: linear-gradient(90deg, rgba(200,169,110,0.08) 0%, transparent 60%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .pattern-label {
-    font-size: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--text-dim); white-space: nowrap;
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
   }
   .pattern-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px; font-style: italic;
-    color: var(--pattern-color); letter-spacing: 0.02em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pattern-color);
   }
   .pattern-reasoning {
-    font-size: 10px; color: var(--text-dim); line-height: 1.6;
-    border-left: 1px solid var(--border); padding-left: 16px;
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
   }
 
+  /* PANELS */
   .panels {
     display: grid;
     grid-template-columns: 1fr;
@@ -135,67 +155,108 @@
     gap: 1px;
     background: var(--border);
   }
-  .panel { background: var(--surface); padding: 12px 14px; }
+  .panel {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
   .panel-call {
-    font-size: 9px; color: var(--accent);
-    letter-spacing: 0.1em; margin-bottom: 6px;
-    font-weight: 600; text-transform: uppercase;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
   }
 
+  /* COLUMN CARDS */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  /* FIELD STYLES */
   .field-block { margin-bottom: 8px; }
   .field-label {
-    font-size: 8px; font-weight: 600; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
   }
-  .field-answer { font-size: 10px; color: var(--text-bright); line-height: 1.6; margin-bottom: 3px; }
-  .field-reasoning { font-size: 8px; color: var(--text-dim); line-height: 1.5; font-style: italic; opacity: 0.8; }
-  .field-row { display: flex; gap: 6px; margin-bottom: 4px; align-items: flex-start; }
-  .field-key { font-size: 9px; color: var(--text-dim); min-width: 80px; flex-shrink: 0; padding-top: 1px; }
-  .field-val { font-size: 9px; color: var(--text-bright); line-height: 1.5; }
+  .field-answer {
+    font-size: 10px;
+    color: var(--text-bright);
+    line-height: 1.6;
+    margin-bottom: 3px;
+  }
+  .field-reasoning {
+    font-size: 8px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    opacity: 0.8;
+  }
+  .field-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+  .field-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    min-width: 80px;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .field-val {
+    font-size: 9px;
+    color: var(--text-bright);
+    line-height: 1.5;
+  }
 
+  /* TAGS */
   .tag {
-    display: inline-block; font-size: 8px;
-    padding: 1px 6px; border-radius: 3px;
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
   .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
-  .tag-gold   { background: rgba(200,169,110,0.12); color: var(--accent);  border: 1px solid rgba(200,169,110,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
   .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
   .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
   .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
 
-  .scale-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 8px 12px;
-    margin-top: 10px;
+  /* FOOTER */
+  .footer {
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 8px;
     color: var(--text-dim);
-    line-height: 1.8;
-  }
-  .scale-box-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 7px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 4px;
-  }
-
-  .footer {
-    padding: 8px 20px; border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 8px; color: var(--text-dim);
-    letter-spacing: 0.08em; background: var(--bg);
+    letter-spacing: 0.08em;
+    background: var(--bg);
   }
   .footer-left { display: flex; gap: 16px; }
-
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -226,7 +287,7 @@
   <!-- PATTERN DECLARATION -->
   <div class="pattern-bar">
     <div class="pattern-label">Call 6<br>Pattern</div>
-    <div class="pattern-declaration">Purpose Confirmation<span class="info-icon" data-field-id="pattern_declaration">ⓘ</span></div>
+    <div class="pattern-declaration">Purpose Confirmation<span class="material-symbols-outlined info-icon" data-field-id="pattern_declaration">live_help</span></div>
     <div class="pattern-reasoning">The exchange centers on establishing the purpose of the witness’s activities and confirming that purpose. Across all lenses, the question seeks clarification, the answer affirms and elaborates, narrowing the focus to litigation intent, which the two-word phrase succinctly captures.</div>
   </div>
 
@@ -234,25 +295,25 @@
   <div class="panels">
 
     <!-- CALL 1: SEMANTIC PRESENCE -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 1 · Semantic Presence</div>
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
-          <div class="field-label">Topic Presence<span class="info-icon" data-field-id="topic_presence">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Topic Presence<span class="material-symbols-outlined info-icon" data-field-id="topic_presence">live_help</span></div>
           <div class="field-answer" style="font-style:italic;line-height:1.7;">The exchange centers on whether the witness’s activities—investigations and testifying—are for litigation purposes, specifically involving workplace safety and project management.</div>
           <div class="field-reasoning" style="margin-top:4px;">The question explicitly asks about litigation purposes, and the answer confirms and elaborates that the witness is involved in investigations and testifying about workplace safety and project management.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Topic Specificity<span class="info-icon" data-field-id="topic_specificity">ⓘ</span></div>
-          <div class="field-answer" style="font-size:22px;color:var(--accent);"><span class="tag tag-gold">7/10</span></div>
+        <div class="col-card">
+          <div class="field-label">Topic Specificity<span class="material-symbols-outlined info-icon" data-field-id="topic_specificity">live_help</span></div>
+          <div class="field-answer" style="font-size:22px;color:var(--accent);" data-field-value="7"><span class="tag tag-gold">7/10</span></div>
           <div class="field-reasoning" style="margin-top:6px;">The discussion is focused on a specific legal context (litigation) and particular subject matter (workplace safety, project management), which is narrower than general conversation but not extremely narrow.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Topic Stability<span class="info-icon" data-field-id="topic_stability">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">stable</span></div>
+        <div class="col-card">
+          <div class="field-label">Topic Stability<span class="material-symbols-outlined info-icon" data-field-id="topic_stability">live_help</span></div>
+          <div class="field-answer" data-field-value="stable"><span class="tag tag-green">stable</span></div>
           <div class="field-row" style="margin-top:6px;">
             <div class="field-key">Result</div>
             <div class="field-val">topic consistent</div>
@@ -265,36 +326,45 @@
         </div>
 
       </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Topic Specificity Scale</div>
-        1 = Extremely broad · 5 = Normal conversational specificity · 10 = Maximally specific / singular semantic target
-      </div>
     </div>
 
     <!-- CALL 2: SEMANTIC ANCHOR -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 2 · Semantic Anchor</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
-          <div class="field-label">Referential Target<span class="info-icon" data-field-id="referential_target">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">same</span></div>
+        <div class="col-card">
+          <div class="field-label">Referential Target<span class="material-symbols-outlined info-icon" data-field-id="referential_target">live_help</span></div>
+          <div class="field-answer" data-field-value="same"><span class="tag tag-green">same</span></div>
           <div style="margin-top:6px;"><div class="field-row"><div class="field-key">Shared target</div><div class="field-val">litigation purposes</div></div></div>
           <div class="field-reasoning" style="margin-top:6px;">Both the question and the answer revolve around the purpose of the testimony, specifically whether it is for litigation purposes.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Actor Presence<span class="info-icon" data-field-id="actor_presence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-green">true</span></div>
-          <div class="field-row" style="margin-top:6px;"><div class="field-key">Identity</div><div class="field-val">investigations</div></div>
-          <div class="field-row"><div class="field-key">Type</div><div class="field-val"><span class="tag tag-green">concept</span></div></div>
-          <div class="field-row"><div class="field-key">Role</div><div class="field-val"><span class="tag tag-gold">target</span></div></div>
-          <div class="field-row"><div class="field-key">Action</div><div class="field-val">testifying</div></div>
+        <div class="col-card">
+          <div class="field-label">Actor Presence<span class="material-symbols-outlined info-icon" data-field-id="actor_presence">live_help</span></div>
+          <div class="field-answer" data-field-value="true"><span class="tag tag-green">true</span></div>
+          
+          <div class="field-row" style="margin-top:6px;">
+            <div class="field-key">Identity</div>
+            <div class="field-val">investigations</div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Type</div>
+            <div class="field-val"><span class="tag tag-green">concept</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Role</div>
+            <div class="field-val"><span class="tag tag-gold">target</span></div>
+          </div>
+          <div class="field-row">
+            <div class="field-key">Action</div>
+            <div class="field-val">testifying</div>
+          </div>
           <div class="field-reasoning" style="margin-top:6px;">The answer explicitly mentions "investigations" as the subject of the testimony, indicating a conceptual actor being discussed.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Object Focus<span class="info-icon" data-field-id="object_focus">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Object Focus<span class="material-symbols-outlined info-icon" data-field-id="object_focus">live_help</span></div>
           <div class="field-answer" style="font-style:italic;line-height:1.7;">litigation purposes</div>
           <div class="field-reasoning" style="margin-top:4px;">The central concern of the exchange is whether the testimony is for litigation purposes.</div>
         </div>
@@ -303,56 +373,52 @@
     </div>
 
     <!-- CALL 3: SEMANTIC CLASS -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 3 · Semantic Class</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
-          <div class="field-label">Domain Type<span class="info-icon" data-field-id="domain_type">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Domain Type<span class="material-symbols-outlined info-icon" data-field-id="domain_type">live_help</span></div>
           <div class="field-row" style="margin-bottom:4px;"><div class="field-key">—</div><div class="field-val"></div></div>
           <div class="field-reasoning" style="margin-top:6px;">The question and answer focus on litigation purposes and expert testimony, situating the content within the legal domain.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Emotional Presence<span class="info-icon" data-field-id="emotional_presence">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">no</span></div>
+        <div class="col-card">
+          <div class="field-label">Emotional Presence<span class="material-symbols-outlined info-icon" data-field-id="emotional_presence">live_help</span></div>
+          <div class="field-answer" data-field-value="no"><span class="tag tag-blue">no</span></div>
           <div style="font-size:9px;color:var(--text-dim);margin-top:4px;">no emotional content</div>
           <div class="field-reasoning" style="margin-top:6px;">Neither turn contains overt emotional language or affective markers.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Intensity Scale<span class="info-icon" data-field-id="intensity_scale">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Intensity Scale<span class="material-symbols-outlined info-icon" data-field-id="intensity_scale">live_help</span></div>
           <div class="field-row" style="margin-top:4px;">
             <div class="field-key">T1 → T2</div>
-            <div class="field-val" style="font-size:14px;"><span class="tag tag-green">2/10</span></div>
+            <div class="field-val" style="font-size:14px;" data-field-value="2"><span class="tag tag-green">2/10</span></div>
           </div>
           <div class="field-row">
             <div class="field-key">T2 → T1</div>
-            <div class="field-val" style="font-size:14px;"><span class="tag tag-green">2/10</span></div>
+            <div class="field-val" style="font-size:14px;" data-field-value="2"><span class="tag tag-green">2/10</span></div>
           </div>
           <div class="field-reasoning" style="margin-top:6px;">Both turns are brief, factual, and neutral, indicating a very low level of semantic intensity in each direction.</div>
         </div>
 
       </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Intensity Scale</div>
-        1 = No detectable intensity · 5 = Moderate / clearly active · 10 = Maximum / defining feature of the exchange
-      </div>
     </div>
 
     <!-- CALL 4: SEMANTIC FUNCTION -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 4 · Semantic Function</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
-          <div class="field-label">Semantic Intent<span class="info-icon" data-field-id="semantic_intent">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Semantic Intent<span class="material-symbols-outlined info-icon" data-field-id="semantic_intent">live_help</span></div>
           <div class="field-row" style="margin-bottom:3px;"><div class="field-key" style="min-width:110px;">Clarify Purpose</div><div class="field-val"><span class="tag tag-red">large</span></div></div><div class="field-row" style="margin-bottom:3px;"><div class="field-key" style="min-width:110px;">Confirm Relevance</div><div class="field-val"><span class="tag tag-gold">medium</span></div></div><div class="field-row" style="margin-bottom:3px;"><div class="field-key" style="min-width:110px;">Establish Context</div><div class="field-val"><span class="tag tag-blue">small</span></div></div>
           <div class="field-reasoning" style="margin-top:6px;">The question seeks to determine the purpose of the witness’s activities, indicating a primary intent to clarify purpose. The answer confirms that the activities are for litigation, showing a secondary intent to confirm relevance. Together, they establish the broader context of the inquiry.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Direction Of Force<span class="info-icon" data-field-id="direction_of_force">ⓘ</span></div>
+        <div class="col-card">
+          <div class="field-label">Direction Of Force<span class="material-symbols-outlined info-icon" data-field-id="direction_of_force">live_help</span></div>
           <div class="field-row" style="margin-top:4px;">
             <div class="field-key">Origin</div>
             <div class="field-val">Attorney question and witness answer</div>
@@ -363,7 +429,7 @@
           </div>
           <div class="field-row">
             <div class="field-key">Magnitude</div>
-            <div class="field-val" style="font-size:16px;"><span class="tag tag-green">+2</span></div>
+            <div class="field-val" style="font-size:16px;" data-field-value="2"><span class="tag tag-green">+2</span></div>
           </div>
           <div class="field-row">
             <div class="field-key">Target</div>
@@ -373,41 +439,37 @@
           <div class="field-reasoning" style="margin-top:4px;">The attorney initiates a line of inquiry; the witness’s response confirms and steers the information toward a litigation context, producing a moderate positive directional force.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Resolution State<span class="info-icon" data-field-id="resolution_state">ⓘ</span></div>
-          <div class="field-answer" style="font-size:18px;"><span class="tag tag-gold">narrow</span></div>
+        <div class="col-card">
+          <div class="field-label">Resolution State<span class="material-symbols-outlined info-icon" data-field-id="resolution_state">live_help</span></div>
+          <div class="field-answer" style="font-size:18px;" data-field-value="narrow"><span class="tag tag-gold">narrow</span></div>
           <div class="field-reasoning" style="margin-top:8px;">By confirming that the investigations and testimony are for litigation, the exchange narrows the scope of the inquiry to that specific purpose.</div>
         </div>
 
       </div>
-      <div class="scale-box">
-        <div class="scale-box-label">Magnitude and Direction Scale (direction_of_force)</div>
-        −5 = Maximum negative · −3 = Strong negative · −1 = Weak negative · 0 = Neutral · +1 = Weak positive · +3 = Strong positive · +5 = Maximum positive
-      </div>
     </div>
 
     <!-- CALL 5: SEMANTIC COMPLEXITY -->
-    <div class="panel" style="grid-column: span 3;">
+    <div class="panel">
       <div class="panel-call">Call 5 · Semantic Complexity</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
 
-        <div class="field-block">
-          <div class="field-label">Concept Density<span class="info-icon" data-field-id="concept_density">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-gold">layered</span></div>
+        <div class="col-card">
+          <div class="field-label">Concept Density<span class="material-symbols-outlined info-icon" data-field-id="concept_density">live_help</span></div>
+          <div class="field-answer" data-field-value="layered"><span class="tag tag-gold">layered</span></div>
           <div style="margin-top:6px;"><div class="tag tag-gold" style="display:block;margin-bottom:2px;">litigation purposes</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">investigations</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">testifying</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">workplace safety</div></div>
           <div class="field-reasoning" style="margin-top:6px;">The question centers on litigation, while the answer expands to investigations, testifying, workplace safety, and project management, indicating multiple overlapping concepts.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Semantic Drift<span class="info-icon" data-field-id="semantic_drift">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-blue">broadening</span></div>
+        <div class="col-card">
+          <div class="field-label">Semantic Drift<span class="material-symbols-outlined info-icon" data-field-id="semantic_drift">live_help</span></div>
+          <div class="field-answer" data-field-value="broadening"><span class="tag tag-blue">broadening</span></div>
           <div class="field-row" style="margin-top:6px;"><div class="field-key">From</div><div class="field-val">litigation purposes</div></div><div class="field-row"><div class="field-key">To</div><div class="field-val">investigations testifying</div></div>
           <div class="field-reasoning" style="margin-top:6px;">The question presents a narrow focus on litigation purposes, whereas the answer broadens to include investigations, testifying, and safety concerns.</div>
         </div>
 
-        <div class="field-block">
-          <div class="field-label">Concept Coupling<span class="info-icon" data-field-id="concept_coupling">ⓘ</span></div>
-          <div class="field-answer"><span class="tag tag-gold">tightly_linked</span></div>
+        <div class="col-card">
+          <div class="field-label">Concept Coupling<span class="material-symbols-outlined info-icon" data-field-id="concept_coupling">live_help</span></div>
+          <div class="field-answer" data-field-value="tightly_linked"><span class="tag tag-gold">tightly_linked</span></div>
           <div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Side A:</div><div class="tag tag-blue" style="display:block;margin-bottom:2px;">litigation purposes</div><div style="font-size:8px;color:var(--text-dim);margin:6px 0 3px 0;text-transform:uppercase;letter-spacing:0.1em;">Side B:</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">investigations</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">testifying</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">workplace safety</div><div class="tag tag-gold" style="display:block;margin-bottom:2px;">project management</div>
           <div class="field-reasoning" style="margin-top:6px;">The answer directly references concepts that are causally linked to the litigation context introduced by the question, showing a tight relationship.</div>
         </div>
@@ -427,6 +489,5 @@
   </div>
 
 </div><!-- end page -->
-
 </body>
 </html>
