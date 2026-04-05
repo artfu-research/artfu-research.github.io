@@ -4,24 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CA_15 · SI · Opposition · Pair 360 · Forensic Analysis</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=live_help" />
 <style>
   :root {
-    --bg: #0e100d;
-    --surface: #141710;
-    --surface2: #1b1f17;
-    --border: #272c22;
-    --accent: #a8c278;
-    --accent2: #c2a878;
-    --accent3: #78c2a0;
-    --text: #d8e4cc;
-    --text-dim: #6e7a62;
-    --text-bright: #eef4e8;
+    --bg: #1F2020;
+    --surface: #272828;
+    --surface2: #2e2f2f;
+    --border: #3a3b3b;
+    --accent: #A5A481;
+    --accent2: #5b8fa8;
+    --accent3: #7a6e9e;
+    --text: #c8cab8;
+    --text-dim: #989A89;
+    --text-bright: #F4F3E7;
     --red: #c97070;
-    --amber: #c8a96e;
-    --teal: #6ea898;
-    --green: #88c278;
-    --pattern-color: #a8c278;
+    --green: #6ea898;
+    --pattern-color: #F4F3E7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,7 +35,6 @@
     padding: 0;
   }
 
-  /* REMOVED max-width constraint - fixes zoom scaling */
   .page {
     background: var(--surface);
     width: 100%;
@@ -45,19 +43,18 @@
 
   /* INFO ICON */
   .info-icon {
-    display: inline-block;
-    width: 14px; height: 14px; line-height: 14px;
-    text-align: center; border-radius: 50%;
-    border: 1px solid var(--accent);
-    color: var(--accent); font-size: 9px;
-    cursor: pointer; margin-left: 4px;
-    user-select: none; vertical-align: middle;
-    transition: all 0.15s;
+    font-family: 'Material Symbols Outlined';
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: middle;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-left: 3px;
+    user-select: none;
+    transition: color 0.15s;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
   }
-  .info-icon:active {
-    background: var(--accent); color: var(--bg);
-    transform: scale(0.95);
-  }
+  .info-icon:hover { color: #ffffff; }
 
   /* HEADER */
   .header {
@@ -70,19 +67,27 @@
   }
   .header-left { display: flex; align-items: baseline; gap: 12px; }
   .battery-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 9px; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--accent);
   }
   .header-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 18px; font-style: italic;
-    color: var(--text-bright);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
   }
   .header-meta {
-    font-size: 9px; color: var(--text-dim);
-    text-align: right; line-height: 1.8; letter-spacing: 0.05em;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
   }
 
   /* EXCHANGE */
@@ -95,14 +100,17 @@
     gap: 12px;
   }
   .turn { padding: 10px 12px; border-radius: 4px; border-left: 2px solid; }
-  .turn.q { border-color: var(--accent2); background: rgba(194,168,120,0.06); }
-  .turn.a { border-color: var(--accent3); background: rgba(120,194,160,0.06); }
+  .turn.q { border-color: var(--accent2); background: rgba(91,143,168,0.06); }
+  .turn.a { border-color: var(--green); background: rgba(110,168,152,0.06); }
   .turn-speaker {
-    font-size: 8px; font-weight: 500;
-    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
   }
   .turn.q .turn-speaker { color: var(--accent2); }
-  .turn.a .turn-speaker { color: var(--accent3); }
+  .turn.a .turn-speaker { color: var(--green); }
   .turn-text { font-size: 10px; color: var(--text); line-height: 1.6; font-style: italic; }
 
   /* SIGNATURE BAR */
@@ -113,21 +121,28 @@
     grid-template-columns: 80px 1fr 220px;
     gap: 20px;
     align-items: center;
-    background: linear-gradient(90deg, rgba(168,194,120,0.08) 0%, transparent 60%);
+    background: linear-gradient(90deg, rgba(165,164,129,0.08) 0%, transparent 60%);
   }
   .sig-label {
-    font-size: 8px; font-family: 'Syne', sans-serif; font-weight: 700;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--text-dim); white-space: nowrap;
+    font-size: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    white-space: nowrap;
   }
   .sig-declaration {
-    font-family: 'Instrument Serif', serif;
-    font-size: 24px; font-style: italic;
-    color: var(--pattern-color); letter-spacing: 0.02em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pattern-color);
   }
   .sig-scores { border-left: 1px solid var(--border); padding-left: 16px; }
   .score-row { display: flex; gap: 8px; align-items: center; }
-  .score-label { font-size: 8px; color: var(--text-dim); min-width: 90px; }
+  .score-label { font-size: 8px; color: var(--text-dim); min-width: 100px; }
   .score-bar { font-size: 9px; }
 
   /* SUMMARY */
@@ -137,10 +152,13 @@
     background: var(--surface2);
   }
   .summary-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 8px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
   }
   .summary-text { font-size: 10px; color: var(--text); line-height: 1.75; }
 
@@ -153,24 +171,47 @@
   }
   .panel { background: var(--surface); padding: 12px 14px; }
   .panel-call {
-    font-size: 9px; color: var(--accent);
-    letter-spacing: 0.1em; margin-bottom: 8px;
-    font-weight: 600; text-transform: uppercase;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    padding: 8px 14px;
+    margin: -12px -14px 14px -14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COL CARD */
+  .col-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
   }
 
   /* SI ITEMS */
   .si-item {
-    margin-bottom: 10px; padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
   .si-item:last-child { border-bottom: none; margin-bottom: 0; }
   .si-item-header {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
   }
   .si-call-ref { font-size: 8px; color: var(--text-dim); letter-spacing: 0.05em; }
   .si-item-body {
-    font-size: 9px; color: var(--text-dim);
-    line-height: 1.6; font-style: italic; padding-left: 4px;
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-style: italic;
+    padding-left: 4px;
   }
   .si-empty { font-size: 9px; color: var(--text-dim); font-style: italic; opacity: 0.7; }
 
@@ -178,8 +219,10 @@
   .rank-row {
     display: grid;
     grid-template-columns: 28px 40px 1fr;
-    gap: 6px; align-items: flex-start;
-    margin-bottom: 7px; padding-bottom: 7px;
+    gap: 6px;
+    align-items: flex-start;
+    margin-bottom: 7px;
+    padding-bottom: 7px;
     border-bottom: 1px solid var(--border);
   }
   .rank-row:last-child { border-bottom: none; margin-bottom: 0; }
@@ -189,47 +232,36 @@
 
   /* TAGS */
   .tag {
-    display: inline-block; font-size: 8px;
-    padding: 1px 6px; border-radius: 3px;
+    display: inline-block;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 3px;
     margin: 1px 2px 1px 0;
     font-family: 'DM Mono', monospace;
   }
-  .tag-green  { background: rgba(136,194,120,0.12); color: var(--green);   border: 1px solid rgba(136,194,120,0.2); }
-  .tag-amber  { background: rgba(200,169,110,0.12); color: var(--amber);   border: 1px solid rgba(200,169,110,0.2); }
-  .tag-teal   { background: rgba(110,168,152,0.12); color: var(--teal);    border: 1px solid rgba(110,168,152,0.2); }
+  .tag-blue   { background: rgba(91,143,168,0.15);  color: var(--accent2); border: 1px solid rgba(91,143,168,0.2); }
+  .tag-gold   { background: rgba(165,164,129,0.15); color: var(--accent);  border: 1px solid rgba(165,164,129,0.2); }
+  .tag-green  { background: rgba(110,168,152,0.12); color: var(--green);   border: 1px solid rgba(110,168,152,0.2); }
   .tag-red    { background: rgba(201,112,112,0.12); color: var(--red);     border: 1px solid rgba(201,112,112,0.2); }
-  .tag-dim    { background: rgba(110,122,98,0.12);  color: var(--text-dim);border: 1px solid rgba(110,122,98,0.2); }
-
-  .scale-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 8px 12px;
-    margin-top: 10px;
-    font-size: 8px;
-    color: var(--text-dim);
-    line-height: 1.8;
-  }
-  .scale-box-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 7px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 4px;
-  }
+  .tag-purple { background: rgba(122,110,158,0.15); color: var(--accent3); border: 1px solid rgba(122,110,158,0.2); }
+  .tag-dim    { background: rgba(152,154,137,0.12); color: var(--text-dim);border: 1px solid rgba(152,154,137,0.2); }
 
   /* FOOTER */
   .footer {
-    padding: 8px 20px; border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 8px; color: var(--text-dim);
-    letter-spacing: 0.08em; background: var(--bg);
+    padding: 8px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    background: var(--bg);
   }
   .footer-left { display: flex; gap: 16px; }
-
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <!-- HEADER -->
@@ -259,31 +291,30 @@
   <!-- SIGNATURE BAR -->
   <div class="sig-bar">
     <div class="sig-label">Strategic<br>Signature</div>
-    <div class="sig-declaration">Reframe Defense<span class="info-icon" data-field-id="pair_strategic_signature">ⓘ</span></div>
+    <div class="sig-declaration">Reframe Defense<span class="material-symbols-outlined info-icon" data-field-id="pair_strategic_signature">live_help</span></div>
     <div class="sig-scores">
       <div class="score-row">
-        <div class="score-label">Client Value<span class="info-icon" data-field-id="client_value">ⓘ</span></div>
-        <div class="score-bar"><span style="color:var(--amber);letter-spacing:1px;">████████<span style="color:var(--surface2);">████</span></span> <span class="tag tag-amber">7/10</span></div>
+        <div class="score-label">Client Value<span class="material-symbols-outlined info-icon" data-field-id="client_value">live_help</span></div>
+        <div class="score-bar" data-field-value="7"><span style="color:var(--accent);letter-spacing:1px;">████████<span style="color:var(--surface2);">████</span></span> <span class="tag tag-gold">7/10</span></div>
       </div>
       <div class="score-row" style="margin-top:6px;">
-        <div class="score-label">Opposition Value<span class="info-icon" data-field-id="opposition_value">ⓘ</span></div>
-        <div class="score-bar"><span style="color:var(--amber);letter-spacing:1px;">███████<span style="color:var(--surface2);">█████</span></span> <span class="tag tag-amber">6/10</span></div>
+        <div class="score-label">Opposition Value<span class="material-symbols-outlined info-icon" data-field-id="opposition_value">live_help</span></div>
+        <div class="score-bar" data-field-value="6"><span style="color:var(--accent);letter-spacing:1px;">███████<span style="color:var(--surface2);">█████</span></span> <span class="tag tag-gold">6/10</span></div>
       </div>
     </div>
   </div>
 
   <!-- SUMMARY -->
   <div class="summary-block">
-    <div class="summary-label">Strategic Summary · Opposition View<span class="info-icon" data-field-id="summary">ⓘ</span></div>
+    <div class="summary-label">Strategic Summary · Opposition View<span class="material-symbols-outlined info-icon" data-field-id="summary">live_help</span></div>
     <div class="summary-text">Mr. Gibson’s reply reframes the permit details to argue the defendants must have known the removal requirement, thereby implying they followed protocol.  He casts doubt on the plaintiff’s scenario, but his testimony is conditional, contested, and lacks corroboration.  The defense can use this to support that the defendants adhered to safety practices, but must be ready to counter the opposition’s use of the reframing to shift blame.  The key takeaway is that Gibson’s testimony neither assigns fault nor provides solid evidence of negligence, yet it can be leveraged to challenge the plaintiff’s narrative.</div>
   </div>
 
   <!-- PANELS -->
   <div class="panels">
 
-    <!-- USE THIS (defense perspective) -->
     <div class="panel">
-      <div class="panel-call">Use This · Defense<span class="info-icon" data-field-id="use_this">ⓘ</span></div>
+      <div class="panel-call">Use This · Defense<span class="material-symbols-outlined info-icon" data-field-id="use_this">live_help</span></div>
       <div class="si-item">
           <div class="si-item-header">
             <span class="tag tag-green">high</span>
@@ -292,56 +323,54 @@
           <div class="si-item-body">The reframing that the defendant must have known the permit requirement can be cited to show defendants were aware of and presumably followed safety protocols.</div>
         </div><div class="si-item">
           <div class="si-item-header">
-            <span class="tag tag-amber">medium</span>
+            <span class="tag tag-gold">medium</span>
             <span class="si-call-ref">Call 3 · <span style="color:var(--text-bright);">inferential_structure</span></span>
           </div>
           <div class="si-item-body">The inductive inference that the scenario is implausible supports the defense’s argument that plaintiff negligence caused the event.</div>
         </div><div class="si-item">
           <div class="si-item-header">
-            <span class="tag tag-amber">medium</span>
+            <span class="tag tag-gold">medium</span>
             <span class="si-call-ref">Call 1 · <span style="color:var(--text-bright);">power_alignment</span></span>
           </div>
           <div class="si-item-body">Gibson’s assertive stance about evidence can be used to challenge the plaintiff’s narrative and reinforce the defense’s position.</div>
         </div>
     </div>
 
-    <!-- WATCH THIS (defense perspective) -->
     <div class="panel">
-      <div class="panel-call">Watch This · Defense<span class="info-icon" data-field-id="watch_this">ⓘ</span></div>
+      <div class="panel-call">Watch This · Defense<span class="material-symbols-outlined info-icon" data-field-id="watch_this">live_help</span></div>
       <div class="si-item">
           <div class="si-item-header">
-            <span class="tag tag-amber">medium</span>
+            <span class="tag tag-gold">medium</span>
             <span class="si-call-ref">Call 4 · <span style="color:var(--text-bright);">distortion_pattern</span></span>
           </div>
           <div class="si-item-body">Cross‑examine Gibson on the lack of independent corroboration and highlight the conditional reliability of his testimony to undermine the opposition’s use of the reframing.</div>
         </div><div class="si-item">
           <div class="si-item-header">
-            <span class="tag tag-amber">medium</span>
+            <span class="tag tag-gold">medium</span>
             <span class="si-call-ref">Call 4 · <span style="color:var(--text-bright);">contestability</span></span>
           </div>
           <div class="si-item-body">Prepare to address the procedural objection by Mr. Grinnan and demonstrate that the question was permissible and that Gibson’s answer remains admissible.</div>
         </div><div class="si-item">
           <div class="si-item-header">
-            <span class="tag tag-amber">medium</span>
+            <span class="tag tag-gold">medium</span>
             <span class="si-call-ref">Call 6 · <span style="color:var(--text-bright);">pattern</span></span>
           </div>
           <div class="si-item-body">Acknowledge the defensive reframing but emphasize that Gibson’s skepticism about the plaintiff’s scenario weakens the plaintiff’s case.</div>
         </div>
     </div>
 
-    <!-- CALL RANK (defense perspective) -->
     <div class="panel">
-      <div class="panel-call">Call Rank · Defense<span class="info-icon" data-field-id="call_rank">ⓘ</span></div>
+      <div class="panel-call">Call Rank · Defense<span class="material-symbols-outlined info-icon" data-field-id="call_rank">live_help</span></div>
       <div class="rank-row">
           <div class="rank-num"><span class="tag tag-green">#1</span></div>
           <div class="rank-call">Call 4</div>
           <div class="rank-reason">Shows conditional reliability and reframing that can be leveraged to support defendant compliance.</div>
         </div><div class="rank-row">
-          <div class="rank-num"><span class="tag tag-amber">#2</span></div>
+          <div class="rank-num"><span class="tag tag-gold">#2</span></div>
           <div class="rank-call">Call 6</div>
           <div class="rank-reason">Summarizes the overall defensive stance and reframing strategy.</div>
         </div><div class="rank-row">
-          <div class="rank-num"><span class="tag tag-amber">#3</span></div>
+          <div class="rank-num"><span class="tag tag-gold">#3</span></div>
           <div class="rank-call">Call 3</div>
           <div class="rank-reason">Provides inductive inference that the plaintiff’s scenario is implausible.</div>
         </div><div class="rank-row">
@@ -357,13 +386,9 @@
           <div class="rank-call">Call 5</div>
           <div class="rank-reason">No concealment or bias; minimal strategic impact.</div>
         </div>
-      <div class="scale-box" style="margin-top:10px;">
-        <div class="scale-box-label">Score Swap Note</div>
-        Raw JSON: client_value = Shell · opposition_value = Jasso. Display normalized: Client Value = Jasso · Opposition Value = Shell.
-      </div>
     </div>
 
-  </div><!-- end panels -->
+  </div>
 
   <div class="footer">
     <div class="footer-left">
@@ -374,7 +399,6 @@
     <span>Artfu Research · Independent · Dallas TX</span>
   </div>
 
-</div><!-- end page -->
-
+</div>
 </body>
 </html>
