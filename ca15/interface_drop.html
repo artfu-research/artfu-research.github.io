@@ -102,7 +102,7 @@
   .pick-divider { height:1px; background:var(--border); margin:3px 12px; opacity:.5; }
 
   /* CENTER */
-  .center-area { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+  .center-area { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; outline: 6px solid #F4F3E7; }
 
   /* CONTENT */
   .content-area { flex:1; position:relative; overflow:hidden; }
@@ -451,6 +451,12 @@ function modLabel(mod) {
 /* ── Load pair into center ────────────────────────────────────────── */
 function loadPair(n) {
   currentPair = n;
+  if (!currentBattery) {
+    currentBattery  = pairBattery;
+    currentModifier = pairModifier;
+    syncFooter();
+    loadBatterySchema(currentBattery, currentModifier);
+  }
   updateCrumbs();
   showIframe();
   loadCurrentView();
