@@ -450,13 +450,11 @@ function modLabel(mod) {
 
 /* ── Load pair into center ────────────────────────────────────────── */
 function loadPair(n) {
-  currentPair = n;
-  if (!currentBattery) {
-    currentBattery  = pairBattery;
-    currentModifier = pairModifier;
-    syncFooter();
-    loadBatterySchema(currentBattery, currentModifier);
-  }
+  currentPair     = n;
+  currentBattery  = pairBattery;
+  currentModifier = pairModifier;
+  syncFooter();
+  loadBatterySchema(currentBattery, currentModifier);
   updateCrumbs();
   showIframe();
   loadCurrentView();
