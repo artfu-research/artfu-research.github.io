@@ -124,69 +124,47 @@
     border-top: 1px solid var(--border);
     display: flex;
     align-items: center;
-    padding: 0 4px;
-    gap: 0;
-    flex-shrink: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-  .footer-battery-bar::-webkit-scrollbar { height: 2px; }
-  .footer-battery-bar::-webkit-scrollbar-thumb { background: var(--border); }
-
-  /* family card — visible bordered group, surface bg */
-  .fam-card {
-    display: flex;
-    align-items: stretch;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    flex-shrink: 0;
-    height: 34px;
-    overflow: hidden;
-    margin: 0 3px;
-  }
-
-  .footer-divider {
-    width: 1px;
-    height: 34px;
-    background: var(--border);
-    flex-shrink: 0;
-    align-self: center;
-    margin: 0 4px;
-  }
-
-  /* every icon cell — uniform 17px, same as left rail */
-  .fam-btn {
-    width: var(--icon-w);
-    height: 34px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: background .12s;
+    gap: 8px;
+    padding: 0 14px;
     flex-shrink: 0;
   }
-  .fam-btn:hover { background: #1a1b1b; }
-  .fam-btn .mat { font-size: 17px; color: var(--text-dim); transition: color .12s; }
-  .fam-btn:hover .mat { color: var(--text); }
-
-  /* modifier buttons — narrower, same icon size */
-  .fam-btn.mod { width: 30px; border-left: 1px solid var(--border); }
+  /* thin vertical rule between the two groups */
+  .fam-group-divider {
+    width: 1px; height: 20px;
+    background: var(--border); flex-shrink: 0;
+  }
+  /* card = tight bordered box */
+  .fam-card {
+    display: flex; align-items: stretch;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 3px; overflow: hidden; flex-shrink: 0;
+  }
+  /* every pressable cell — 26×26, 14px icon */
+  .fam-btn {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .12s; flex-shrink: 0;
+  }
+  .fam-btn .mat { font-size: 14px; color: var(--text-dim); transition: color .12s; }
+  .fam-btn:hover:not(.disabled) { background: #1a1b1b; }
+  .fam-btn:hover:not(.disabled) .mat { color: var(--text); }
+  .fam-btn.mod { border-left: 1px solid var(--border); }
   .fam-btn.disabled { opacity: .18; cursor: default; pointer-events: none; }
-
-  /* active — base */
   .fam-btn.active-base { background: var(--bg); border-top: 2px solid var(--accent); }
   .fam-btn.active-base .mat { color: var(--accent); }
-
-  /* active — client */
+  .fam-btn.family-cl { background: #0a140a; }
+  .fam-btn.family-cl .mat { color: #7ac47a; }
   .fam-btn.active-cl { background: #0a140a; border-top: 2px solid #4a7a4a; }
   .fam-btn.active-cl .mat { color: #7ac47a; }
-
-  /* active — opposition */
+  .fam-btn.family-op { background: #140a0a; }
+  .fam-btn.family-op .mat { color: #c47a7a; }
   .fam-btn.active-op { background: #140a0a; border-top: 2px solid #7a4a4a; }
   .fam-btn.active-op .mat { color: #c47a7a; }
 
   /* BOTTOM SCHEMA BAR */
+    /* BOTTOM SCHEMA BAR */
+    /* BOTTOM SCHEMA BAR */
   .bottom-bar { height:32px; background:#000; border-top:1px solid var(--border); display:flex; align-items:center; padding:0 14px; gap:12px; cursor:pointer; flex-shrink:0; transition:background .12s; user-select:none; }
   .bottom-bar:hover { background:#0a0b0b; }
   .bottom-bar.open { border-top-color:var(--accent); }
@@ -293,52 +271,36 @@
 
     <!-- FOOTER BATTERY SELECTOR -->
     <div class="footer-battery-bar" id="footer-battery-bar">
-
-      <!-- EM family -->
       <div class="fam-card" id="fam-em">
         <div class="fam-btn" id="fbtn-em-base" onclick="footerSelectBase('em')" title="Epistemic Motion"><span class="mat">cognition</span></div>
         <div class="fam-btn mod" id="fbtn-em-cl" onclick="footerSelectMod('em','client')" title="EM · Client"><span class="mat">person_add</span></div>
         <div class="fam-btn mod" id="fbtn-em-op" onclick="footerSelectMod('em','opposition')" title="EM · Opposition"><span class="mat">person_remove</span></div>
       </div>
-
-      <!-- FA family -->
       <div class="fam-card" id="fam-fa">
         <div class="fam-btn" id="fbtn-fa-base" onclick="footerSelectBase('fa')" title="Forensic Analysis"><span class="mat">biotech</span></div>
         <div class="fam-btn mod" id="fbtn-fa-cl" onclick="footerSelectMod('fa','client')" title="FA · Client"><span class="mat">person_add</span></div>
         <div class="fam-btn mod" id="fbtn-fa-op" onclick="footerSelectMod('fa','opposition')" title="FA · Opposition"><span class="mat">person_remove</span></div>
       </div>
-
-      <!-- SC family -->
       <div class="fam-card" id="fam-sc">
         <div class="fam-btn" id="fbtn-sc-base" onclick="footerSelectBase('sc')" title="Semantic Content"><span class="mat">newspaper</span></div>
         <div class="fam-btn mod" id="fbtn-sc-cl" onclick="footerSelectMod('sc','client')" title="SC · Client"><span class="mat">person_add</span></div>
         <div class="fam-btn mod" id="fbtn-sc-op" onclick="footerSelectMod('sc','opposition')" title="SC · Opposition"><span class="mat">person_remove</span></div>
       </div>
-
-      <div class="footer-divider"></div>
-
-      <!-- WPB -->
+      <div class="fam-group-divider"></div>
       <div class="fam-card" id="fam-wpb">
         <div class="fam-btn" id="fbtn-wpb-base" onclick="footerSelectBase('wpb')" title="Witness Posture"><span class="mat">account_box</span></div>
       </div>
-
-      <!-- APB -->
       <div class="fam-card" id="fam-apb">
         <div class="fam-btn" id="fbtn-apb-base" onclick="footerSelectBase('apb')" title="Attorney Performance"><span class="mat">taunt</span></div>
       </div>
-
-      <!-- JSB family — no base, sides only -->
       <div class="fam-card" id="fam-jsb">
-        <div class="fam-btn disabled" title="JSB · select a side"><span class="mat">crowdsource</span></div>
+        <div class="fam-btn disabled" id="fbtn-jsb-base" title="JSB · select a side"><span class="mat">crowdsource</span></div>
         <div class="fam-btn mod" id="fbtn-jsb-cl" onclick="footerSelectMod('jsb','client')" title="JSB · Client"><span class="mat">person_add</span></div>
         <div class="fam-btn mod" id="fbtn-jsb-op" onclick="footerSelectMod('jsb','opposition')" title="JSB · Opposition"><span class="mat">person_remove</span></div>
       </div>
-
-      <!-- EEB -->
       <div class="fam-card" id="fam-eeb">
         <div class="fam-btn" id="fbtn-eeb-base" onclick="footerSelectBase('eeb')" title="Entity Extraction"><span class="mat">scan</span></div>
       </div>
-
     </div>
 
     <!-- SCHEMA BAR -->
@@ -401,13 +363,17 @@ function footerSelectMod(battery, modifier) {
 
 /* ── Sync footer active states ────────────────────────────────────── */
 function syncFooter() {
-  document.querySelectorAll('.fam-btn').forEach(b => b.classList.remove('active-base','active-cl','active-op'));
+  document.querySelectorAll('.fam-btn').forEach(b =>
+    b.classList.remove('active-base','active-cl','active-op','family-cl','family-op'));
   if (!currentBattery) return;
+  const base = document.getElementById('fbtn-' + currentBattery + '-base');
   if (!currentModifier) {
-    document.getElementById('fbtn-' + currentBattery + '-base')?.classList.add('active-base');
+    base?.classList.add('active-base');
   } else if (currentModifier === 'client') {
+    base?.classList.add('family-cl');
     document.getElementById('fbtn-' + currentBattery + '-cl')?.classList.add('active-cl');
   } else if (currentModifier === 'opposition') {
+    base?.classList.add('family-op');
     document.getElementById('fbtn-' + currentBattery + '-op')?.classList.add('active-op');
   }
 }
